@@ -6,7 +6,6 @@
  */
 
 
-//#include "Senior Headers/Senior_ADC.h"
 #include "F28379D_Senior_Design.h"
 #include "F2837xD_device.h"
 #include "F2837xD_Examples.h"
@@ -74,15 +73,16 @@ void setupADCContinuous(Uint16* channel) {
     AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 5;
 
     // ADCSOCx Control - Map SOC to specific channels
-    AdcaRegs.ADCSOC0CTL.bit.CHSEL = channel[5];  // SOC will convert on channel 6
-//    AdcaRegs.ADCSOC1CTL.bit.CHSEL = channel[4];  // SOC will convert on channel 5
-//    AdcbRegs.ADCSOC0CTL.bit.CHSEL = channel[3];  // SOC will convert on channel 4
-//    AdcbRegs.ADCSOC1CTL.bit.CHSEL = channel[2];  // SOC will convert on channel 3
-//    AdccRegs.ADCSOC0CTL.bit.CHSEL = channel[1];  // SOC will convert on channel 2
-//    AdcdRegs.ADCSOC0CTL.bit.CHSEL = channel[0];  // SOC will convert on channel 1
+    AdcaRegs.ADCSOC0CTL.bit.CHSEL = channel[5]; // SOC will convert on channel 6 - String 2
+//    AdcaRegs.ADCSOC1CTL.bit.CHSEL = channel[4]; // SOC will convert on channel 5
+//    AdcbRegs.ADCSOC0CTL.bit.CHSEL = channel[3]; // SOC will convert on channel 4
+//    AdcbRegs.ADCSOC1CTL.bit.CHSEL = channel[2]; // SOC will convert on channel 3
+//    AdccRegs.ADCSOC0CTL.bit.CHSEL = channel[1]; // SOC will convert on channel 2
+//    AdcdRegs.ADCSOC0CTL.bit.CHSEL = channel[0]; // SOC will convert on channel 1
 
     // ADCSOCx Control - Set Acquisition Prescale/Sets window in SYSCLK cycles
-    AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps; // Sample window is acqps + 1 SYSCLK Cycle
+    // Sample window is acqps + 1 SYSCLK Cycle
+    AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps; // String 2
 //    AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps;
 //    AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps;
 //    AdcbRegs.ADCSOC1CTL.bit.ACQPS = acqps;
@@ -98,7 +98,7 @@ void setupADCContinuous(Uint16* channel) {
 //    AdcdRegs.ADCINTSEL1N2.bit.INT1E = 0; // Clear DINT1 flag
 
     // ADC Interrupt SOC Trigger Source (Which ADCINT triggers what SOC)
-    AdcaRegs.ADCINTSOCSEL1.bit.SOC0 = 0; // ADCINT1
+    AdcaRegs.ADCINTSOCSEL1.bit.SOC0 = 0; // ADCINT1 - String 2
 //    AdcaRegs.ADCINTSOCSEL1.bit.SOC1 = 2; // ADCINT2
 //    AdcbRegs.ADCINTSOCSEL1.bit.SOC0 = 1; // ADCINT1
 //    AdcbRegs.ADCINTSOCSEL1.bit.SOC1 = 2; // ADCINT2
@@ -106,7 +106,7 @@ void setupADCContinuous(Uint16* channel) {
 //    AdcdRegs.ADCINTSOCSEL1.bit.SOC0 = 1; // ADCINT1
 
     // ADCINTx Continuous Mode
-    AdcaRegs.ADCINTSEL1N2.bit.INT1CONT = 1; // Enable AINT1 Continuous Mode
+    AdcaRegs.ADCINTSEL1N2.bit.INT1CONT = 1; // Enable AINT1 Continuous Mode - String 2
 //    AdcaRegs.ADCINTSEL1N2.bit.INT2CONT = 1; // Enable AINT2 Continuous Mode
 //    AdcbRegs.ADCINTSEL1N2.bit.INT1CONT = 1; // Enable BINT1 Continuous Mode
 //    AdcbRegs.ADCINTSEL1N2.bit.INT2CONT = 1; // Enable BINT2 Continuous Mode
@@ -114,7 +114,7 @@ void setupADCContinuous(Uint16* channel) {
 //    AdcdRegs.ADCINTSEL1N2.bit.INT1CONT = 1; // Enable DINT1 Continuous Mode
 
     // Enable Interrupts and Clear Interrupt Flags for each ADC
-    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;
+    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1; // String 2
 //    AdcaRegs.ADCINTSEL1N2.bit.INT2E = 1;
 //    AdcaRegs.ADCINTFLGCLR.all = 0x000F;
 //    AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1;
@@ -126,7 +126,7 @@ void setupADCContinuous(Uint16* channel) {
 //    AdcdRegs.ADCINTFLGCLR.all = 0x000F;
 
     // ADCINTx EOC Source Select
-    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0; // AINT1 triggered by end of SOC0
+    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0; // AINT1 triggered by end of SOC0 - String 2
 //    AdcaRegs.ADCINTSEL1N2.bit.INT2SEL = 1; // AINT2 triggered by end of SOC1
 //    AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0; // BINT1 triggered by end of SOC0
 //    AdcbRegs.ADCINTSEL1N2.bit.INT2SEL = 1; // BINT2 triggered by end of SOC1

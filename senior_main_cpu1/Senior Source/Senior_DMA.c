@@ -22,10 +22,10 @@ void initDMA(uint16_t* buffer1) {
 
     /* DMA Channel 1 - ADCA CH01 - String X */
 //    DMACH1AddrConfig(buffer1, &AdcaResultRegs.ADCRESULT0);
-    DMACH1AddrConfig(buffer1, &AdcaResultRegs.ADCRESULT0);
+    DMACH2AddrConfig(buffer1, &AdcaResultRegs.ADCRESULT0);
 
     /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
-    DMACH1TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
+    DMACH2TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
 
     /* DMA CH1 Mode Settings
      * Peripheral Interrupt Source - ADCA INT1
@@ -37,12 +37,12 @@ void initDMA(uint16_t* buffer1) {
      * Overflow Disabled
      * 16-bit Data Size
      * Channel Interrupt Enabled at Start */
-    DMACH1ModeConfig(DMA_ADCAINT1, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
+    DMACH2ModeConfig(DMA_ADCAINT1, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
                      SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
                      CHINT_END, CHINT_ENABLE);
 
     /* Start DMAs */
-    StartDMACH1();
+    StartDMACH2();
 
     PieCtrlRegs.PIEIER7.bit.INTx1 = 1; // Enable Group 7 Interrupt 1 - DMA
     IER |= M_INT7;

@@ -5,8 +5,28 @@
  *      Author: meser
  */
 
-//#include "Senior Headers/Senior_FFT.h"
 #include "F28379D_Senior_Design.h"
+
+// Defines
+#define binRange                (SAMP_FREQ / RFFT_SIZE) * 0.5
+
+// Variables
+volatile float32 res = 0;       // FFT Bin Conversion Result
+volatile float32 freq_est = 0;  // Local Frequency Estimation from Phase Vocoder
+float32 testN = 0.0;        // Phase Vocoder Estimation Iteration
+volatile float32 magMax = 0.0;  // FFT Magnitude Maximum Value
+volatile uint16_t magIndex = 0; // FFT Magnitude Maximum Index
+volatile float32 upper = 0;     // Upper FFT Max Bin Range
+volatile float32 lower = 0;     // Lower FFT Max Bin Range
+float32 delta_t = 0.0128;       // Time between FFTs - (RFFT_SIZE / OVERLAP) * SAMPLING_PERIOD
+float32 vpi = 6.2831853;
+
+float32 best;
+float32 pd;
+float32 nRes;
+float32 dRes;
+float32 test_est;
+float32 absRes;
 
 // Align RFFT Buffers to 2 * FFT_SIZE in Linker File
 #pragma DATA_SECTION(RFFTinBuff, "RFFTdata1"); // Define Input Buffer Data Section
@@ -21,7 +41,7 @@ float32 RFFTF32Coef[RFFT_SIZE];
 float32 RFFTphaseBuff[RFFT_SIZE/2];
 
 // Initialize and Define Windowing Filter
-float32 RFFTwindow[RFFT_SIZE/2] = HAMMING1024;
+float32 RFFTwindow[RFFT_SIZE/2] = HANN1024;
 
 // Instantiate RFFT Struct
 RFFT_F32_STRUCT rfft;
@@ -48,15 +68,11 @@ void initFFT(RFFT_F32_STRUCT_Handle handler_rfft) {
 }
 
 /*** Phase Vocoder Analysis Function ***/
-/*   Takes in two phase values by reference
- *   Returns a fundamental frequency estimation */
+// Takes in two phase values by reference
+// Returns a fundamental frequency estimation
 float32 vocodeAnalysis(float32* phase1, float32* phase2) {
-    float32 res;
-    float32 freq_est = 0;
-    uint16_t n = 0;
-
     // Window Input Data
-//    RFFT_f32_win(&RFFTinBuff[0],  (float *)&RFFTwindow, RFFT_SIZE);
+    RFFT_f32_win(&RFFTinBuff[0],  (float *)&RFFTwindow, RFFT_SIZE);
 
     // Run RFFT
     RFFT_f32(handler_rfft);
@@ -66,10 +82,9 @@ float32 vocodeAnalysis(float32* phase1, float32* phase2) {
     RFFT_f32_phase_TMU0(handler_rfft);
 
     // Find index of Magnitude Peak
-    float32 magMax = handler_rfft->MagBuf[1];
-    uint16_t magIndex = 0;
-    uint16_t i;
-    for (i = 1; i < (RFFT_SIZE / 2); i++) {
+    magMax = 0;
+    magIndex = 0;
+    for (int i = 0; i < (RFFT_SIZE / 2); i++) {
         if (handler_rfft->MagBuf[i] > magMax) {
             magMax = handler_rfft->MagBuf[i];
             magIndex = i;
@@ -83,18 +98,32 @@ float32 vocodeAnalysis(float32* phase1, float32* phase2) {
     *phase2 = handler_rfft->PhaseBuf[magIndex];
 
     // Run Phase Vocoder Analysis Routine
-    while (!(((0.9 * res) < freq_est) && (freq_est < (1.1 * res)))) {
-        // Loop until frequency estimation is within a certain range
-        freq_est = ((*phase2 - *phase1) + (M_2_PI * n)) / (M_2_PI * DELTA_t);
-        n++;
+    upper = res + binRange;
+    lower = res - binRange;
+    testN = 0;
+    nRes = 0;
+    best = 1000;
+    uint16_t nbest = 0;
+    pd = *phase2 - *phase1;
+    dRes = vpi * delta_t;
+    while (testN < 50) {
 
-        // Timeout
-        if (n >= 50) {
-            break;
+        // Loop until frequency estimation is within a certain range
+        nRes += 6.2831853;
+
+        test_est = (pd + nRes) / dRes;
+//        freq_est = ((*phase2 - *phase1) + (6.2831853 * n)) / (6.2831853 * delta_t);
+        absRes = fabsf(res - freq_est);
+        if (fabsf(res - freq_est) < best) {
+            best = fabsf(res - freq_est);
+            nbest = testN;
         }
+
+        testN++;
     }
 
     // Save phase for next iteration and return F0 estimation
+    freq_est = ((*phase2 - *phase1) + (M_2_PI * nbest)) / (M_2_PI * delta_t);
     *phase1 = *phase2;
     return freq_est;
 }

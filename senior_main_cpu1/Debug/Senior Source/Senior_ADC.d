@@ -59,6 +59,8 @@ Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f
 Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_SysCtrl_defines.h
 Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_Upp_defines.h
 Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_defaultisr.h
+Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/math.h
+Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_defs.h
 Senior\ Source/Senior_ADC.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_ADC.h
 Senior\ Source/Senior_ADC.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_DMA.h
 Senior\ Source/Senior_ADC.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_ePWM.h
@@ -66,7 +68,7 @@ Senior\ Source/Senior_ADC.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ o
 Senior\ Source/Senior_ADC.obj: C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_rfft.h
 Senior\ Source/Senior_ADC.obj: C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_types.h
 Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/float.h
-Senior\ Source/Senior_ADC.obj: C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_fft_hamming.h
+Senior\ Source/Senior_ADC.obj: C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_fft_hann.h
 Senior\ Source/Senior_ADC.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_SPI.h
 
 ../Senior\ Source/Senior_ADC.c: 
@@ -128,6 +130,8 @@ C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_D
 C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_SysCtrl_defines.h: 
 C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_Upp_defines.h: 
 C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_defaultisr.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/math.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_defs.h: 
 C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_ADC.h: 
 C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_DMA.h: 
 C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_ePWM.h: 
@@ -135,5 +139,5 @@ C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ E
 C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_rfft.h: 
 C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_types.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/float.h: 
-C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_fft_hamming.h: 
+C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_fft_hann.h: 
 C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_SPI.h: 

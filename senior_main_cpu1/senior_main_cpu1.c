@@ -13,37 +13,46 @@
 // Defines
 
 // Global Variables
-uint16_t adcAResult0; // String 6 - SOCA 0
-uint16_t adcAResult1; // String 5 - SOCA 1
-uint16_t adcBResult0; // String 4 - SOCB 0
-uint16_t adcBResult1; // String 3 - SOCB 1
-uint16_t adcCResult0; // String 2 - SOCC 0
-uint16_t adcDResult0; // String 1 - SOCD 0
+uint16_t adcCResult1; // C2, C3 - String 6 - SOCC 1
+uint16_t adcBResult0; // B0, B1 - String 5 - SOCB 0
+uint16_t adcAResult1; // A2, A3 - String 4 - SOCA 1
+uint16_t adcDResult0; // D0, D1 - String 3 - SOCD 0
+uint16_t adcAResult0; // A0, A1 - String 2 - SOCA 0
+uint16_t adcDResult1; // D2, D3 - String 1 - SOCD 1
 
-//#pragma DATA_SECTION(DMACH1_ADCA01, "DMABuffer1");
 #pragma DATA_SECTION(CircularBuffer1, "CircBuff1");
 #pragma DATA_SECTION(CircularBuffer2, "CircBuff2");
 #pragma DATA_SECTION(CircularBuffer3, "CircBuff3");
+//#pragma DATA_SECTION(CircularBuffer4, "CircBuff4");
+//#pragma DATA_SECTION(CircularBuffer5, "CircBuff5");
+//#pragma DATA_SECTION(CircularBuffer6, "CircBuff6");
 uint16_t CircularBuffer1[CIRC_BUFF_SIZE];
-float32 CircularBuffer2[CIRC_BUFF_SIZE];
-float32 CircularBuffer3[CIRC_BUFF_SIZE];
-uint16_t DMACH1_ADCA01[DMA_BUFFER_SIZE];
+uint16_t CircularBuffer2[CIRC_BUFF_SIZE];
+uint16_t CircularBuffer3[CIRC_BUFF_SIZE];
+//uint16_t CircularBuffer4[CIRC_BUFF_SIZE];
+//uint16_t CircularBuffer5[CIRC_BUFF_SIZE];
+//uint16_t CircularBuffer6[CIRC_BUFF_SIZE];
 volatile uint16_t x;
-volatile uint16_t done1 = 0;
-float32 freq_est;
+volatile uint16_t done2 = 0;
+
+float32 freq_est1;
+float32 freq_est2;
+float32 freq_est3;
+float32 freq_est4;
+float32 freq_est5;
+float32 freq_est6;
 
 // External Reference to FFT Handler declared in FFT Source
 extern RFFT_F32_STRUCT_Handle handler_rfft;
 
-float32 phaseOld_1 = 0;
-float32 phaseNew_1 = 0;
+float32 phaseOld_2 = 0;
+float32 phaseNew_2 = 0;
 
 // Interrupts
-__interrupt void DMACH1_ISR(void);
+__interrupt void DMACH2_ISR(void);
 
 // Functions
 void initMain(void);
-//float32 vocodeAnalysis(void);
 
 // Main Routine
 int main(void) {
@@ -52,30 +61,30 @@ int main(void) {
 
     while(1) {
         __asm(" NOP");
-        if (done1) {
+        if (done2) {
             // Refill FFT Input Buffer with new values
             // (Can't just change pointer because mem alignment/circular buffer)
             for(int i = 0; i < RFFT_SIZE; i++) {
-                handler_rfft->InBuf[i] = (float32)((int16_t) CircularBuffer1[(x + i) & CIRC_MASK]);
+                handler_rfft->InBuf[i] = (float32) ((int16_t) (CircularBuffer2[(x + i) & CIRC_MASK] - INT16_MAX));
             }
             // Pass in Phases by reference?
-            freq_est = vocodeAnalysis(&phaseNew_1, &phaseOld_1);
-            done = 0;
+            freq_est2 = vocodeAnalysis(&phaseNew_2, &phaseOld_2);
+            done2 = 0;
         }
     }
 
     ESTOP0;
 }
 
-#pragma CODE_SECTION(DMACH1_ISR, ".TI.ramfunc");
-__interrupt void DMACH1_ISR(void) {
+#pragma CODE_SECTION(DMACH2_ISR, ".TI.ramfunc");
+__interrupt void DMACH2_ISR(void) {
 
     // Move DMA Buffer Pointer
     x = (x + DMA_BUFFER_SIZE) & CIRC_MASK;
-    DMACH1AddrConfig(&CircularBuffer1[x], &AdcaResultRegs.ADCRESULT0);
+    DMACH2AddrConfig(&CircularBuffer2[x], &AdcaResultRegs.ADCRESULT0);
 
     // Acknowledge Interrupt
-    done1 = 1;
+    done2 = 1;
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP7;
 }
 
@@ -99,12 +108,12 @@ void initMain(void) {
 
     // Connect ISRs to DMA Channel Interrupts
     EALLOW;
-    PieVectTable.DMA_CH1_INT = &DMACH1_ISR;
+    PieVectTable.DMA_CH2_INT = &DMACH2_ISR;
     EDIS;
 
     // Initialize ADCs and DMA
     initADC();
-    initDMA(CircularBuffer1);
+    initDMA(CircularBuffer2);
     initEPWM();
     initFFT(handler_rfft);
 

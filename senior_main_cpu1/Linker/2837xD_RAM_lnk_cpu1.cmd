@@ -121,10 +121,12 @@ SECTIONS
    RFFTdata5		: > RAMGS3,		PAGE = 1
    FPUmathTables    : > RAMGS4,     PAGE = 1
 
-   DMABuffer1       : > RAMGS4,		PAGE = 1
    CircBuff1		: > RAMGS10,	PAGE = 1
-   CircBuff2		: > RAMGS11,	PAGE = 1
-   CircBuff3		: > RAMGS12,	PAGE = 1
+   CircBuff2		: > RAMGS10,	PAGE = 1
+   CircBuff3		: > RAMGS11,	PAGE = 1
+   CircBuff4		: > RAMGS11,	PAGE = 1
+   CircBuff5		: > RAMGS12,	PAGE = 1
+   CircBuff6		: > RAMGS12,	PAGE = 1
 }
 
 /*
