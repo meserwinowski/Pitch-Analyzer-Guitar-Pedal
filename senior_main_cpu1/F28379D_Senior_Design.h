@@ -8,8 +8,8 @@
 #ifndef _F28379D_SENIOR_DESIGN_H_
 #define _F28379D_SENIOR_DESIGN_H_
 
-#include "F28x_Project.h"
 #include "math.h"
+#include "F28x_Project.h"
 #include "Senior Headers/Senior_ADC.h"
 #include "Senior Headers/Senior_DMA.h"
 #include "Senior Headers/Senior_ePWM.h"

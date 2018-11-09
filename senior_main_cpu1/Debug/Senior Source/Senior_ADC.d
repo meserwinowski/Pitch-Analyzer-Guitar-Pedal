@@ -2,12 +2,14 @@
 
 Senior\ Source/Senior_ADC.obj: ../Senior\ Source/Senior_ADC.c
 Senior\ Source/Senior_ADC.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/F28379D_Senior_Design.h
+Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/math.h
+Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_ti_config.h
+Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/linkage.h
+Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_defs.h
 Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F28x_Project.h
 Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_Cla_typedefs.h
 Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/headers/include/F2837xD_device.h
 Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/assert.h
-Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_ti_config.h
-Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/linkage.h
 Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stdarg.h
 Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stdbool.h
 Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stddef.h
@@ -59,8 +61,6 @@ Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f
 Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_SysCtrl_defines.h
 Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_Upp_defines.h
 Senior\ Source/Senior_ADC.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_defaultisr.h
-Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/math.h
-Senior\ Source/Senior_ADC.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_defs.h
 Senior\ Source/Senior_ADC.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_ADC.h
 Senior\ Source/Senior_ADC.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_DMA.h
 Senior\ Source/Senior_ADC.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_ePWM.h
@@ -73,12 +73,14 @@ Senior\ Source/Senior_ADC.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ o
 
 ../Senior\ Source/Senior_ADC.c: 
 C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/F28379D_Senior_Design.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/math.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_ti_config.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/linkage.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_defs.h: 
 C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F28x_Project.h: 
 C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_Cla_typedefs.h: 
 C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/headers/include/F2837xD_device.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/assert.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_ti_config.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/linkage.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stdarg.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stdbool.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stddef.h: 
@@ -130,8 +132,6 @@ C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_D
 C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_SysCtrl_defines.h: 
 C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_Upp_defines.h: 
 C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_defaultisr.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/math.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_defs.h: 
 C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_ADC.h: 
 C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_DMA.h: 
 C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_main_cpu1/Senior\ Headers/Senior_ePWM.h: 

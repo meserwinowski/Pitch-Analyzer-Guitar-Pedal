@@ -13,8 +13,10 @@
 /*** Direct Memory Access Functions (DMA) ***/
 #define DMA_BUFFER_SIZE     256
 
-void initDMA(uint16_t* buffer1);
-void DMACH1AddrConfig32bitF(volatile float32 *DMA_Dest, volatile Uint16 *DMA_Source);
+void initDMA(void);
+void initDMA2(void);
+void initDMA4(void);
+void initDMA6(void);
 
 /* ------------------------------------------------------------------------------ */
 
