@@ -11,9 +11,14 @@
 /*** Enhanced Pulse Width Modulation Functions (ePWM) ***/
 // Sampling Freq = 1 / Sampling Period
 // Sampling Period = (TBPRD + 1) * TBCLK Period
-#define ADC_SAMPLE_PERIOD   4999 // Put this number into TBPRD
+#define SAMP_RATIO          (5000) // Samp Period (20kHz -> 0.00005) / CLK Period (100MHz -> 0.00000001)
+#define ADC_CMP_PERIOD      (SAMP_RATIO >> 1)
+#define ADC_SAMPLE_PERIOD   (SAMP_RATIO - 1) // Put this number into TBPRD
 
 void initEPWM(void);
+void initEPWM1(void);
+void initEPWM2(void);
+void initEPWM3(void);
 
 /* ------------------------------------------------------------------------------ */
 

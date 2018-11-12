@@ -63,7 +63,7 @@ void initDMA2(void) {
 void initDMA4(void) {
 
     /* DMA Channel 4 - ADCA CH23 - String 2 */
-    DMACH4AddrConfig(&CircularBuffer4, &AdcaResultRegs.ADCRESULT2);
+    DMACH4AddrConfig(&CircularBuffer4, &AdcaResultRegs.ADCRESULT4);
 
     /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
     DMACH4TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
