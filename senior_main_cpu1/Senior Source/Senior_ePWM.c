@@ -58,26 +58,26 @@ void initEPWM1(void) {
     EPwm1Regs.TBCTR = 0x0000;
 
     // Set Time Base Period Register
-    EPwm1Regs.TBPRD = ADC_SAMPLE_PERIOD;
+    EPwm1Regs.TBPRD = 5000;
 
     // Set Time Base Phase High Register
     EPwm1Regs.TBPHS.bit.TBPHS = 0x0000;
 
     // Set the A output on zero and reset on CMPA
-    EPwm1Regs.AQCTLA.bit.ZRO = AQ_SET;
-    EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;
-    EPwm1Regs.AQCTLB.bit.ZRO = AQ_CLEAR;
-    EPwm1Regs.AQCTLB.bit.CAU = AQ_SET;
+//    EPwm1Regs.AQCTLA.bit.ZRO = AQ_SET;      // SOCA goes high at T=0
+//    EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;    // SOCA goes low at T=CMPA
+//    EPwm1Regs.AQCTLB.bit.CBU = AQ_CLEAR;    // SOCB goes low at T=CMPB
+//    EPwm1Regs.AQCTLB.bit.CAU = AQ_SET;      // SOCB goes high at T=CMPA
 
     // Set CMPA to 20us to get a 50% duty
-    EPwm1Regs.CMPA.bit.CMPA = ADC_CMP_PERIOD;
-    EPwm1Regs.CMPB.bit.CMPB = ADC_SAMPLE_PERIOD;
+    EPwm1Regs.CMPA.bit.CMPA = 2500;
+    EPwm1Regs.CMPB.bit.CMPB = 5000;
 
     /* Configure Event Trigger Select */
     // bit 15        0:      SOCBEN,    0 = disable SOCB
     // bit 14-12     000:    SOCBSEL,   don't care
     // bit 11        1:      SOCAEN,    1 = enable SOCA
-    // bit 10-8      010:    SOCASEL,   010 = SOCA on PRD event
+    // bit 10-8      100:    SOCASEL,   010 = SOCA on CMPA event
     // bit 7-4       0000:   reserved
     // bit 3         0:      INTEN,     0 = disable interrupt
     // bit 2-0       000:    INTSEL,    don't care
@@ -95,7 +95,7 @@ void initEPWM1(void) {
     // bit 7-4       0000:   reserved
     // bit 3-2       00:     INTCNT,    don't care
     // bit 1-0       00:     INTPRD,    don't care
-    EPwm1Regs.ETPS.all = 0x0100;            // ePWM1 - Configure SOCA
+//    EPwm1Regs.ETPS.all = 0x0100;            // ePWM1 - Configure SOCA
     EPwm1Regs.ETPS.bit.SOCBPRD = 0x1;       // ePWM1 - Configure SOCB
     EPwm1Regs.ETPS.bit.SOCAPRD = 0x1;       // ePWM1 - Configure SOCA
 
