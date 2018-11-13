@@ -53,6 +53,8 @@ void initEPWM1(void) {
     // bit 2         0:      PHSEN,     0 = phase control disabled
     // bit 1-0       11:     CTRMODE,   11 = timer stopped (disabled)
     EPwm1Regs.TBCTL.bit.CTRMODE = 0x3;      // Disable ePWM1 Timer
+//    EPwm1Regs.TBCTL.bit.SYNCOSEL = 0x3;
+//    EPwm1Regs.TBCTL.bit.FREE_SOFT = 0x3;
 
     // Clear Timer Counter Register
     EPwm1Regs.TBCTR = 0x0000;
@@ -74,10 +76,10 @@ void initEPWM1(void) {
     EPwm1Regs.CMPB.bit.CMPB = 5000;
 
     /* Configure Event Trigger Select */
-    // bit 15        0:      SOCBEN,    0 = disable SOCB
-    // bit 14-12     000:    SOCBSEL,   don't care
+    // bit 15        1:      SOCBEN,    1 = enable SOCB
+    // bit 14-12     000:    SOCBSEL,   110 = SOCB on CMPB event
     // bit 11        1:      SOCAEN,    1 = enable SOCA
-    // bit 10-8      100:    SOCASEL,   010 = SOCA on CMPA event
+    // bit 10-8      100:    SOCASEL,   100 = SOCA on CMPA event
     // bit 7-4       0000:   reserved
     // bit 3         0:      INTEN,     0 = disable interrupt
     // bit 2-0       000:    INTSEL,    don't care
@@ -89,7 +91,7 @@ void initEPWM1(void) {
 
     /* Configure Event Trigger Pre Scale */
     // bit 15-14     00:     ePWMxSOCB, read-only
-    // bit 13-12     00:     SOCBPRD,   don't care
+    // bit 13-12     01:     SOCBPRD,   01 = generate SOCB on first event
     // bit 11-10     00:     ePWMxSOCA, read-only
     // bit 9-8       01:     SOCAPRD,   01 = generate SOCA on first event
     // bit 7-4       0000:   reserved
