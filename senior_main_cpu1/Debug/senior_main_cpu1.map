@@ -1,10 +1,10 @@
 ******************************************************************************
              TMS320C2000 Linker PC v18.1.1                     
 ******************************************************************************
->> Linked Sun Nov 11 04:33:02 2018
+>> Linked Mon Nov 12 20:46:59 2018
 
 OUTPUT FILE NAME:   <senior_main_cpu1.out>
-ENTRY POINT SYMBOL: "_c_int00"  address: 00008752
+ENTRY POINT SYMBOL: "_c_int00"  address: 00008746
 
 
 MEMORY CONFIGURATION
@@ -16,14 +16,14 @@ PAGE 0:
   BOOT_RSVD             00000002   00000120  00000000  00000120  RWIX
   RAMM0                 00000122   000002de  0000010f  000001cf  RWIX
   RAMM1                 00000400   00000400  00000200  00000200  RWIX
-  RAMLS0                00008000   00000800  000007fe  00000002  RWIX
+  RAMLS0                00008000   00000800  000007f2  0000000e  RWIX
   RAMLS1                00008800   00000800  000000a6  0000075a  RWIX
   RAMLS2                00009000   00000800  00000000  00000800  RWIX
   RAMLS3                00009800   00000800  00000000  00000800  RWIX
   RAMLS4                0000a000   00000800  00000000  00000800  RWIX
   RAMLS5                0000a800   00000800  000001c0  00000640  RWIX
   RAMD0                 0000b000   00000800  00000800  00000000  RWIX
-  RAMD1                 0000b800   00000800  00000800  00000000  RWIX
+  RAMD1                 0000b800   00000800  000007fa  00000006  RWIX
   FLASHA                00080002   00001ffe  00000000  00001ffe  RWIX
   FLASHB                00082000   00008000  00000000  00008000  RWIX
   FLASHF                00090000   00008000  00000000  00008000  RWIX
@@ -635,21 +635,21 @@ CpuSysRegsFile
 *          1    0005d300    00000082     UNINITIALIZED
                   0005d300    00000082     F2837xD_GlobalVariableDefs.obj (CpuSysRegsFile)
 
-.text.1    0    00008000    000007fe     
+.text.1    0    00008000    000007f2     
                   00008000    0000011d     c28x_fpu_dsp_library.lib : RFFT_f32.obj (.text)
                   0000811d    000000f6     Senior_FFT.obj (.text)
-                  00008213    000000e4     senior_main_cpu1.obj (.text)
-                  000082f7    000000dd     F2837xD_Adc.obj (.text)
-                  000083d4    000000dc     Senior_ADC.obj (.text)
-                  000084b0    00000088     rts2800_fpu32.lib : fs_div28.asm.obj (.text)
-                  00008538    00000086     c28x_fpu_dsp_library.lib : RFFT_f32_phase_TMU0.obj (.text)
-                  000085be    00000071     Senior_DMA.obj (.text)
-                  0000862f    0000006a     c28x_fpu_dsp_library.lib : RFFT_f32_sincostable.obj (.text)
-                  00008699    00000061     rts2800_fpu32.lib : s_cosf.c.obj (.text)
-                  000086fa    00000058                       : s_sinf.c.obj (.text)
-                  00008752    00000056                       : boot28.asm.obj (.text)
-                  000087a8    0000004e     c28x_fpu_dsp_library.lib : RFFT_f32_mag_TMU0.obj (.text)
-                  000087f6    00000008     F2837xD_CodeStartBranch.obj (.text)
+                  00008213    000000e0     senior_main_cpu1.obj (.text)
+                  000082f3    000000dd     F2837xD_Adc.obj (.text)
+                  000083d0    000000d5     Senior_ADC.obj (.text)
+                  000084a5    00000087     Senior_ePWM.obj (.text)
+                  0000852c    00000086     c28x_fpu_dsp_library.lib : RFFT_f32_phase_TMU0.obj (.text)
+                  000085b2    00000071     Senior_DMA.obj (.text)
+                  00008623    0000006a     c28x_fpu_dsp_library.lib : RFFT_f32_sincostable.obj (.text)
+                  0000868d    00000061     rts2800_fpu32.lib : s_cosf.c.obj (.text)
+                  000086ee    00000058                       : s_sinf.c.obj (.text)
+                  00008746    00000056                       : boot28.asm.obj (.text)
+                  0000879c    0000004e     c28x_fpu_dsp_library.lib : RFFT_f32_mag_TMU0.obj (.text)
+                  000087ea    00000008     F2837xD_CodeStartBranch.obj (.text)
 
 .text.2    0    00008800    000000a6     
                   00008800    00000026     F2837xD_PieVect.obj (.text)
@@ -665,31 +665,31 @@ CpuSysRegsFile
                   0000b7fd    00000002                       : pre_init.c.obj (.text)
                   0000b7ff    00000001                       : startup.c.obj (.text)
 
-.text.4    0    0000b800    00000800     
+.text.4    0    0000b800    000007fa     
                   0000b800    00000406     F2837xD_Dma.obj (.text)
                   0000bc06    0000033b     F2837xD_SysCtrl.obj (.text)
-                  0000bf41    0000008e     Senior_ePWM.obj (.text)
-                  0000bfcf    00000028     F2837xD_PieCtrl.obj (.text)
-                  0000bff7    00000009     rts2800_fpu32.lib : _lock.c.obj (.text)
+                  0000bf41    00000088     rts2800_fpu32.lib : fs_div28.asm.obj (.text)
+                  0000bfc9    00000028     F2837xD_PieCtrl.obj (.text)
+                  0000bff1    00000009     rts2800_fpu32.lib : _lock.c.obj (.text)
 
 MODULE SUMMARY
 
        Module                           code   initialized data   uninitialized data
        ------                           ----   ----------------   ------------------
     .\
-       senior_main_cpu1.obj             495    42                 6168              
+       senior_main_cpu1.obj             491    42                 6168              
        F2837xD_Dma.obj                  1030   0                  0                 
        F2837xD_Adc.obj                  221    0                  0                 
     +--+--------------------------------+------+------------------+--------------------+
-       Total:                           1746   42                 6168              
+       Total:                           1742   42                 6168              
                                                                                     
     .\Senior Source\
        Senior_FFT.obj                   246    1081               9282              
-       Senior_ADC.obj                   220    9                  6                 
-       Senior_ePWM.obj                  142    0                  0                 
+       Senior_ADC.obj                   213    9                  6                 
+       Senior_ePWM.obj                  135    0                  0                 
        Senior_DMA.obj                   113    0                  0                 
     +--+--------------------------------+------+------------------+--------------------+
-       Total:                           721    1090               9288              
+       Total:                           707    1090               9288              
                                                                                     
     .\Source\
        F2837xD_GlobalVariableDefs.obj   0      0                  7987              
@@ -729,7 +729,7 @@ MODULE SUMMARY
                                                                                     
        Stack:                           0      0                  512               
     +--+--------------------------------+------+------------------+--------------------+
-       Grand Total:                     6581   1604               23965             
+       Grand Total:                     6563   1604               23965             
 
 
 GLOBAL DATA SYMBOLS: SORTED BY DATA PAGE
@@ -969,7 +969,7 @@ page  address   name
 ----  -------   ----                                  
 abs   ffffffff  .text                                 
 0     0000b7d4  C$$EXIT                               
-0     000084b0  FS$$DIV                               
+0     0000bf41  FS$$DIV                               
 0     0000b0be  _ADCA1_ISR                            
 0     0000b349  _ADCA2_ISR                            
 0     0000b353  _ADCA3_ISR                            
@@ -995,7 +995,7 @@ abs   ffffffff  .text
 0     0000b4f7  _ADCD_EVT_ISR                         
 0     0000b551  _AUX_PLL_SLIP_ISR                     
 1     0005f4c0  _AccessProtectionRegs                 
-0     000082f7  _AdcSetMode                           
+0     000082f3  _AdcSetMode                           
 1     00007400  _AdcaRegs                             
 1     00000b00  _AdcaResultRegs                       
 1     00007480  _AdcbRegs                             
@@ -1022,7 +1022,7 @@ abs   ffffffff  .text
 0     0000b3d5  _CLA1_8_ISR                           
 0     0000b55b  _CLA_OVERFLOW_ISR                     
 0     0000b565  _CLA_UNDERFLOW_ISR                    
-0     0000839a  _CalAdcINL                            
+0     00008396  _CalAdcINL                            
 1     00016000  _CircularBuffer2                      
 1     00017000  _CircularBuffer4                      
 1     00018000  _CircularBuffer6                      
@@ -1166,7 +1166,7 @@ abs   ffffffff  .text
 1     00047800  _Emif2Regs                            
 1     00000d01  _EmuBMode                             
 1     00000d00  _EmuKey                               
-0     0000bfee  _EnableInterrupts                     
+0     0000bfe8  _EnableInterrupts                     
 0     0000022d  _F28x_usDelay                         
 0     0000b533  _FLASH_CORRECTABLE_ERROR_ISR          
 0     0000b407  _FPU_OVERFLOW_ISR                     
@@ -1206,7 +1206,7 @@ abs   ffffffff  .text
 0     0000bdce  _InitAuxPll                           
 0     0000b590  _InitGpio                             
 0     0000bc37  _InitPeripheralClocks                 
-0     0000bfcf  _InitPieCtrl                          
+0     0000bfc9  _InitPieCtrl                          
 0     00008800  _InitPieVectTable                     
 0     0000bc06  _InitSysCtrl                          
 0     0000bd08  _InitSysPll                           
@@ -1232,9 +1232,9 @@ abs   ffffffff  .text
 0     0000b529  _RAM_CORRECTABLE_ERROR_ISR            
 1     0000e000  _RFFTF32Coef                          
 0     00008000  _RFFT_f32                             
-0     000087a8  _RFFT_f32_mag_TMU0                    
-0     00008538  _RFFT_f32_phase_TMU0                  
-0     0000862f  _RFFT_f32_sincostable                 
+0     0000879c  _RFFT_f32_mag_TMU0                    
+0     0000852c  _RFFT_f32_phase_TMU0                  
+0     00008623  _RFFT_f32_sincostable                 
 0     00008826  _RFFT_f32_win                         
 1     0000c000  _RFFTinBuff                           
 1     0000d000  _RFFTmagBuff                          
@@ -1328,9 +1328,9 @@ abs   ffffffff  ___pinit__
 abs   ffffffff  ___text__                             
 0     0000888d  __args_main                           
 1     0001b464  __lock                                
-0     0000bfff  __nop                                 
-0     0000bffb  __register_lock                       
-0     0000bff7  __register_unlock                     
+0     0000bff9  __nop                                 
+0     0000bff5  __register_lock                       
+0     0000bff1  __register_unlock                     
 0     00000400  __stack                               
 0     0000b7ff  __system_post_cinit                   
 0     0000b7fd  __system_pre_init                     
@@ -1338,11 +1338,11 @@ abs   ffffffff  ___text__
 0     0000b7d4  _abort                                
 1     0001b010  _absDiff                              
 1     0001b458  _adcChannels                          
-0     00008752  _c_int00                              
-0     000083d4  _configureADCs                        
+0     00008746  _c_int00                              
+0     000083d0  _configureADCs                        
 0     0000884b  _copy_in                              
-0     00008699  _cos                                  
-0     00008699  _cosf                                 
+0     0000868d  _cos                                  
+0     0000868d  _cosf                                 
 1     0001b444  _done2                                
 1     0001b442  _done4                                
 1     0001b441  _done6                                
@@ -1352,17 +1352,16 @@ abs   ffffffff  ___text__
 1     0001b44c  _freq_est4                            
 1     0001b44e  _freq_est6                            
 1     0001b006  _handler_rfft                         
-0     000084a9  _initADC                              
-0     000085be  _initDMA                              
-0     000085c9  _initDMA2                             
-0     000085eb  _initDMA4                             
-0     0000860d  _initDMA6                             
-0     0000bf41  _initEPWM                             
-0     0000bf5a  _initEPWM1                            
-0     0000bf81  _initEPWM2                            
-0     0000bfa8  _initEPWM3                            
+0     0000849e  _initADC                              
+0     000085b2  _initDMA                              
+0     000085bd  _initDMA2                             
+0     000085df  _initDMA4                             
+0     00008601  _initDMA6                             
+0     000084a5  _initEPWM                             
+0     000084bc  _initEPWM1                            
+0     00008505  _initEPWM2                            
 0     0000811d  _initFFT                              
-0     000082bd  _initMain                             
+0     000082b9  _initMain                             
 1     0001b000  _magIndex                             
 1     0001b00e  _magMax                               
 0     00008213  _main                                 
@@ -1381,9 +1380,9 @@ abs   ffffffff  ___text__
 1     0001b018  _rfft                                 
 0     00008009  _rfft_f32_Stages1and2and3andBitReverse
 0     00008075  _rfft_f32_Stages4andUp                
-0     0000842e  _setupADCContinuous                   
-0     000086fa  _sin                                  
-0     000086fa  _sinf                                 
+0     0000842a  _setupADCContinuous                   
+0     000086ee  _sin                                  
+0     000086ee  _sinf                                 
 1     0001b004  _smallest                             
 1     0001b012  _test_est                             
 0     00008144  _vocodeAnalysis                       
@@ -1418,25 +1417,27 @@ page  address   name
 0     0000811d  _initFFT                              
 0     00008144  _vocodeAnalysis                       
 0     00008213  _main                                 
-0     000082bd  _initMain                             
-0     000082f7  _AdcSetMode                           
-0     0000839a  _CalAdcINL                            
-0     000083d4  _configureADCs                        
-0     0000842e  _setupADCContinuous                   
-0     000084a9  _initADC                              
-0     000084b0  FS$$DIV                               
-0     00008538  _RFFT_f32_phase_TMU0                  
-0     000085be  _initDMA                              
-0     000085c9  _initDMA2                             
-0     000085eb  _initDMA4                             
-0     0000860d  _initDMA6                             
-0     0000862f  _RFFT_f32_sincostable                 
-0     00008699  _cos                                  
-0     00008699  _cosf                                 
-0     000086fa  _sin                                  
-0     000086fa  _sinf                                 
-0     00008752  _c_int00                              
-0     000087a8  _RFFT_f32_mag_TMU0                    
+0     000082b9  _initMain                             
+0     000082f3  _AdcSetMode                           
+0     00008396  _CalAdcINL                            
+0     000083d0  _configureADCs                        
+0     0000842a  _setupADCContinuous                   
+0     0000849e  _initADC                              
+0     000084a5  _initEPWM                             
+0     000084bc  _initEPWM1                            
+0     00008505  _initEPWM2                            
+0     0000852c  _RFFT_f32_phase_TMU0                  
+0     000085b2  _initDMA                              
+0     000085bd  _initDMA2                             
+0     000085df  _initDMA4                             
+0     00008601  _initDMA6                             
+0     00008623  _RFFT_f32_sincostable                 
+0     0000868d  _cos                                  
+0     0000868d  _cosf                                 
+0     000086ee  _sin                                  
+0     000086ee  _sinf                                 
+0     00008746  _c_int00                              
+0     0000879c  _RFFT_f32_mag_TMU0                    
 0     00008800  _InitPieVectTable                     
 0     00008826  _RFFT_f32_win                         
 0     0000884b  _copy_in                              
@@ -1666,15 +1667,12 @@ page  address   name
 0     0000bf00  _STANDBY                              
 0     0000bf0b  _HALT                                 
 0     0000bf24  _HIB                                  
-0     0000bf41  _initEPWM                             
-0     0000bf5a  _initEPWM1                            
-0     0000bf81  _initEPWM2                            
-0     0000bfa8  _initEPWM3                            
-0     0000bfcf  _InitPieCtrl                          
-0     0000bfee  _EnableInterrupts                     
-0     0000bff7  __register_unlock                     
-0     0000bffb  __register_lock                       
-0     0000bfff  __nop                                 
+0     0000bf41  FS$$DIV                               
+0     0000bfc9  _InitPieCtrl                          
+0     0000bfe8  _EnableInterrupts                     
+0     0000bff1  __register_unlock                     
+0     0000bff5  __register_lock                       
+0     0000bff9  __nop                                 
 1     00000b00  _AdcaResultRegs                       
 1     00000b20  _AdcbResultRegs                       
 1     00000b40  _AdccResultRegs                       
@@ -1830,4 +1828,4 @@ abs   ffffffff  binit
 abs   ffffffff  etext                                 
 abs   ffffffff  pinit                                 
 
-[428 symbols]
+[427 symbols]

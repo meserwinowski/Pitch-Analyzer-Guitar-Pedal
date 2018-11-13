@@ -36,13 +36,6 @@ volatile bool_t done2 = 0;    // String 2 DMA Interrupt Done Flag
 volatile bool_t done4 = 0;    // String 4 DMA Interrupt Done Flag
 volatile bool_t done6 = 0;    // String 6 DMA Interrupt Done Flag
 
-//uint16_t adcCResult1; // C2, C3 - String 6 - SOCC 1
-//uint16_t adcBResult0; // B0, B1 - String 5 - SOCB 0
-//uint16_t adcAResult1; // A2, A3 - String 4 - SOCA 1
-//uint16_t adcDResult0; // D0, D1 - String 3 - SOCD 0
-//uint16_t adcAResult0; // A0, A1 - String 2 - SOCA 0
-//uint16_t adcDResult1; // D2, D3 - String 1 - SOCD 1
-
 // Circular Buffers
 //#pragma DATA_SECTION(CircularBuffer1, "CircBuff1");
 #pragma DATA_SECTION(CircularBuffer2, "CircBuff2");
@@ -77,34 +70,34 @@ int main(void) {
     initMain();
 
     while(1) {
-        __asm(" NOP");
-        if (done2) {
+
+        if (done2) { // String 2
             // Fill FFT Input Buffer with new values
             // (Can't just change pointer because mem alignment/circular buffer)
             for (int i = 0; i < RFFT_SIZE; i++) {
-                handler_rfft->InBuf[i] = (float32) ((int16_t) (CircularBuffer2[(x2 + i) & CIRC_MASK] - INT16_MAX));
+                handler_rfft->InBuf[i] = (float32) ((int16_t) (CircularBuffer2[(x2 + i) & CIRC_MASK] - (INT16_MAX)));
             }
 
             // Pass in phases by reference
             freq_est2 = vocodeAnalysis(&phaseOld_2, &phaseNew_2);
             done2 = 0;
         }
-        if (done4) {
+        if (done4) { // String 4
             // Fill FFT Input Buffer with new values
             // (Can't just change pointer because mem alignment/circular buffer)
             for (int i = 0; i < RFFT_SIZE; i++) {
-                handler_rfft->InBuf[i] = (float32) ((int16_t) (CircularBuffer4[(x4 + i) & CIRC_MASK] - INT16_MAX));
+                handler_rfft->InBuf[i] = (float32) ((int16_t) (CircularBuffer4[(x4 + i) & CIRC_MASK] - (INT16_MAX)));
             }
 
             // Pass in phases by reference
             freq_est4 = vocodeAnalysis(&phaseOld_4, &phaseNew_4);
             done4 = 0;
         }
-        if (done6) {
+        if (done6) { // String 6
             // Fill FFT Input Buffer with new values
             // (Can't just change pointer because mem alignment/circular buffer)
             for (int i = 0; i < RFFT_SIZE; i++) {
-                handler_rfft->InBuf[i] = (float32) ((int16_t) (CircularBuffer6[(x6 + i) & CIRC_MASK] - INT16_MAX));
+                handler_rfft->InBuf[i] = (float32) ((int16_t) (CircularBuffer6[(x6 + i) & CIRC_MASK] - (INT16_MAX)));
             }
 
             // Pass in phases by reference

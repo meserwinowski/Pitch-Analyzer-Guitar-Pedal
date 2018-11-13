@@ -72,12 +72,12 @@ void setupADCContinuous(Uint16* channel) {
 
     // ADCSOCx Control
     AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 0x5; // Trigger Select to ePWM1 SOCA
-    AdcaRegs.ADCSOC4CTL.bit.TRIGSEL = 0x7; // Trigger Select to ePWM2 SOCA
-    AdccRegs.ADCSOC2CTL.bit.TRIGSEL = 0x9; // Trigger Select to ePWM3 SOCA
+    AdcaRegs.ADCSOC4CTL.bit.TRIGSEL = 0x6; // Trigger Select to ePWM1 SOCB
+    AdccRegs.ADCSOC2CTL.bit.TRIGSEL = 0x7; // Trigger Select to ePWM2 SOCA
 
     // ADCSOCx Control - Map SOC to specific channels
     // ADC D SOC1 will convert on channel 5 - String 1
-    AdcaRegs.ADCSOC0CTL.bit.CHSEL = channel[4]; // ADC A SOC0 will convert on channel 4 - String 2
+    AdcaRegs.ADCSOC0CTL.bit.CHSEL = 0; // ADC A SOC0 will convert on channel 4 - String 2
     // ADC D SOC0 will convert on channel 3 - String 3
     AdcaRegs.ADCSOC4CTL.bit.CHSEL = 4; // ADC A SOC2 will convert on channel 2 - String 4
     // ADC B SOC0 will convert on channel 1 - String 5
@@ -102,7 +102,7 @@ void setupADCContinuous(Uint16* channel) {
     AdcaRegs.ADCINTSEL1N2.bit.INT2SEL = 4; // ADC A EOC4
     AdccRegs.ADCINTSEL1N2.bit.INT2SEL = 2; // ADC C EOC2
 
-    // Enable Interrupts and Clear Interrupt Flags for each ADC
+//    // Enable Interrupts and Clear Interrupt Flags for each ADC
     AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1; // String 2
     AdcaRegs.ADCINTSEL1N2.bit.INT2E = 1; // String 4
     AdccRegs.ADCINTSEL1N2.bit.INT2E = 1; // String 6
