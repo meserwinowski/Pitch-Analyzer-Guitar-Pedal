@@ -14,7 +14,7 @@
 #define EX_ADC_RESOLUTION       16
 
 void configureADCs(void);
-void setupADCContinuous();
+void initializeADCs(void);
 void initADC(void);
 
 /* ------------------------------------------------------------------------------ */

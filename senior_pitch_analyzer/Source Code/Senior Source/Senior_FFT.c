@@ -50,8 +50,10 @@ float32 RFFT2F32Coef[RFFT_SIZE];
 float32 RFFT2phaseBuff[RFFT_SIZE/2];
 
 // Initialize and Define Windowing Filter
-#pragma DATA_SECTION(RFFTwindow, "RFFTwindow");
-float32 RFFTwindow[RFFT_SIZE/2] = HANN1024;
+#ifdef CPU1
+    #pragma DATA_SECTION(RFFTwindow, "RFFTwindow");
+    float32 RFFTwindow[RFFT_SIZE/2] = HANN1024;
+#endif
 
 // Instantiate RFFT Struct
 RFFT_F32_STRUCT rfft1;
