@@ -24,6 +24,133 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Senior Headers/Senior_ADC.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/Senior%20Headers/Senior_ADC.h</locationURI>
+		</link>
+		<link>
+			<name>Senior Headers/Senior_DMA.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/Senior%20Headers/Senior_DMA.h</locationURI>
+		</link>
+		<link>
+			<name>Senior Headers/Senior_FFT.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/Senior%20Headers/Senior_FFT.h</locationURI>
+		</link>
+		<link>
+			<name>Senior Headers/Senior_SPI.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/Senior%20Headers/Senior_SPI.h</locationURI>
+		</link>
+		<link>
+			<name>Senior Headers/Senior_ePWM.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/Senior%20Headers/Senior_ePWM.h</locationURI>
+		</link>
+		<link>
+			<name>Senior Source/Senior_ADC.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/Senior%20Source/Senior_ADC.c</locationURI>
+		</link>
+		<link>
+			<name>Senior Source/Senior_DMA.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/Senior%20Source/Senior_DMA.c</locationURI>
+		</link>
+		<link>
+			<name>Senior Source/Senior_FFT.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/Senior%20Source/Senior_FFT.c</locationURI>
+		</link>
+		<link>
+			<name>Senior Source/Senior_SPI.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/Senior%20Source/Senior_SPI.c</locationURI>
+		</link>
+		<link>
+			<name>Senior Source/Senior_ePWM.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/Senior%20Source/Senior_ePWM.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_Adc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_Adc.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_CodeStartBranch.asm</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_CodeStartBranch.asm</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_DefaultISR.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_DefaultISR.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_Dma.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_Dma.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_EPwm.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_EPwm.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_GlobalVariableDefs.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_GlobalVariableDefs.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_Gpio.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_Gpio.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_Ipc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_Ipc.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_Ipc_Driver.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_Ipc_Driver.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_Ipc_Driver_Util.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_Ipc_Driver_Util.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_PieCtrl.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_PieCtrl.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_PieVect.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_PieVect.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_Spi.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_Spi.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_SysCtrl.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_SysCtrl.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_usDelay.asm</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/senior_pitch_analyzer/Source%20Code/F28379D%20Source/F2837xD_usDelay.asm</locationURI>
+		</link>
+	</linkedResources>
 	<variableList>
 		<variable>
 			<name>INSTALLROOT_TO_FPU</name>

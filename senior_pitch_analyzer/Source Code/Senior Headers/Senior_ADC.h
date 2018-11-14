@@ -12,8 +12,9 @@
 
 /*** Analog to Digital Converter (ADC) ***/
 #define EX_ADC_RESOLUTION       16
+
 void configureADCs(void);
-void setupADCContinuous(uint16_t* channel);
+void setupADCContinuous();
 void initADC(void);
 
 /* ------------------------------------------------------------------------------ */

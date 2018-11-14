@@ -63,15 +63,15 @@ senior_main_cpu1.obj: C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/co
 senior_main_cpu1.obj: ../F28379D_Senior_Design.h
 senior_main_cpu1.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/math.h
 senior_main_cpu1.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_defs.h
-senior_main_cpu1.obj: ../Senior\ Headers/Senior_ADC.h
-senior_main_cpu1.obj: ../Senior\ Headers/Senior_DMA.h
-senior_main_cpu1.obj: ../Senior\ Headers/Senior_ePWM.h
-senior_main_cpu1.obj: ../Senior\ Headers/Senior_FFT.h
+senior_main_cpu1.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_pitch_analyzer/Source\ Code/Senior\ Headers/Senior_ADC.h
+senior_main_cpu1.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_pitch_analyzer/Source\ Code/Senior\ Headers/Senior_DMA.h
+senior_main_cpu1.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_pitch_analyzer/Source\ Code/Senior\ Headers/Senior_ePWM.h
+senior_main_cpu1.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_pitch_analyzer/Source\ Code/Senior\ Headers/Senior_FFT.h
 senior_main_cpu1.obj: C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_rfft.h
 senior_main_cpu1.obj: C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_types.h
 senior_main_cpu1.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/float.h
 senior_main_cpu1.obj: C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_fft_hann.h
-senior_main_cpu1.obj: ../Senior\ Headers/Senior_SPI.h
+senior_main_cpu1.obj: C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_pitch_analyzer/Source\ Code/Senior\ Headers/Senior_SPI.h
 
 ../senior_main_cpu1.c: 
 C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F28x_Project.h: 
@@ -136,12 +136,12 @@ C:/ti/c2000/C2000Ware_1_00_05_00/device_support/f2837xd/common/include/F2837xD_d
 ../F28379D_Senior_Design.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/math.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_defs.h: 
-../Senior\ Headers/Senior_ADC.h: 
-../Senior\ Headers/Senior_DMA.h: 
-../Senior\ Headers/Senior_ePWM.h: 
-../Senior\ Headers/Senior_FFT.h: 
+C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_pitch_analyzer/Source\ Code/Senior\ Headers/Senior_ADC.h: 
+C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_pitch_analyzer/Source\ Code/Senior\ Headers/Senior_DMA.h: 
+C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_pitch_analyzer/Source\ Code/Senior\ Headers/Senior_ePWM.h: 
+C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_pitch_analyzer/Source\ Code/Senior\ Headers/Senior_FFT.h: 
 C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_rfft.h: 
 C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_types.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/float.h: 
 C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/include/fpu_fft_hann.h: 
-../Senior\ Headers/Senior_SPI.h: 
+C:/Users/meserwinowski/OneDrive\ -\ University\ of\ Florida/UF/Senior\ Design\ EEL4924C/CCS\ Workspace/senior_pitch_analyzer/Source\ Code/Senior\ Headers/Senior_SPI.h: 

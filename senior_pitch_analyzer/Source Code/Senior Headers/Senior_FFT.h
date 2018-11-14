@@ -20,7 +20,8 @@
 #define OVERLAP                 4                  // Phase Vocoder FFT Overlap
 
 void initFFT(RFFT_F32_STRUCT_Handle handler_rfft);
-float32 vocodeAnalysis(volatile float32* phase1, volatile float32* phase2,
+float32 vocodeAnalysis(volatile float32* phase1,
+                       volatile float32* phase2,
                        RFFT_F32_STRUCT_Handle handler_rfft);
 
 /* ------------------------------------------------------------------------------ */

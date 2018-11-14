@@ -58,7 +58,7 @@ PAGE 1 : /* Data Memory */
    CANB_MSG_RAM    : origin = 0x04B000, length = 0x000800
 }
 
---define RFFT_ALIGNMENT=256
+--define RFFT_ALIGNMENT=2048
 #if !defined(RFFT_ALIGNMENT)
 #error define RFFT_ALIGNMENT under C2000 Linker -> Advanced Options -> Command File Preprocessing -> --define
 #endif

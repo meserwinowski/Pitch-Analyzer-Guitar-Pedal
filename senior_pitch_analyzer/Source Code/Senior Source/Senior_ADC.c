@@ -56,7 +56,7 @@ void configureADCs(void) {
 }
 
 // Setup the ADC to continuously convert
-void setupADCContinuous(Uint16* channel) {
+void setupADCContinuous() {
 
     // Determine minimum acquisition window (in SYSCLKS) based on resolution
     uint16_t acqps;
@@ -119,8 +119,10 @@ void setupADCContinuous(Uint16* channel) {
 
 // Initialize/Setup ADCs and Configure ADC Settings
 void initADC(void) {
-    setupADCContinuous(adcChannels);
+    setupADCContinuous();
+#ifdef CPU1
     configureADCs();
+#endif
 }
 
 /* ------------------------------------------------------------------------------ */

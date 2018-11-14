@@ -1,10 +1,10 @@
 ******************************************************************************
              TMS320C2000 Linker PC v18.1.1                     
 ******************************************************************************
->> Linked Wed Nov 14 12:28:27 2018
+>> Linked Wed Nov 14 13:59:59 2018
 
 OUTPUT FILE NAME:   <senior_main_cpu1.out>
-ENTRY POINT SYMBOL: "_c_int00"  address: 00008745
+ENTRY POINT SYMBOL: "_c_int00"  address: 00008858
 
 
 MEMORY CONFIGURATION
@@ -16,8 +16,8 @@ PAGE 0:
   BOOT_RSVD             00000002   00000120  00000000  00000120  RWIX
   RAMM0                 00000122   000002de  0000010f  000001cf  RWIX
   RAMM1                 00000400   00000400  00000200  00000200  RWIX
-  RAMLS0                00008000   00000800  000007f2  0000000e  RWIX
-  RAMLS1                00008800   00000800  000000be  00000742  RWIX
+  RAMLS0                00008000   00000800  000007fa  00000006  RWIX
+  RAMLS1                00008800   00000800  00000174  0000068c  RWIX
   RAMLS2                00009000   00000800  00000000  00000800  RWIX
   RAMLS3                00009800   00000800  00000000  00000800  RWIX
   RAMLS4                0000a000   00000800  00000000  00000800  RWIX
@@ -686,31 +686,30 @@ CircBuff5
 *          1    00019000    00000800     UNINITIALIZED
                   00019000    00000800     senior_main_cpu1.obj (CircBuff5)
 
-.text.1    0    00008000    000007f2     
+.text.1    0    00008000    000007fa     
                   00008000    0000011d     c28x_fpu_dsp_library.lib : RFFT_f32.obj (.text)
                   0000811d    000000ff     senior_main_cpu1.obj (.text)
                   0000821c    000000ea     Senior_FFT.obj (.text)
                   00008306    000000dd     F2837xD_Adc.obj (.text)
-                  000083e3    000000d2     Senior_ADC.obj (.text)
-                  000084b5    00000001     --HOLE-- [fill = 0]
-                  000084b6    00000086     c28x_fpu_dsp_library.lib : RFFT_f32_phase_TMU0.obj (.text)
-                  0000853c    00000075     Senior_ePWM.obj (.text)
-                  000085b1    00000071     Senior_DMA.obj (.text)
-                  00008622    0000006a     c28x_fpu_dsp_library.lib : RFFT_f32_sincostable.obj (.text)
-                  0000868c    00000061     rts2800_fpu32.lib : s_cosf.c.obj (.text)
-                  000086ed    00000058                       : s_sinf.c.obj (.text)
-                  00008745    00000056                       : boot28.asm.obj (.text)
-                  0000879b    00000001     --HOLE-- [fill = 0]
-                  0000879c    0000004e     c28x_fpu_dsp_library.lib : RFFT_f32_mag_TMU0.obj (.text)
-                  000087ea    00000008     F2837xD_CodeStartBranch.obj (.text)
+                  000083e3    000000d7     Senior_DMA.obj (.text)
+                  000084ba    000000d1     Senior_ePWM.obj (.text)
+                  0000858b    000000cf     Senior_ADC.obj (.text)
+                  0000865a    00000086     c28x_fpu_dsp_library.lib : RFFT_f32_phase_TMU0.obj (.text)
+                  000086e0    0000006a                              : RFFT_f32_sincostable.obj (.text)
+                  0000874a    00000061     rts2800_fpu32.lib : s_cosf.c.obj (.text)
+                  000087ab    00000001     --HOLE-- [fill = 0]
+                  000087ac    0000004e     c28x_fpu_dsp_library.lib : RFFT_f32_mag_TMU0.obj (.text)
 
-.text.2    0    00008800    000000be     
-                  00008800    00000026     F2837xD_PieVect.obj (.text)
-                  00008826    00000025     c28x_fpu_dsp_library.lib : RFFT_f32_win.obj (.text)
-                  0000884b    00000024     rts2800_fpu32.lib : cpy_tbl.c.obj (.text)
-                  0000886f    0000001e                       : memcpy.c.obj (.text)
-                  0000888d    00000019                       : args_main.c.obj (.text)
-                  000088a6    00000018                       : ll_aox28.asm.obj (.text)
+.text.2    0    00008800    00000174     
+                  00008800    00000058     rts2800_fpu32.lib : s_sinf.c.obj (.text)
+                  00008858    00000056                       : boot28.asm.obj (.text)
+                  000088ae    00000026     F2837xD_PieVect.obj (.text)
+                  000088d4    00000025     c28x_fpu_dsp_library.lib : RFFT_f32_win.obj (.text)
+                  000088f9    00000024     rts2800_fpu32.lib : cpy_tbl.c.obj (.text)
+                  0000891d    0000001e                       : memcpy.c.obj (.text)
+                  0000893b    00000019                       : args_main.c.obj (.text)
+                  00008954    00000018                       : ll_aox28.asm.obj (.text)
+                  0000896c    00000008     F2837xD_CodeStartBranch.obj (.text)
 
 .text.3    0    0000b000    00000800     
                   0000b000    00000590     F2837xD_DefaultISR.obj (.text:retain)
@@ -732,31 +731,31 @@ MODULE SUMMARY
        ------                           ----   ----------------   ------------------
     .\
        senior_main_cpu1.obj             522    42                 12312             
-       F2837xD_Dma.obj                  1030   0                  0                 
-       F2837xD_Adc.obj                  221    0                  0                 
-       F2837xD_Ipc_Driver.obj           0      0                  136               
     +--+--------------------------------+------+------------------+--------------------+
-       Total:                           1773   42                 12448             
+       Total:                           522    42                 12312             
                                                                                     
     .\Senior Source\
        Senior_FFT.obj                   234    1081               17456             
-       Senior_ADC.obj                   210    9                  6                 
-       Senior_ePWM.obj                  117    0                  0                 
-       Senior_DMA.obj                   113    0                  0                 
+       Senior_ADC.obj                   207    9                  6                 
+       Senior_DMA.obj                   215    0                  0                 
+       Senior_ePWM.obj                  209    0                  0                 
     +--+--------------------------------+------+------------------+--------------------+
-       Total:                           674    1090               17462             
+       Total:                           865    1090               17462             
                                                                                     
     .\Source\
        F2837xD_GlobalVariableDefs.obj   0      0                  7987              
        F2837xD_DefaultISR.obj           1424   0                  0                 
+       F2837xD_Dma.obj                  1030   0                  0                 
        F2837xD_SysCtrl.obj              827    0                  0                 
        F2837xD_Gpio.obj                 580    0                  0                 
        F2837xD_PieVect.obj              38     448                0                 
+       F2837xD_Adc.obj                  221    0                  0                 
+       F2837xD_Ipc_Driver.obj           0      0                  136               
        F2837xD_PieCtrl.obj              40     0                  0                 
        F2837xD_CodeStartBranch.obj      10     0                  0                 
        F2837xD_usDelay.obj              4      0                  0                 
     +--+--------------------------------+------+------------------+--------------------+
-       Total:                           2923   448                7987              
+       Total:                           4174   448                8123              
                                                                                     
     C:/ti/controlSUITE/libs/dsp/FPU/v1_50_00_00/lib/c28x_fpu_dsp_library.lib
        RFFT_f32.obj                     285    0                  0                 
@@ -785,7 +784,7 @@ MODULE SUMMARY
                                                                                     
        Stack:                           0      0                  512               
     +--+--------------------------------+------+------------------+--------------------+
-       Grand Total:                     6585   1604               38419             
+       Grand Total:                     6776   1604               38419             
 
 
 GLOBAL DATA SYMBOLS: SORTED BY DATA PAGE
@@ -1053,9 +1052,9 @@ page  address   name
 abs   ffffffff  .text                                 
 0     0000b7d4  C$$EXIT                               
 0     0000bf41  FS$$DIV                               
-0     000088a6  LL$$AND                               
-0     000088ae  LL$$OR                                
-0     000088b6  LL$$XOR                               
+0     00008954  LL$$AND                               
+0     0000895c  LL$$OR                                
+0     00008964  LL$$XOR                               
 0     0000b0be  _ADCA1_ISR                            
 0     0000b349  _ADCA2_ISR                            
 0     0000b353  _ADCA3_ISR                            
@@ -1296,7 +1295,7 @@ abs   ffffffff  .text
 0     0000b590  _InitGpio                             
 0     0000bc37  _InitPeripheralClocks                 
 0     0000bfc9  _InitPieCtrl                          
-0     00008800  _InitPieVectTable                     
+0     000088ae  _InitPieVectTable                     
 0     0000bc06  _InitSysCtrl                          
 0     0000bd08  _InitSysPll                           
 1     00007900  _InputXbarRegs                        
@@ -1330,10 +1329,10 @@ abs   ffffffff  .text
 1     0000e800  _RFFT2outBuff                         
 1     0000fc00  _RFFT2phaseBuff                       
 0     00008000  _RFFT_f32                             
-0     0000879c  _RFFT_f32_mag_TMU0                    
-0     000084b6  _RFFT_f32_phase_TMU0                  
-0     00008622  _RFFT_f32_sincostable                 
-0     00008826  _RFFT_f32_win                         
+0     000087ac  _RFFT_f32_mag_TMU0                    
+0     0000865a  _RFFT_f32_phase_TMU0                  
+0     000086e0  _RFFT_f32_sincostable                 
+0     000088d4  _RFFT_f32_win                         
 1     00010000  _RFFTwindow                           
 0     0000b01e  _RTOS_ISR                             
 0     0000bce2  _ReleaseFlashPump                     
@@ -1420,7 +1419,7 @@ abs   ffffffff  ___c_args__
 abs   ffffffff  ___etext__                            
 abs   ffffffff  ___pinit__                            
 abs   ffffffff  ___text__                             
-0     0000888d  __args_main                           
+0     0000893b  __args_main                           
 1     0001b03c  __lock                                
 0     0000bff9  __nop                                 
 0     0000bff5  __register_lock                       
@@ -1432,11 +1431,11 @@ abs   ffffffff  ___text__
 0     0000b7d4  _abort                                
 1     0001b016  _absDiff                              
 1     0001b030  _adcChannels                          
-0     00008745  _c_int00                              
-0     000083e3  _configureADCs                        
-0     0000884b  _copy_in                              
-0     0000868c  _cos                                  
-0     0000868c  _cosf                                 
+0     00008858  _c_int00                              
+0     0000858b  _configureADCs                        
+0     000088f9  _copy_in                              
+0     0000874a  _cos                                  
+0     0000874a  _cosf                                 
 1     0001b042  _done2                                
 1     0001b043  _done4                                
 1     0001b040  _done6                                
@@ -1452,21 +1451,26 @@ abs   ffffffff  ___text__
 1     0003fc80  _g_usPutWriteIndexes                  
 1     0001b012  _handler_rfft1                        
 1     0001b006  _handler_rfft2                        
-0     000084ae  _initADC                              
+0     00008655  _initADC                              
 0     00008209  _initCPU2                             
-0     000085b1  _initDMA                              
-0     000085bc  _initDMA2                             
-0     000085de  _initDMA4                             
-0     00008600  _initDMA6                             
-0     0000853c  _initEPWM                             
-0     00008553  _initEPWM1                            
-0     0000858a  _initEPWM2                            
+0     000083e3  _initDMA                              
+0     000083ee  _initDMA1                             
+0     00008410  _initDMA2                             
+0     00008432  _initDMA3                             
+0     00008454  _initDMA4                             
+0     00008476  _initDMA5                             
+0     00008498  _initDMA6                             
+0     000084ba  _initEPWM                             
+0     000084db  _initEPWM1                            
+0     00008512  _initEPWM2                            
+0     00008539  _initEPWM3                            
+0     0000855a  _initEPWM4                            
 0     0000821c  _initFFT                              
 0     000081cf  _initMain                             
 1     0001b000  _magIndex                             
 1     0001b008  _magMax                               
 0     0000811d  _main                                 
-0     0000886f  _memcpy                               
+0     0000891d  _memcpy                               
 1     0001b00e  _n                                    
 1     0001b002  _n2pi                                 
 1     0001b004  _nSmall                               
@@ -1482,9 +1486,9 @@ abs   ffffffff  ___text__
 1     0001b024  _rfft2                                
 0     00008009  _rfft_f32_Stages1and2and3andBitReverse
 0     00008075  _rfft_f32_Stages4andUp                
-0     0000843d  _setupADCContinuous                   
-0     000086ed  _sin                                  
-0     000086ed  _sinf                                 
+0     000085e5  _setupADCContinuous                   
+0     00008800  _sin                                  
+0     00008800  _sinf                                 
 1     0001b010  _smallest                             
 1     0001b014  _test_est                             
 0     00008243  _vocodeAnalysis                       
@@ -1523,32 +1527,37 @@ page  address   name
 0     00008243  _vocodeAnalysis                       
 0     00008306  _AdcSetMode                           
 0     000083a9  _CalAdcINL                            
-0     000083e3  _configureADCs                        
-0     0000843d  _setupADCContinuous                   
-0     000084ae  _initADC                              
-0     000084b6  _RFFT_f32_phase_TMU0                  
-0     0000853c  _initEPWM                             
-0     00008553  _initEPWM1                            
-0     0000858a  _initEPWM2                            
-0     000085b1  _initDMA                              
-0     000085bc  _initDMA2                             
-0     000085de  _initDMA4                             
-0     00008600  _initDMA6                             
-0     00008622  _RFFT_f32_sincostable                 
-0     0000868c  _cos                                  
-0     0000868c  _cosf                                 
-0     000086ed  _sin                                  
-0     000086ed  _sinf                                 
-0     00008745  _c_int00                              
-0     0000879c  _RFFT_f32_mag_TMU0                    
-0     00008800  _InitPieVectTable                     
-0     00008826  _RFFT_f32_win                         
-0     0000884b  _copy_in                              
-0     0000886f  _memcpy                               
-0     0000888d  __args_main                           
-0     000088a6  LL$$AND                               
-0     000088ae  LL$$OR                                
-0     000088b6  LL$$XOR                               
+0     000083e3  _initDMA                              
+0     000083ee  _initDMA1                             
+0     00008410  _initDMA2                             
+0     00008432  _initDMA3                             
+0     00008454  _initDMA4                             
+0     00008476  _initDMA5                             
+0     00008498  _initDMA6                             
+0     000084ba  _initEPWM                             
+0     000084db  _initEPWM1                            
+0     00008512  _initEPWM2                            
+0     00008539  _initEPWM3                            
+0     0000855a  _initEPWM4                            
+0     0000858b  _configureADCs                        
+0     000085e5  _setupADCContinuous                   
+0     00008655  _initADC                              
+0     0000865a  _RFFT_f32_phase_TMU0                  
+0     000086e0  _RFFT_f32_sincostable                 
+0     0000874a  _cos                                  
+0     0000874a  _cosf                                 
+0     000087ac  _RFFT_f32_mag_TMU0                    
+0     00008800  _sin                                  
+0     00008800  _sinf                                 
+0     00008858  _c_int00                              
+0     000088ae  _InitPieVectTable                     
+0     000088d4  _RFFT_f32_win                         
+0     000088f9  _copy_in                              
+0     0000891d  _memcpy                               
+0     0000893b  __args_main                           
+0     00008954  LL$$AND                               
+0     0000895c  LL$$OR                                
+0     00008964  LL$$XOR                               
 0     0000a800  _PieVectTableInit                     
 0     0000b000  _TIMER1_ISR                           
 0     0000b00a  _TIMER2_ISR                           
@@ -1949,4 +1958,4 @@ abs   ffffffff  binit
 abs   ffffffff  etext                                 
 abs   ffffffff  pinit                                 
 
-[446 symbols]
+[451 symbols]
