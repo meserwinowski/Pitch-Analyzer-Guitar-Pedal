@@ -23,4 +23,6 @@
 #define NYQT_FREQ       (SAMP_FREQ / 2)              // Nyquist Frequency
 #define NYQT_PER        (1 / NYQT_FREQ)
 
+#define CPU2TOCPU1_MSGRAM       0x0003F800
+
 #endif /* _F28379D_SENIOR_DESIGN_H_ */

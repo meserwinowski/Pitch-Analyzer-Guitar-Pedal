@@ -19,6 +19,7 @@ void initEPWM(void);
 void initEPWM1(void);
 void initEPWM2(void);
 void initEPWM3(void);
+void initEPWM4(void);
 
 /* ------------------------------------------------------------------------------ */
 

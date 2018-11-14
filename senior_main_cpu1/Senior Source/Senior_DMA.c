@@ -63,7 +63,7 @@ void initDMA2(void) {
 void initDMA4(void) {
 
     /* DMA Channel 4 - ADCA CH23 - String 2 */
-    DMACH4AddrConfig(&CircularBuffer4, &AdcaResultRegs.ADCRESULT4);
+    DMACH4AddrConfig(&CircularBuffer4, &AdcaResultRegs.ADCRESULT1);
 
     /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
     DMACH4TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
@@ -92,7 +92,7 @@ void initDMA4(void) {
 void initDMA6(void) {
 
     /* DMA Channel 6 - ADCC CH23 - String 6 */
-    DMACH6AddrConfig(&CircularBuffer6, &AdccResultRegs.ADCRESULT2);
+    DMACH6AddrConfig(&CircularBuffer6, &AdccResultRegs.ADCRESULT0);
 
     /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
     DMACH6TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
@@ -107,7 +107,7 @@ void initDMA6(void) {
      * Overflow Disabled
      * 16-bit Data Size
      * Channel Interrupt Enabled at Start */
-    DMACH6ModeConfig(DMA_ADCCINT2, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
+    DMACH6ModeConfig(DMA_ADCCINT1, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
                      SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
                      CHINT_END, CHINT_ENABLE);
 

@@ -68,12 +68,12 @@ void initEPWM1(void) {
     // Set the A output on zero and reset on CMPA
 //    EPwm1Regs.AQCTLA.bit.ZRO = AQ_SET;      // SOCA goes high at T=0
 //    EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;    // SOCA goes low at T=CMPA
-//    EPwm1Regs.AQCTLB.bit.CBU = AQ_CLEAR;    // SOCB goes low at T=CMPB
+//    EPwm1Regs.AQCTLB.bit.CBU = AQ_CLEAR;    // SOCB goes low at T=0
 //    EPwm1Regs.AQCTLB.bit.CAU = AQ_SET;      // SOCB goes high at T=CMPA
 
     // Set CMPA to 20us to get a 50% duty
     EPwm1Regs.CMPA.bit.CMPA = 2500;
-    EPwm1Regs.CMPB.bit.CMPB = 5000;
+    EPwm1Regs.CMPB.bit.CMPB = 4999;
 
     /* Configure Event Trigger Select */
     // bit 15        1:      SOCBEN,    1 = enable SOCB

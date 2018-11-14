@@ -65,32 +65,32 @@ void setupADCContinuous(Uint16* channel) {
     }
     else // Resolution is 16-bit
     {
-        acqps = 315; // 320ns
+        acqps = 63; // 320ns
     }
 
     EALLOW;
 
     // ADCSOCx Control
     AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 0x5; // Trigger Select to ePWM1 SOCA
-    AdcaRegs.ADCSOC4CTL.bit.TRIGSEL = 0x6; // Trigger Select to ePWM1 SOCB
-    AdccRegs.ADCSOC2CTL.bit.TRIGSEL = 0x7; // Trigger Select to ePWM2 SOCA
+    AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = 0x6; // Trigger Select to ePWM1 SOCB
+    AdccRegs.ADCSOC0CTL.bit.TRIGSEL = 0x7; // Trigger Select to ePWM2 SOCA
 
     // ADCSOCx Control - Map SOC to specific channels
     // ADC D SOC1 will convert on channel 5 - String 1
-    AdcaRegs.ADCSOC0CTL.bit.CHSEL = 0; // ADC A SOC0 will convert on channel 4 - String 2
+    AdcaRegs.ADCSOC0CTL.bit.CHSEL = 0; // ADC A SOC0 will convert on channel 4 to RES0 - String 2
     // ADC D SOC0 will convert on channel 3 - String 3
-    AdcaRegs.ADCSOC4CTL.bit.CHSEL = 4; // ADC A SOC2 will convert on channel 2 - String 4
+    AdcaRegs.ADCSOC1CTL.bit.CHSEL = 4; // ADC A SOC1 will convert on channel 2 to RES1 - String 4
     // ADC B SOC0 will convert on channel 1 - String 5
-    AdccRegs.ADCSOC2CTL.bit.CHSEL = 2; // ADC C SOC2 will convert on channel 0 - String 6
+    AdccRegs.ADCSOC0CTL.bit.CHSEL = 2; // ADC C SOC0 will convert on channel 0 to RES0 - String 6
 
     // ADCSOCx Control - Set Acquisition Prescale/Sets window in SYSCLK cycles
     // Sample window is acqps + 1 SYSCLK Cycle
     // String 1
     AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps; // String 2
     // String 3
-    AdcaRegs.ADCSOC4CTL.bit.ACQPS = acqps; // String 4
+    AdcaRegs.ADCSOC1CTL.bit.ACQPS = acqps; // String 4
     // String 5
-    AdccRegs.ADCSOC2CTL.bit.ACQPS = acqps; // String 6
+    AdccRegs.ADCSOC0CTL.bit.ACQPS = acqps; // String 6
 
     // ADCINTx Continuous Mode
 //    AdcaRegs.ADCINTSEL1N2.bit.INT1CONT = 1; // Enable AINT1 Continuous Mode - String 2
@@ -98,21 +98,21 @@ void setupADCContinuous(Uint16* channel) {
 //    AdccRegs.ADCINTSEL1N2.bit.INT2CONT = 1; // Enable AINT2 Continuous Mode - String 6
 
     // ADCINTx Select EOC Conversion
-    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0; // ADC A EOC0
-    AdcaRegs.ADCINTSEL1N2.bit.INT2SEL = 4; // ADC A EOC4
-    AdccRegs.ADCINTSEL1N2.bit.INT2SEL = 2; // ADC C EOC2
+    AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0;  // ADC A EOC0
+    AdcaRegs.ADCINTSEL1N2.bit.INT2SEL = 1;  // ADC A EOC1
+    AdccRegs.ADCINTSEL1N2.bit.INT1SEL = 0;  // ADC C EOC0
 
-//    // Enable Interrupts and Clear Interrupt Flags for each ADC
-    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1; // String 2
-    AdcaRegs.ADCINTSEL1N2.bit.INT2E = 1; // String 4
-    AdccRegs.ADCINTSEL1N2.bit.INT2E = 1; // String 6
+    // Enable Interrupts and Clear Interrupt Flags for each ADC
+    AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;    // Enable AINT 1 for String 2
+    AdcaRegs.ADCINTSEL1N2.bit.INT2E = 1;    // Enable AINT 2 for String 4
+    AdccRegs.ADCINTSEL1N2.bit.INT1E = 1;    // Enable CINT 1 for String 6
 
     AdcaRegs.ADCINTFLGCLR.all = 0x000F;
     AdccRegs.ADCINTFLGCLR.all = 0x000F;
 
-    PieCtrlRegs.PIEIER1.bit.INTx1 = 1;
-    PieCtrlRegs.PIEIER10.bit.INTx2 = 1;
-    PieCtrlRegs.PIEIER10.bit.INTx10 = 1;
+    PieCtrlRegs.PIEIER1.bit.INTx1 = 1;      // Enable PI for ADC A INT 1
+    PieCtrlRegs.PIEIER10.bit.INTx2 = 1;     // Enable PI for ADC A INT 2
+    PieCtrlRegs.PIEIER1.bit.INTx3 = 1;      // Enable PI for ADC C INT 1
 
     EDIS;
 }
