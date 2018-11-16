@@ -20,6 +20,7 @@ void initEPWM1(void);   // CPU1 - ADC A 01 (S2), 23 (S4)
 void initEPWM2(void);   // CPU1 - ADC C 23 (S6)
 void initEPWM3(void);   // CPU2 - ADC B 01 (S5)
 void initEPWM4(void);   // CPU2 - ADC D 01 (S3), 23 (S1)
+void initEPWM5(void);   // CPU1 - CLA Task 1 Interrupt
 
 /* ------------------------------------------------------------------------------ */
 

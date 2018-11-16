@@ -62,6 +62,7 @@ __interrupt void DMACH6_ISR(void);
 __interrupt void ADCCH2_ISR(void);
 __interrupt void ADCCH4_ISR(void);
 __interrupt void ADCCH6_ISR(void);
+__interrupt void EPWM_5_ISR(void);
 
 // Functions
 void initMain(void);
@@ -188,6 +189,15 @@ __interrupt void ADCCH6_ISR(void) {
 
 }
 
+#pragma CODE_SECTION(EPWM_5_ISR, ".TI.ramfunc");
+__interrupt void EPWM_5_ISR(void) {
+
+    // Acknowledge Interrupt Triggered by ePWM5
+    EPwm5Regs.ETCLR.bit.INT = 1; // Clear EPWM5 INT flag
+    PieCtrlRegs.PIEACK.all = PIEACK_GROUP3;
+
+}
+
 void initMain(void) {
 
     // Initialize System Control
@@ -207,7 +217,7 @@ void initMain(void) {
     // Initialize PIE Vector Tables with pointers to shell ISRs
     InitPieVectTable();
 
-    // Connect ISRs to DMA Channel Interrupts
+    // Connect ISRs to Main Defined Interrupts
     EALLOW;
     PieVectTable.DMA_CH2_INT = &DMACH2_ISR;
     PieVectTable.DMA_CH4_INT = &DMACH4_ISR;
@@ -215,6 +225,7 @@ void initMain(void) {
     PieVectTable.ADCA1_INT = &ADCCH2_ISR;
     PieVectTable.ADCA2_INT = &ADCCH4_ISR;
     PieVectTable.ADCC1_INT = &ADCCH6_ISR;
+    PieVectTable.EPWM5_INT = &EPWM_5_ISR;
     EDIS;
 
     // Initialize ADCs and DMA

@@ -36,6 +36,11 @@ void initEPWM(void) {
     DevCfgRegs.SOFTPRES2.bit.EPWM4 = 1;     // ePWM4 is reset
     DevCfgRegs.SOFTPRES2.bit.EPWM4 = 0;     // ePWM4 is released from reset
 
+    DevCfgRegs.SOFTPRES2.bit.EPWM5 = 1;     // ePWM5 is reset
+    DevCfgRegs.SOFTPRES2.bit.EPWM5 = 0;     // ePWM4 is released from reset
+
+    initEPWM5(); // CLA Task 1 Interrupt
+
     // Enable ePWM Peripheral Clock
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
 #endif
@@ -60,6 +65,9 @@ void initEPWM(void) {
     // Enable ePWM Peripheral Clock
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
 #endif
+
+    // Enable Group 3 Interrupts for ePWM5
+    IER |= M_INT3;
 
     EDIS;
 }
@@ -320,6 +328,61 @@ void initEPWM4(void) {
 
     // Enable timers to count up
     EPwm4Regs.TBCTL.bit.CTRMODE = 0x0;
+}
+
+void initEPWM5(void) {
+    /* Configure ePWM5 to trigger at >= 60Hz to drive CLA Task 1 */
+
+    /* Configure Time Base Control register */
+    // bit 15-14     11:     FREE/SOFT, 11 = ignore emulation suspend
+    // bit 13        0:      PHSDIR,    0 = count down after sync event
+    // bit 12-10     000:    CLKDIV,    000 => TBCLK = HSPCLK/1
+    // bit 9-7       000:    HSPCLKDIV, 000 => HSPCLK = ePWMCLK/1
+    // bit 6         0:      SWFSYNC,   0 = no software sync produced
+    // bit 5-4       11:     SYNCOSEL,  11 = sync-out disabled
+    // bit 3         0:      PRDLD,     0 = reload PRD on counter=0
+    // bit 2         0:      PHSEN,     0 = phase control disabled
+    // bit 1-0       11:     CTRMODE,   11 = timer stopped (disabled)
+    EPwm5Regs.TBCTL.bit.CTRMODE = 0x3;      // Disable ePWM4 Timer
+
+    // Clear Timer Counter Register
+    EPwm5Regs.TBCTR = 0x0000;
+
+    // Set Time Base Period Register
+    EPwm5Regs.TBPRD = ADC_SAMPLE_PERIOD;
+
+    // Set Time Base Phase High Register
+    EPwm5Regs.TBPHS.bit.TBPHS = 0x0000;
+
+    /* Configure Event Trigger Select */
+    // bit 15        0:      SOCBEN,    0 = disable SOCB
+    // bit 14-12     000:    SOCBSEL,
+    // bit 11        1:      SOCAEN,    0 = disable SOCA
+    // bit 10-8      100:    SOCASEL,
+    // bit 7-4       0000:   reserved
+    // bit 3         0:      INTEN,     1 = enable interrupt
+    // bit 2-0       000:    INTSEL,    interrupt every single event
+    EPwm5Regs.ETSEL.bit.INTSEL = 0x1;
+    EPwm5Regs.ETSEL.bit.INTEN = 0x1;
+
+    /* Configure Event Trigger Pre Scale */
+    // bit 15-14     00:     ePWMxSOCB, read-only
+    // bit 13-12     01:     SOCBPRD,   01 = generate SOCB on first event
+    // bit 11-10     00:     ePWMxSOCA, read-only
+    // bit 9-8       01:     SOCAPRD,   01 = generate SOCA on first event
+    // bit 7-4       0000:   reserved
+    // bit 3-2       00:     INTCNT,    don't care
+    // bit 1-0       00:     INTPRD,    don't care
+    EPwm5Regs.ETPS.bit.INTPRD = 0x1;
+
+    // Enable Event Trigger Counter Initialization Enable
+    EPwm5Regs.ETCNTINITCTL.bit.INTINITEN = 1;
+
+    // Enable timers to count up
+    EPwm5Regs.TBCTL.bit.CTRMODE = 0x0;
+
+    // Enable ePWM5 Interrupt
+    PieCtrlRegs.PIEIER3.bit.INTx5 = 1;
 }
 /* ------------------------------------------------------------------------------ */
 

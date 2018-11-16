@@ -1,0 +1,100 @@
+/**********************************************************************
+* File: ClaTasks.cla
+* Devices: TMS320F28x7x
+* Author: C2000 Technical Training, Texas Instruments
+**********************************************************************/
+
+#include "Lab.h"                        // Main include file
+#include "F28x_Project.h"     // Device Header File and Examples Include File
+
+extern Uint16 GPIO34_count;
+extern Uint32 rdata;
+extern Uint16 temp;
+extern Uint16 i, j;
+
+#if 1      // 1 = Use Task1 from this file; 0 = Don't use
+/**********************************************************************
+* Task: CLA Task 1
+* 
+* This task is triggered at the end of conversion with an ADC-A interrupt.
+* The ADC-A RESULT0 register is read as soon as it is available. It will then
+* run a FIR filter and places the result into ClaFilter. The CPU will take
+* an interrupt at the end of the task. It will log the ADC-A RESULT0 register
+* for comparison as well as the CLA generated ClaFilter value.
+**********************************************************************/
+interrupt void Cla1Task1 (void)
+{
+    GPIO34_count = GPIO34_count + 1;
+
+    __mdebugstop();
+
+//    for (i = 0; i < 7 - 1; i++) {
+////        rdata = data[i];
+//        rdata = 0x01010101;
+//        for (j = 0; j < 4; j++) {
+//            SpiaRegs.SPITXBUF = ((rdata & 0xFF000000) >> 16); // Fill Transmit Buffer
+//            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
+//            temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+//            rdata = rdata << 8;
+//        }
+//    }
+
+}
+#endif
+/**********************************************************************
+* Task: CLA Task 2
+**********************************************************************/
+interrupt void Cla1Task2 (void)
+{
+	
+}
+/**********************************************************************
+* Task: CLA Task 3
+**********************************************************************/
+interrupt void Cla1Task3 (void)
+{
+	
+}
+/**********************************************************************
+* Task: CLA Task 4
+**********************************************************************/
+interrupt void Cla1Task4 (void)
+{
+	
+}
+/**********************************************************************
+* Task: CLA Task 5
+**********************************************************************/
+interrupt void Cla1Task5 (void)
+{
+	
+}
+/**********************************************************************
+* Task: CLA Task 6
+**********************************************************************/
+interrupt void Cla1Task6 (void)
+{
+	
+}
+/**********************************************************************
+* Task: CLA Task 7
+**********************************************************************/
+interrupt void Cla1Task7 (void)
+{
+	
+}
+/**********************************************************************
+* Task: CLA Task 8
+*
+* The delay elements xDelay are placed in the section Cla1ToCpuMsgRAM.
+* The C28x does not have write access to this array. Therefore, this
+* array will not be initialized at startup time by the cinit routine.
+* The purpose of this task is to do a one-time initialization of the
+* delay buffer and set the elements to zero.
+**********************************************************************/
+interrupt void Cla1Task8 (void)
+{
+
+}
+
+//--- end of file -----------------------------------------------------

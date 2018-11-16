@@ -20,10 +20,10 @@ PAGE 0 :
 
       /* Flash sectors */
    FLASHA       : origin = 0x080002, length = 0x001FFE	/* on-chip Flash */
-   FLASHB       : origin = 0x082000, length = 0x008000	/* on-chip Flash */
-   //FLASHC       : origin = 0x084000, length = 0x002000	/* on-chip Flash */
-   //FLASHD       : origin = 0x086000, length = 0x002000	/* on-chip Flash */
-   //FLASHE       : origin = 0x088000, length = 0x008000	/* on-chip Flash */
+   FLASHB       : origin = 0x082000, length = 0x002000	/* on-chip Flash */
+   FLASHC       : origin = 0x084000, length = 0x002000	/* on-chip Flash */
+   FLASHD       : origin = 0x086000, length = 0x002000	/* on-chip Flash */
+   FLASHE       : origin = 0x088000, length = 0x008000	/* on-chip Flash */
    FLASHF       : origin = 0x090000, length = 0x008000	/* on-chip Flash */
    FLASHG       : origin = 0x098000, length = 0x008000	/* on-chip Flash */
    FLASHH       : origin = 0x0A0000, length = 0x008000	/* on-chip Flash */

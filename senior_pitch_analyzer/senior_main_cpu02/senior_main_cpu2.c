@@ -203,7 +203,7 @@ void initMain(void) {
     // Initialize PIE Vector Tables with pointers to shell ISRs
     InitPieVectTable();
 
-    // Connect ISRs to DMA Channel Interrupts
+    // Connect ISRs to Main Defined Interrupts
     EALLOW;
     PieVectTable.DMA_CH1_INT = &DMACH1_ISR;
     PieVectTable.DMA_CH3_INT = &DMACH3_ISR;
