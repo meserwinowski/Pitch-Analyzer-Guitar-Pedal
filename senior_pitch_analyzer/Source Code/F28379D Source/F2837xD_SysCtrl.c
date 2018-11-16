@@ -113,7 +113,6 @@ void InitSysCtrl(void)
     CpuSysRegs.PCLKCR13.bit.ADC_D = 0;
     EDIS;
 
-    //
     // Initialize the PLL control: SYSPLLMULT and SYSCLKDIVSEL.
     //
     // Defined options to be passed as arguments to this function are defined

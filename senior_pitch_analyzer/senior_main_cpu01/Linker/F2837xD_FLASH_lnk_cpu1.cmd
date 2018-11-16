@@ -1,10 +1,8 @@
-
 MEMORY
 {
 PAGE 0 :  /* Program Memory */
           /* Memory (RAM/FLASH) blocks can be moved to PAGE1 for data allocation */
           /* BEGIN is used for the "boot to Flash" bootloader mode   */
-
    BEGIN           	: origin = 0x080000, length = 0x000002
    RAMM0           	: origin = 0x000122, length = 0x0002DE
    RAMD0           	: origin = 0x00B000, length = 0x000800
@@ -105,11 +103,6 @@ SECTIONS
    .switch             : > FLASHB      PAGE = 0, ALIGN(4)
    
    .reset              : > RESET,     PAGE = 0, TYPE = DSECT /* not used, */
-
-   Filter_RegsFile     : > RAMGS0,	   PAGE = 1
-   
-   SHARERAMGS0		: > RAMGS0,		PAGE = 1
-   SHARERAMGS1		: > RAMGS1,		PAGE = 1
    
    /* The following section definitions are required when using the IPC API Drivers */ 
     GROUP : > CPU1TOCPU2RAM, PAGE = 1 
@@ -127,6 +120,30 @@ SECTIONS
     }  
     
 }
+
+   // RFFT Buffers - Align input on 2*FFT_SIZE
+   RFFT1Input       : > RAMGS0,		PAGE = 1,	ALIGN = RFFT_ALIGNMENT  // 0x3FF
+   RFFT1Output      : > RAMGS0,		PAGE = 1							// 0x3FF
+   RFFT1Magnitude   : > RAMGS1,		PAGE = 1						 	// 0x3FF / 2
+   RFFT1F32Coef     : > RAMGS1,		PAGE = 1						 	// 0x3FF
+   RFFT1Phase		: > RAMGS1,		PAGE = 1						 	// 0x3FF / 2
+
+   RFFT2Input		: > RAMGS2,		PAGE = 1,	ALIGN = RFFT_ALIGNMENT
+   RFFT2Output		: > RAMGS2,		PAGE = 1
+   RFFT2Magnitude   : > RAMGS3,		PAGE = 1
+   RFFT2F32Coef		: > RAMGS3,		PAGE = 1
+   RFFT2Phase		: > RAMGS3,		PAGE = 1
+
+   RFFTwindow		: > RAMGS4,		PAGE = 1
+   FPUmathTables    : > RAMGS4,     PAGE = 1
+
+   // Circular Buffers
+   CircBuff2		: > RAMGS5,		PAGE = 1 // CPU1
+   CircBuff4		: > RAMGS5,		PAGE = 1
+   CircBuff6		: > RAMGS6,		PAGE = 1
+   CircBuff1		: > RAMGS7,		PAGE = 1 // CPU2
+   CircBuff3		: > RAMGS7,		PAGE = 1
+   CircBuff5		: > RAMGS8,		PAGE = 1
 
 /*
 //===========================================================================

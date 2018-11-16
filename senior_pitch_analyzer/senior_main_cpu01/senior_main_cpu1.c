@@ -18,6 +18,8 @@ float32 freq_est2;
 float32 freq_est4;
 float32 freq_est6;
 
+volatile float32 freq_est_cpu1[7];
+
 // CPU1 Phase Calculations
 volatile float32 phaseOld_2 = 0;
 volatile float32 phaseNew_2 = 0;
@@ -37,17 +39,17 @@ volatile bool_t done4 = 0;    // String 4 DMA Interrupt Done Flag
 volatile bool_t done6 = 0;    // String 6 DMA Interrupt Done Flag
 
 // Circular Buffers
-#pragma DATA_SECTION(CircularBuffer1, "CircBuff1");
+//#pragma DATA_SECTION(CircularBuffer1, "CircBuff1");
 #pragma DATA_SECTION(CircularBuffer2, "CircBuff2");
-#pragma DATA_SECTION(CircularBuffer3, "CircBuff3");
+//#pragma DATA_SECTION(CircularBuffer3, "CircBuff3");
 #pragma DATA_SECTION(CircularBuffer4, "CircBuff4");
-#pragma DATA_SECTION(CircularBuffer5, "CircBuff5");
+//#pragma DATA_SECTION(CircularBuffer5, "CircBuff5");
 #pragma DATA_SECTION(CircularBuffer6, "CircBuff6");
-volatile uint16_t CircularBuffer1[CIRC_BUFF_SIZE];
+//volatile uint16_t CircularBuffer1[CIRC_BUFF_SIZE];
 volatile uint16_t CircularBuffer2[CIRC_BUFF_SIZE];
-volatile uint16_t CircularBuffer3[CIRC_BUFF_SIZE];
+//volatile uint16_t CircularBuffer3[CIRC_BUFF_SIZE];
 volatile uint16_t CircularBuffer4[CIRC_BUFF_SIZE];
-volatile uint16_t CircularBuffer5[CIRC_BUFF_SIZE];
+//volatile uint16_t CircularBuffer5[CIRC_BUFF_SIZE];
 volatile uint16_t CircularBuffer6[CIRC_BUFF_SIZE];
 
 // External Reference to FFT Handler declared in FFT Source
@@ -71,6 +73,8 @@ int main(void) {
     initMain();
 
     while(1) {
+        // Sync CPUs across flag 0
+        IpcSync(0);
 
         if (done2) { // String 2
             // Fill FFT Input Buffer with new values
@@ -80,7 +84,8 @@ int main(void) {
             }
 
             // Pass in phases by reference
-            freq_est2 = vocodeAnalysis(&phaseOld_2, &phaseNew_2, handler_rfft1);
+//            freq_est2 = vocodeAnalysis(&phaseOld_2, &phaseNew_2, handler_rfft1);
+            freq_est_cpu1[2] = vocodeAnalysis(&phaseOld_2, &phaseNew_2, handler_rfft1);
             done2 = 0;
         }
         if (done4) { // String 4
@@ -91,7 +96,8 @@ int main(void) {
             }
 
             // Pass in phases by reference
-            freq_est4 = vocodeAnalysis(&phaseOld_4, &phaseNew_4, handler_rfft1);
+//            freq_est4 = vocodeAnalysis(&phaseOld_4, &phaseNew_4, handler_rfft1);
+            freq_est_cpu1[4] = vocodeAnalysis(&phaseOld_4, &phaseNew_4, handler_rfft1);
             done4 = 0;
         }
         if (done6) { // String 6
@@ -102,9 +108,14 @@ int main(void) {
             }
 
             // Pass in phases by reference
-            freq_est6 = vocodeAnalysis(&phaseOld_6, &phaseNew_6, handler_rfft1);
+//            freq_est6 = vocodeAnalysis(&phaseOld_6, &phaseNew_6, handler_rfft1);
+            freq_est_cpu1[6] = vocodeAnalysis(&phaseOld_6, &phaseNew_6, handler_rfft1);
             done6 = 0;
         }
+
+//        for (int i = 1; i < 7; i+2) {
+//            freq_est_cpu1[i] =
+//        }
 
     }
 
@@ -207,24 +218,31 @@ void initMain(void) {
     EDIS;
 
     // Initialize ADCs and DMA
+    initCPU2();
     initADC();
     initDMA();
+    initDMAx(&CircularBuffer2[0], &AdcaResultRegs.ADCRESULT0, DMA_ADCAINT1, 2);
+    initDMAx(&CircularBuffer4[0], &AdcaResultRegs.ADCRESULT1, DMA_ADCAINT2, 4);
+    initDMAx(&CircularBuffer6[0], &AdccResultRegs.ADCRESULT0, DMA_ADCCINT1, 6);
     initEPWM();
     initFFT(handler_rfft1);
-//    initCPU2();
+
 
     // Enable global Interrupts and higher priority real-time debug events
     EINT;  // Enable Global interrupt INTM
     ERTM;  // Enable Global real-time interrupt DBGM
-
 }
 
 void initCPU2(void) {
+    EALLOW;
     // Transfer Memory Control to CPU2
-    MemCfgRegs.GSxMSEL.bit.MSEL_GS2 = 1; // RFFT2 Buffers
-    MemCfgRegs.GSxMSEL.bit.MSEL_GS3 = 1; // RFFT2 Buffers
-    MemCfgRegs.GSxMSEL.bit.MSEL_GS12 = 1; // Circular Buffers 1 & 3
-    MemCfgRegs.GSxMSEL.bit.MSEL_GS13 = 1; // Circular Buffer 5
+    MemCfgRegs.MSGxINIT.bit.INIT_CPUTOCPU = 1;
+    MemCfgRegs.GSxMSEL.bit.MSEL_GS2 = 1;    // RFFT2 Buffers
+    MemCfgRegs.GSxMSEL.bit.MSEL_GS3 = 1;    // RFFT2 Buffers
+    MemCfgRegs.GSxMSEL.bit.MSEL_GS7 = 1;    // Circular Buffers 1 & 3
+    MemCfgRegs.GSxMSEL.bit.MSEL_GS8 = 1;    // Circular Buffer 5
+    MemCfgRegs.GSxMSEL.bit.MSEL_GS11 = 1;   // .cinit
+    MemCfgRegs.GSxMSEL.bit.MSEL_GS12 = 1;   // .ebss
 
     // Transfer Peripheral Control to CPU2
     DevCfgRegs.CPUSEL0.bit.EPWM3 = 1;
@@ -234,5 +252,7 @@ void initCPU2(void) {
 
     DevCfgRegs.CPUSEL11.bit.ADC_B = 1;
     DevCfgRegs.CPUSEL11.bit.ADC_D = 1;
+    EDIS;
+//    IPCBootCPU2(C1C2_BROM_BOOTMODE_BOOT_FROM_RAM);
 }
 

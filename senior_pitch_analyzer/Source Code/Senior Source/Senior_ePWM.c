@@ -21,6 +21,12 @@ void initEPWM(void) {
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 0;
 
     // Configure ePWM Modules
+    DevCfgRegs.SOFTPRES2.bit.EPWM1 = 1;     // ePWM1 is reset
+    DevCfgRegs.SOFTPRES2.bit.EPWM1 = 0;     // ePWM1 is released from reset
+
+    DevCfgRegs.SOFTPRES2.bit.EPWM2 = 1;     // ePWM2 is reset
+    DevCfgRegs.SOFTPRES2.bit.EPWM2 = 0;     // ePWM2 is released from reset
+
     initEPWM1(); // String 2 String 4
     initEPWM2(); // String 6
 
@@ -32,10 +38,9 @@ void initEPWM(void) {
 
     // Enable ePWM Peripheral Clock
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
-
 #endif
-#ifdef CPU2
 
+#ifdef CPU2
     // Configure the pre scale to the ePWM modules.  Max ePWM input clock is 100 MHz.
     ClkCfgRegs.PERCLKDIVSEL.bit.EPWMCLKDIV = 1; // SYSCLK/2 = 100MHz
 
@@ -54,7 +59,6 @@ void initEPWM(void) {
 
     // Enable ePWM Peripheral Clock
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
-
 #endif
 
     EDIS;
@@ -63,8 +67,6 @@ void initEPWM(void) {
 void initEPWM1(void) {
     /* Configure ePWM1 to trigger ADC A SOCA at a 20 kHz rate */
     /* Configure ePWM1 to trigger ADC A SOCB at a 20 kHz rate */
-    DevCfgRegs.SOFTPRES2.bit.EPWM1 = 1;     // ePWM1 is reset
-    DevCfgRegs.SOFTPRES2.bit.EPWM1 = 0;     // ePWM1 is released from reset
 
     /* Configure Time Base Control register */
     // bit 15-14     11:     FREE/SOFT, 11 = ignore emulation suspend
@@ -135,8 +137,6 @@ void initEPWM1(void) {
 
 void initEPWM2(void) {
     /* Configure ePWM2 to trigger ADC C SOCA at a 20 kHz rate */
-    DevCfgRegs.SOFTPRES2.bit.EPWM2 = 1;     // ePWM2 is reset
-    DevCfgRegs.SOFTPRES2.bit.EPWM2 = 0;     // ePWM2 is released from reset
 
     /* Configure Time Base Control register */
     // bit 15-14     11:     FREE/SOFT, 11 = ignore emulation suspend

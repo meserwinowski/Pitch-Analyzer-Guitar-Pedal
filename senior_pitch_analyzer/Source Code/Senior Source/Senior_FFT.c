@@ -24,42 +24,46 @@ volatile float32 smallest;               // Temporary Loop value to hold the sma
 volatile float32 nSmall = 0;             // Pi value of smallest difference iteration
 volatile float32 n2pi = 0;               // 2 Pi Accumulator variable
 
-/*** Align RFFT Buffers to 2 * FFT_SIZE in Linker File ***/
-// CPU1 FFT Buffers
-#pragma DATA_SECTION(RFFT1inBuff, "RFFT1Input");        // Define Input Buffer Data Section 1
-float32 RFFT1inBuff[RFFT_SIZE];
-#pragma DATA_SECTION(RFFT1outBuff, "RFFT1Output");      // Define Output Buffer Data Section 1
-float32 RFFT1outBuff[RFFT_SIZE];
-#pragma DATA_SECTION(RFFT1magBuff, "RFFT1Magnitude");   // Define Magnitude Buffer Data Section 1
-float32 RFFT1magBuff[RFFT_SIZE/2];
-#pragma DATA_SECTION(RFFT1F32Coef, "RFFT1F32Coef");     // Define Coefficient Buffer Data Section 1
-float32 RFFT1F32Coef[RFFT_SIZE];
-#pragma DATA_SECTION(RFFT1phaseBuff, "RFFT1Phase");     // Define Phase Buffer Data Section 1
-float32 RFFT1phaseBuff[RFFT_SIZE/2];
-
-// CPU2 FFT Buffers
-#pragma DATA_SECTION(RFFT2inBuff, "RFFT2Input");        // Define Input Buffer Data Section 2
-float32 RFFT2inBuff[RFFT_SIZE];
-#pragma DATA_SECTION(RFFT2outBuff, "RFFT2Output");      // Define Output Buffer Data Section 2
-float32 RFFT2outBuff[RFFT_SIZE];
-#pragma DATA_SECTION(RFFT2magBuff, "RFFT2Magnitude");   // Define Magnitude Buffer Data Section 2
-float32 RFFT2magBuff[RFFT_SIZE/2];
-#pragma DATA_SECTION(RFFT2F32Coef, "RFFT2F32Coef");     // Define Coefficient Buffer Data Section 2
-float32 RFFT2F32Coef[RFFT_SIZE];
-#pragma DATA_SECTION(RFFT2phaseBuff, "RFFT2Phase");     // Define Phase Buffer Data Section 2
-float32 RFFT2phaseBuff[RFFT_SIZE/2];
-
 // Initialize and Define Windowing Filter
+#pragma DATA_SECTION(RFFTwindow, "RFFTwindow");
+float32 RFFTwindow[RFFT_SIZE/2] = HANN1024;
+
 #ifdef CPU1
-    #pragma DATA_SECTION(RFFTwindow, "RFFTwindow");
-    float32 RFFTwindow[RFFT_SIZE/2] = HANN1024;
+    /*** Align RFFT Buffers to 2 * FFT_SIZE in Linker File ***/
+    // CPU1 FFT Buffers
+    #pragma DATA_SECTION(RFFT1inBuff, "RFFT1Input");        // Define Input Buffer Data Section 1
+    float32 RFFT1inBuff[RFFT_SIZE];
+    #pragma DATA_SECTION(RFFT1outBuff, "RFFT1Output");      // Define Output Buffer Data Section 1
+    float32 RFFT1outBuff[RFFT_SIZE];
+    #pragma DATA_SECTION(RFFT1magBuff, "RFFT1Magnitude");   // Define Magnitude Buffer Data Section 1
+    float32 RFFT1magBuff[RFFT_SIZE/2];
+    #pragma DATA_SECTION(RFFT1F32Coef, "RFFT1F32Coef");     // Define Coefficient Buffer Data Section 1
+    float32 RFFT1F32Coef[RFFT_SIZE];
+    #pragma DATA_SECTION(RFFT1phaseBuff, "RFFT1Phase");     // Define Phase Buffer Data Section 1
+    float32 RFFT1phaseBuff[RFFT_SIZE/2];
+
+    // Instantiate RFFT Struct
+    RFFT_F32_STRUCT rfft1;
+    RFFT_F32_STRUCT_Handle handler_rfft1 = &rfft1; // Pointer to CPU1 struct (required by library)
 #endif
 
-// Instantiate RFFT Struct
-RFFT_F32_STRUCT rfft1;
-RFFT_F32_STRUCT rfft2;
-RFFT_F32_STRUCT_Handle handler_rfft1 = &rfft1; // Pointer to CPU1 struct (required by library)
-RFFT_F32_STRUCT_Handle handler_rfft2 = &rfft2; // Pointer to CPU2 struct
+#ifdef CPU2
+    // CPU2 FFT Buffers
+    #pragma DATA_SECTION(RFFT2inBuff, "RFFT2Input");        // Define Input Buffer Data Section 2
+    float32 RFFT2inBuff[RFFT_SIZE];
+    #pragma DATA_SECTION(RFFT2outBuff, "RFFT2Output");      // Define Output Buffer Data Section 2
+    float32 RFFT2outBuff[RFFT_SIZE];
+    #pragma DATA_SECTION(RFFT2magBuff, "RFFT2Magnitude");   // Define Magnitude Buffer Data Section 2
+    float32 RFFT2magBuff[RFFT_SIZE/2];
+    #pragma DATA_SECTION(RFFT2F32Coef, "RFFT2F32Coef");     // Define Coefficient Buffer Data Section 2
+    float32 RFFT2F32Coef[RFFT_SIZE];
+    #pragma DATA_SECTION(RFFT2phaseBuff, "RFFT2Phase");     // Define Phase Buffer Data Section 2
+    float32 RFFT2phaseBuff[RFFT_SIZE/2];
+
+    // Instantiate RFFT Struct
+    RFFT_F32_STRUCT rfft2;
+    RFFT_F32_STRUCT_Handle handler_rfft2 = &rfft2; // Pointer to CPU2 struct
+#endif
 
 // Initialize FFTs
 void initFFT(RFFT_F32_STRUCT_Handle handler_rfft) {
@@ -111,7 +115,7 @@ float32 vocodeAnalysis(volatile float32* phase1, volatile float32* phase2,
                        RFFT_F32_STRUCT_Handle handler_rfft) {
 
     // Window Input Data
-    RFFT_f32_win(&RFFT1inBuff[0],  (float *)&RFFTwindow, RFFT_SIZE);
+    RFFT_f32_win(handler_rfft->InBuf,  (float *)&RFFTwindow, RFFT_SIZE);
 
     // Run RFFT
     RFFT_f32(handler_rfft);

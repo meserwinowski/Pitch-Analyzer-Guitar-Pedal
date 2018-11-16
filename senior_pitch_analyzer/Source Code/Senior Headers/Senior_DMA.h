@@ -14,12 +14,7 @@
 #define DMA_BUFFER_SIZE     256
 
 void initDMA(void);
-void initDMA1(void);
-void initDMA2(void);
-void initDMA3(void);
-void initDMA4(void);
-void initDMA5(void);
-void initDMA6(void);
+void initDMAx(volatile uint16_t * CB, volatile uint16_t * ADCRR, uint16_t ADCINT, uint16_t dma);
 
 /* ------------------------------------------------------------------------------ */
 

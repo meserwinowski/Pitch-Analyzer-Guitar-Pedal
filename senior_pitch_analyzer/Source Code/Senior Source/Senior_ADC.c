@@ -20,35 +20,51 @@
 void configureADCs(void) {
     EALLOW;
 
+#ifdef CPU1
     // Write Configurations - Set resolution and signal mode.
     // Function also performs ADC Calibration
     AdcSetMode(ADC_ADCA, ADC_RESOLUTION_16BIT, ADC_SIGNALMODE_DIFFERENTIAL);
-    AdcSetMode(ADC_ADCB, ADC_RESOLUTION_16BIT, ADC_SIGNALMODE_DIFFERENTIAL);
     AdcSetMode(ADC_ADCC, ADC_RESOLUTION_16BIT, ADC_SIGNALMODE_DIFFERENTIAL);
-    AdcSetMode(ADC_ADCD, ADC_RESOLUTION_16BIT, ADC_SIGNALMODE_DIFFERENTIAL);
 
     // Set ADC Interrupt Pulse Positions - 0 -> Occur at end of Acquisition Window
     // 1 -> Occur at EOC (Late)
     AdcaRegs.ADCCTL1.bit.INTPULSEPOS = 1;
-    AdcbRegs.ADCCTL1.bit.INTPULSEPOS = 1;
     AdccRegs.ADCCTL1.bit.INTPULSEPOS = 1;
-    AdcdRegs.ADCCTL1.bit.INTPULSEPOS = 1;
 
     // ADC Prescale - Peripheral Clock Enabled in SysCtrl
     AdcaRegs.ADCCTL2.bit.PRESCALE = 6; // Set divider to ADCCLK/4 for A
-    AdcbRegs.ADCCTL2.bit.PRESCALE = 6; // Set divider to ADCCLK/4 for B
     AdccRegs.ADCCTL2.bit.PRESCALE = 6; // Set divider to ADCCLK/4 for C
+
+    // ADC Power Up Sequence
+    AdcaRegs.ADCCTL1.bit.ADCPWDNZ = 1; // Power up ADCA
+    AdccRegs.ADCCTL1.bit.ADCPWDNZ = 1; // Power up ADCC
+
+#endif
+
+#ifdef CPU2
+    // Write Configurations - Set resolution and signal mode.
+    // Function also performs ADC Calibration
+    AdcSetMode(ADC_ADCB, ADC_RESOLUTION_16BIT, ADC_SIGNALMODE_DIFFERENTIAL);
+    AdcSetMode(ADC_ADCD, ADC_RESOLUTION_16BIT, ADC_SIGNALMODE_DIFFERENTIAL);
+
+    // Set ADC Interrupt Pulse Positions - 0 -> Occur at end of Acquisition Window
+    // 1 -> Occur at EOC (Late)
+    AdcbRegs.ADCCTL1.bit.INTPULSEPOS = 1;
+    AdcdRegs.ADCCTL1.bit.INTPULSEPOS = 1;
+
+    // ADC Prescale - Peripheral Clock Enabled in SysCtrl
+    AdcbRegs.ADCCTL2.bit.PRESCALE = 6; // Set divider to ADCCLK/4 for B
     AdcdRegs.ADCCTL2.bit.PRESCALE = 6; // Set divider to ADCCLK/4 for D
+
+    // ADC Power Up Sequence
+    AdcbRegs.ADCCTL1.bit.ADCPWDNZ = 1; // Power up ADCB
+    AdcdRegs.ADCCTL1.bit.ADCPWDNZ = 1; // Power up ADCD
+
+#endif
 
     // Enable ADC Interrupts
     IER |= M_INT1; // Enable PIE Group 1 for ADC INT1s
     IER |= M_INT10;// Enable PIE Group 10 for other ADC INTs
-
-    // ADC Power Up Sequence
-    AdcaRegs.ADCCTL1.bit.ADCPWDNZ = 1; // Power up ADCA
-    AdcbRegs.ADCCTL1.bit.ADCPWDNZ = 1; // Power up ADCB
-    AdccRegs.ADCCTL1.bit.ADCPWDNZ = 1; // Power up ADCC
-    AdcdRegs.ADCCTL1.bit.ADCPWDNZ = 1; // Power up ADCD
 
     DELAY_US(1000); // Delay for 1ms to allow ADCs time to power up
 
@@ -101,37 +117,38 @@ void initializeADCs(void) {
 
 #ifdef CPU2
     // ADCSOCx Trigger Select
-    AdcdRegs.ADCSOC0CTL.bit.TRIGSEL = 0x9; // ePWM3 SOCA
-    AdcdRegs.ADCSOC1CTL.bit.TRIGSEL = 0x10; // ePWM3 SOCB
-    AdcbRegs.ADCSOC0CTL.bit.TRIGSEL = 0x11; // ePWM4 SOCA
+    AdcbRegs.ADCSOC0CTL.bit.TRIGSEL = 0x9; // ePWM3 SOCA
+    AdcdRegs.ADCSOC0CTL.bit.TRIGSEL = 0xB; // ePWM4 SOCA
+    AdcdRegs.ADCSOC1CTL.bit.TRIGSEL = 0xC; // ePWM4 SOCB
 
     // ADCSOCx Control - Map SOC to specific channels
-    AdcdRegs.ADCSOC1CTL.bit.CHSEL = 2; // ADC D SOC1 will convert on channel 2 to DRES1 - String 1
-    AdcdRegs.ADCSOC0CTL.bit.CHSEL = 0; // ADC D SOC0 will convert on channel 0 to DRES0 - String 3
     AdcbRegs.ADCSOC0CTL.bit.CHSEL = 0; // ADC B SOC0 will convert on channel 0 to BRES0 - String 5
+    AdcdRegs.ADCSOC0CTL.bit.CHSEL = 0; // ADC D SOC0 will convert on channel 0 to DRES0 - String 3
+    AdcdRegs.ADCSOC1CTL.bit.CHSEL = 2; // ADC D SOC1 will convert on channel 2 to DRES1 - String 1
 
     // ADCSOCx Control - Set Acquisition Prescale/Sets window in SYSCLK cycles
     // Sample window is acqps + 1 SYSCLK Cycle
-    AdcdRegs.ADCSOC0CTL.bit.ACQPS = acqps; // String 1
-    AdcdRegs.ADCSOC1CTL.bit.ACQPS = acqps; // String 3
     AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps; // String 5
+    AdcdRegs.ADCSOC0CTL.bit.ACQPS = acqps; // String 3
+    AdcdRegs.ADCSOC1CTL.bit.ACQPS = acqps; // String 1
+
 
     // ADCINTx Select EOC Conversion
+    AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0;  // ADC C EOC0
     AdcdRegs.ADCINTSEL1N2.bit.INT1SEL = 0;  // ADC D EOC0
     AdcdRegs.ADCINTSEL1N2.bit.INT2SEL = 1;  // ADC D EOC1
-    AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0;  // ADC C EOC0
 
     // Enable Interrupts and Clear Interrupt Flags for each ADC
-    AdcdRegs.ADCINTSEL1N2.bit.INT1E = 1;    // Enable DINT 1 for String 1
-    AdcdRegs.ADCINTSEL1N2.bit.INT2E = 1;    // Enable DINT 2 for String 3
     AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1;    // Enable BINT 1 for String 5
+    AdcdRegs.ADCINTSEL1N2.bit.INT1E = 1;    // Enable DINT 1 for String 3
+    AdcdRegs.ADCINTSEL1N2.bit.INT2E = 1;    // Enable DINT 2 for String 1
 
     AdcdRegs.ADCINTFLGCLR.all = 0x000F;
     AdcbRegs.ADCINTFLGCLR.all = 0x000F;
 
-    PieCtrlRegs.PIEIER1.bit.INTx6 = 1;      // Enable PI for ADC D INT 1
-    PieCtrlRegs.PIEIER10.bit.INTx14 = 1;    // Enable PI for ADC A INT 1
     PieCtrlRegs.PIEIER1.bit.INTx2 = 1;      // Enable PI for ADC B INT 1
+    PieCtrlRegs.PIEIER1.bit.INTx6 = 1;      // Enable PI for ADC D INT 1
+    PieCtrlRegs.PIEIER10.bit.INTx14 = 1;    // Enable PI for ADC D INT 2
 
 #endif
 

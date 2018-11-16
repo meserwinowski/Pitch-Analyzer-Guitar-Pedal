@@ -15,24 +15,23 @@ MEMORY
    ADCC          : origin = 0x007500, length = 0x000080
    ADCD          : origin = 0x007580, length = 0x000080
 
-   ANALOG_SUBSYS : origin = 0x05D180, length = 0x000080
+   CANA          : origin = 0x048000, length = 0x000800
+   CANB          : origin = 0x04A000, length = 0x000800
 
-   CLA1          : origin = 0x001400, length = 0x000040     /* CLA registers */
+   CLA1         : origin = 0x001400, length = 0x000040     /* CLA registers */
 
-   CLB_XBAR      : origin = 0x007A40, length = 0x000040
+   CMPSS1       : origin = 0x005C80, length = 0x000020
+   CMPSS2       : origin = 0x005CA0, length = 0x000020
+   CMPSS3       : origin = 0x005CC0, length = 0x000020
+   CMPSS4       : origin = 0x005CE0, length = 0x000020
+   CMPSS5       : origin = 0x005D00, length = 0x000020
+   CMPSS6       : origin = 0x005D20, length = 0x000020
+   CMPSS7       : origin = 0x005D40, length = 0x000020
+   CMPSS8       : origin = 0x005D60, length = 0x000020
 
-   CMPSS1        : origin = 0x005C80, length = 0x000020
-   CMPSS2        : origin = 0x005CA0, length = 0x000020
-   CMPSS3        : origin = 0x005CC0, length = 0x000020
-   CMPSS4        : origin = 0x005CE0, length = 0x000020
-   CMPSS5        : origin = 0x005D00, length = 0x000020
-   CMPSS6        : origin = 0x005D20, length = 0x000020
-   CMPSS7        : origin = 0x005D40, length = 0x000020
-   CMPSS8        : origin = 0x005D60, length = 0x000020
-
-   CPU_TIMER0    : origin = 0x000C00, length = 0x000008     /* CPU Timer0 registers */
-   CPU_TIMER1    : origin = 0x000C08, length = 0x000008     /* CPU Timer1 registers */
-   CPU_TIMER2    : origin = 0x000C10, length = 0x000008     /* CPU Timer2 registers */
+   CPU_TIMER0   : origin = 0x000C00, length = 0x000008     /* CPU Timer0 registers */
+   CPU_TIMER1   : origin = 0x000C08, length = 0x000008     /* CPU Timer1 registers */
+   CPU_TIMER2   : origin = 0x000C10, length = 0x000008     /* CPU Timer2 registers */
 
    DACA          : origin = 0x005C00, length = 0x000010
    DACB          : origin = 0x005C10, length = 0x000010
@@ -68,15 +67,11 @@ MEMORY
    EPWM11       : origin = 0x004A00, length = 0x000100     /* Enhanced PWM 11 registers */
    EPWM12       : origin = 0x004B00, length = 0x000100     /* Enhanced PWM 12 registers */
 
-   EPWM_XBAR    : origin = 0x007A00, length = 0x000040
-
    FLASH0_CTRL  : origin = 0x05F800, length = 0x000300
    FLASH0_ECC   : origin = 0x05FB00, length = 0x000040
 
    GPIOCTRL     : origin = 0x007C00, length = 0x000180     /* GPIO control registers */
    GPIODAT      : origin = 0x007F00, length = 0x000030     /* GPIO data registers */
-
-   OUTPUT_XBAR  : origin = 0x007A80, length = 0x000040
    I2CA         : origin = 0x007300, length = 0x000040     /* I2C-A registers */
    I2CB         : origin = 0x007340, length = 0x000040     /* I2C-B registers */
 
@@ -84,14 +79,10 @@ MEMORY
 
    FLASHPUMPSEMAPHORE   : origin = 0x050024, length = 0x000002
 
-   ROMPREFETCH  : origin = 0x05E608, length = 0x000002
-
    MEMCFG       : origin = 0x05F400, length = 0x000080     /* Mem Config registers */
    EMIF1CONFIG  : origin = 0x05F480, length = 0x000020     /* Emif-1 Config registers */
-   EMIF2CONFIG  : origin = 0x05F4A0, length = 0x000020     /* Emif-2 Config registers */
    ACCESSPROTECTION  : origin = 0x05F4C0, length = 0x000040     /* Access Protection registers */
    MEMORYERROR  : origin = 0x05F500, length = 0x000040     /* Access Protection registers */
-   ROMWAITSTATE : origin = 0x05F540, length = 0x000002     /* ROM Config registers */
 
 
    MCBSPA       : origin = 0x006000, length = 0x000040     /* McBSP-A registers */
@@ -113,16 +104,9 @@ MEMORY
    SPIB         : origin = 0x006110, length = 0x000010
    SPIC         : origin = 0x006120, length = 0x000010
    SPID         : origin = 0x006130, length = 0x000010
-
-   UPP          : origin = 0x006200, length = 0x000100     /* uPP registers */
-
-   DEV_CFG     : origin = 0x05D000, length = 0x000180
    CLK_CFG     : origin = 0x05D200, length = 0x000100
    CPU_SYS     : origin = 0x05D300, length = 0x000100
 
-   INPUT_XBAR   : origin = 0x007900, length = 0x000020
-   XBAR         : origin = 0x007920, length = 0x000020
-   SYNC_SOC     : origin = 0x007940, length = 0x000010
    WD           : origin = 0x007000, length = 0x000040
 
    XINT         : origin = 0x007070, length = 0x000010
@@ -144,10 +128,8 @@ SECTIONS
       PieVectTableFile
       GROUP
       {
-         EmuKeyVar
+      	 EmuKeyVar
          EmuBModeVar
-         FlashCallbackVar
-         FlashScalingVar
       }
    }
 
@@ -161,12 +143,11 @@ SECTIONS
    AdccRegsFile          : > ADCC,         PAGE = 1
    AdcdRegsFile          : > ADCD,         PAGE = 1
 
-   AnalogSubsysRegsFile : > ANALOG_SUBSYS, PAGE = 1
+   CanaRegsFile          : > CANA,         PAGE = 1
+   CanbRegsFile          : > CANB,         PAGE = 1
 
    Cla1RegsFile          : > CLA1,         PAGE = 1
    Cla1SoftIntRegsFile   : > PIE_CTRL,     PAGE = 1, type=DSECT
-
-   ClbXbarRegsFile      : > CLB_XBAR     PAGE = 1
 
    Cmpss1RegsFile        : > CMPSS1,      PAGE = 1
    Cmpss2RegsFile        : > CMPSS2,      PAGE = 1
@@ -189,7 +170,7 @@ SECTIONS
    DcsmZ2RegsFile        : > DCSM_Z2,          PAGE = 1
    DcsmCommonRegsFile    : > DCSM_COMMON,      PAGE = 1
 
-   /*** Warning:  Only remove "Type = NOLOAD" to program OTP Locations ***/
+      /*** Warning:  Only remove "Type = NOLOAD" to program OTP Locations ***/
    DcsmZ1OtpFile         : > DCSM_Z1_OTP,      PAGE = 1, type = NOLOAD
    DcsmZ2OtpFile         : > DCSM_Z2_OTP,      PAGE = 1, type = NOLOAD
 
@@ -219,39 +200,30 @@ SECTIONS
    EPwm11RegsFile        : > EPWM11,       PAGE = 1
    EPwm12RegsFile        : > EPWM12,       PAGE = 1
 
-   EPwmXbarRegsFile      : > EPWM_XBAR     PAGE = 1
-
    EQep1RegsFile         : > EQEP1,        PAGE = 1
    EQep2RegsFile         : > EQEP2,        PAGE = 1
    EQep3RegsFile         : > EQEP3,        PAGE = 1
 
-   Flash0CtrlRegsFile    : > FLASH0_CTRL    PAGE = 1
-   Flash0EccRegsFile     : > FLASH0_ECC     PAGE = 1
+   Flash0CtrlRegsFile     : > FLASH0_CTRL    PAGE = 1
+   Flash0EccRegsFile      : > FLASH0_ECC     PAGE = 1
 
    GpioCtrlRegsFile      : > GPIOCTRL,     PAGE = 1
    GpioDataRegsFile      : > GPIODAT,      PAGE = 1
 
-   OutputXbarRegsFile    : > OUTPUT_XBAR    PAGE = 1
    I2caRegsFile          : > I2CA,          PAGE = 1
    I2cbRegsFile          : > I2CB,          PAGE = 1
-   InputXbarRegsFile     : > INPUT_XBAR     PAGE = 1
-   XbarRegsFile          : > XBAR           PAGE = 1
+
    IpcRegsFile           : > IPC,           PAGE = 1
 
    FlashPumpSemaphoreRegsFile   : > FLASHPUMPSEMAPHORE,    PAGE = 1
 
-   RomPrefetchRegsFile       : > ROMPREFETCH,       PAGE = 1
    MemCfgRegsFile            : > MEMCFG,            PAGE = 1
    Emif1ConfigRegsFile       : > EMIF1CONFIG,       PAGE = 1
-   Emif2ConfigRegsFile       : > EMIF2CONFIG,       PAGE = 1
    AccessProtectionRegsFile  : > ACCESSPROTECTION,  PAGE = 1
    MemoryErrorRegsFile       : > MEMORYERROR,       PAGE = 1
-   RomWaitStateRegsFile      : > ROMWAITSTATE,      PAGE = 1
 
    McbspaRegsFile        : > MCBSPA,       PAGE = 1
    McbspbRegsFile        : > MCBSPB,       PAGE = 1
-
-   UppRegsFile           : > UPP,       PAGE = 1
 
    NmiIntruptRegsFile    : > NMIINTRUPT,   PAGE = 1
    PieCtrlRegsFile       : > PIE_CTRL,     PAGE = 1
@@ -269,11 +241,8 @@ SECTIONS
    SpicRegsFile          : > SPIC,        PAGE = 1
    SpidRegsFile          : > SPID,        PAGE = 1
 
-   DevCfgRegsFile        : > DEV_CFG,     PAGE = 1
    ClkCfgRegsFile        : > CLK_CFG,     PAGE = 1
    CpuSysRegsFile        : > CPU_SYS,     PAGE = 1
-
-   SyncSocRegsFile       : > SYNC_SOC,    PAGE = 1
 
    WdRegsFile            : > WD,           PAGE = 1
 

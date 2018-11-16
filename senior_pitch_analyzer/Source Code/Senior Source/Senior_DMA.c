@@ -10,12 +10,17 @@
 #include "F2837xD_device.h"
 #include "F2837xD_Examples.h"
 
-extern volatile uint16_t CircularBuffer1;
-extern volatile uint16_t CircularBuffer2;
-extern volatile uint16_t CircularBuffer3;
-extern volatile uint16_t CircularBuffer4;
-extern volatile uint16_t CircularBuffer5;
-extern volatile uint16_t CircularBuffer6;
+#ifdef CPU1
+    extern volatile uint16_t CircularBuffer2;
+    extern volatile uint16_t CircularBuffer4;
+    extern volatile uint16_t CircularBuffer6;
+#endif
+
+#ifdef CPU2
+    extern volatile uint16_t CircularBuffer1;
+    extern volatile uint16_t CircularBuffer3;
+    extern volatile uint16_t CircularBuffer5;
+#endif
 
 /*** Direct Memory Access Functions ***/
 
@@ -27,194 +32,199 @@ void initDMA(void) {
 
 #ifdef CPU1
     /* Setup DMA Channels for 3 ADCs on CPU1 */
-    initDMA2();
-    initDMA4();
-    initDMA6();
+//    initDMA2(); // Initialize DMA2
+//    initDMA4(); // Initialize DMA4
+//    initDMA6(); // Initialize DMA6
 #endif
 
 #ifdef CPU2
     /* Setup DMA Channels for 3 ADCs on CPU2 */
-    initDMA1();
-    initDMA3();
-    initDMA5();
+//    initDMA1(); // Initialize DMA1
+//    initDMA3(); // Initialize DMA3
+//    initDMA5(); // Initialize DMA5
 #endif
 
     // Enable Group 7 Interrupts
     IER |= M_INT7;
 }
 
-void initDMA1(void) {
+/*** Initialize DMA CHx ***/
+/* CB - Pointer to Circular Buffer
+ * ADCRR - Pointer to ADC Result Register
+ * ADCINT - Define for what ADC Interrupt to trigger DMA
+ * dma - DMA Channel Selector
+ */
+void initDMAx(volatile uint16_t * CB, volatile uint16_t * ADCRR, uint16_t ADCINT, uint16_t dma) {
+    switch(dma) {
+        case 1:
+            /* DMA Channel 1 */
+            DMACH1AddrConfig(CB, ADCRR);
 
-    /* DMA Channel 1 - ADCD CH23 - String 1 */
-    DMACH1AddrConfig(&CircularBuffer1, &AdcdResultRegs.ADCRESULT1);
+            /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
+            DMACH1TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
 
-    /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
-    DMACH1TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
+            /* DMA CH1 Mode Settings
+             * Peripheral Interrupt Source
+             * Peripheral Interrupt Enabled
+             * Oneshot Disabled
+             * Continuous Enabled
+             * Sync Disabled
+             * Sync Source
+             * Overflow Disabled
+             * 16-bit Data Size
+             * Channel Interrupt Enabled at Start */
+            DMACH1ModeConfig(ADCINT, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
+                             SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
+                             CHINT_END, CHINT_ENABLE);
 
-    /* DMA CH1 Mode Settings
-     * Peripheral Interrupt Source - ADCD INT1
-     * Peripheral Interrupt Enabled
-     * Oneshot Disabled
-     * Continuous Enabled
-     * Sync Disabled
-     * Sync Source
-     * Overflow Disabled
-     * 16-bit Data Size
-     * Channel Interrupt Enabled at Start */
-    DMACH1ModeConfig(DMA_ADCDINT2, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
-                     SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
-                     CHINT_END, CHINT_ENABLE);
+            /* Start DMAs */
+            StartDMACH1();
 
-    /* Start DMAs */
-    StartDMACH1();
+            PieCtrlRegs.PIEIER7.bit.INTx1 = 1; // Enable Group 7 Interrupt 1 - DMA1
+            break;
 
-    PieCtrlRegs.PIEIER7.bit.INTx1 = 1; // Enable Group 7 Interrupt 1 - DMA1
+        case 2:
+            /* DMA Channel 2 */
+            DMACH2AddrConfig(CB, ADCRR);
+
+            /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
+            DMACH2TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
+
+            /* DMA CH2 Mode Settings
+             * Peripheral Interrupt Source
+             * Peripheral Interrupt Enabled
+             * Oneshot Disabled
+             * Continuous Enabled
+             * Sync Disabled
+             * Sync Source
+             * Overflow Disabled
+             * 16-bit Data Size
+             * Channel Interrupt Enabled at Start */
+            DMACH2ModeConfig(ADCINT,
+                             PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
+                             SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
+                             CHINT_END, CHINT_ENABLE);
+
+            /* Start DMAs */
+            StartDMACH2();
+
+            PieCtrlRegs.PIEIER7.bit.INTx2 = 1; // Enable Group 7 Interrupt 2 - DMA2
+            break;
+
+        case 3:
+            /* DMA Channel 3 */
+            DMACH3AddrConfig(CB, ADCRR);
+
+            /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
+            DMACH3TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
+
+            /* DMA CH3 Mode Settings
+             * Peripheral Interrupt Source
+             * Peripheral Interrupt Enabled
+             * Oneshot Disabled
+             * Continuous Enabled
+             * Sync Disabled
+             * Sync Source
+             * Overflow Disabled
+             * 16-bit Data Size
+             * Channel Interrupt Enabled at Start */
+            DMACH3ModeConfig(ADCINT,
+                             PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
+                             SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
+                             CHINT_END, CHINT_ENABLE);
+
+            /* Start DMAs */
+            StartDMACH3();
+
+            PieCtrlRegs.PIEIER7.bit.INTx3 = 1; // Enable Group 7 Interrupt 3 - DMA3
+            break;
+
+        case 4:
+            /* DMA Channel 4 */
+            DMACH4AddrConfig(CB, ADCRR);
+
+            /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
+            DMACH4TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
+
+            /* DMA CH4 Mode Settings
+             * Peripheral Interrupt Source
+             * Peripheral Interrupt Enabled
+             * Oneshot Disabled
+             * Continuous Enabled
+             * Sync Disabled
+             * Sync Source
+             * Overflow Disabled
+             * 16-bit Data Size
+             * Channel Interrupt Enabled at Start */
+            DMACH4ModeConfig(ADCINT,
+                             PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
+                             SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
+                             CHINT_END, CHINT_ENABLE);
+
+            /* Start DMAs */
+            StartDMACH4();
+
+            PieCtrlRegs.PIEIER7.bit.INTx4 = 1; // Enable Group 7 Interrupt 4 - DMA4
+            break;
+
+        case 5:
+            /* DMA Channel 5 - ADCB CH01 - String 5 */
+            DMACH5AddrConfig(CB, ADCRR);
+
+            /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
+            DMACH5TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
+
+            /* DMA CH5 Mode Settings
+             * Peripheral Interrupt Source
+             * Peripheral Interrupt Enabled
+             * Oneshot Disabled
+             * Continuous Enabled
+             * Sync Disabled
+             * Sync Source
+             * Overflow Disabled
+             * 16-bit Data Size
+             * Channel Interrupt Enabled at Start */
+            DMACH5ModeConfig(ADCINT,
+                             PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
+                             SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
+                             CHINT_END, CHINT_ENABLE);
+
+            /* Start DMAs */
+            StartDMACH5();
+
+            PieCtrlRegs.PIEIER7.bit.INTx5 = 1; // Enable Group 7 Interrupt 5 - DMA5
+            break;
+
+        case 6:
+            /* DMA Channel 6 */
+            DMACH6AddrConfig(CB, ADCRR);
+
+            /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
+            DMACH6TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
+
+            /* DMA CH6 Mode Settings
+             * Peripheral Interrupt Source
+             * Peripheral Interrupt Enabled
+             * Oneshot Disabled
+             * Continuous Enabled
+             * Sync Disabled
+             * Sync Source
+             * Overflow Disabled
+             * 16-bit Data Size
+             * Channel Interrupt Enabled at Start */
+            DMACH6ModeConfig(ADCINT,
+                             PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
+                             SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
+                             CHINT_END, CHINT_ENABLE);
+
+            /* Start DMAs */
+            StartDMACH6();
+
+            PieCtrlRegs.PIEIER7.bit.INTx6 = 1; // Enable Group 7 Interrupt 6 - DMA6
+            break;
+    }
 }
 
-void initDMA2(void) {
-
-    /* DMA Channel 2 - ADCA CH01 - String 2 */
-    DMACH2AddrConfig(&CircularBuffer2, &AdcaResultRegs.ADCRESULT0);
-
-    /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
-    DMACH2TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
-
-    /* DMA CH2 Mode Settings
-     * Peripheral Interrupt Source - ADCA INT1
-     * Peripheral Interrupt Enabled
-     * Oneshot Disabled
-     * Continuous Enabled
-     * Sync Disabled
-     * Sync Source
-     * Overflow Disabled
-     * 16-bit Data Size
-     * Channel Interrupt Enabled at Start */
-    DMACH2ModeConfig(DMA_ADCAINT1, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
-                     SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
-                     CHINT_END, CHINT_ENABLE);
-
-    /* Start DMAs */
-    StartDMACH2();
-
-    PieCtrlRegs.PIEIER7.bit.INTx2 = 1; // Enable Group 7 Interrupt 2 - DMA2
-
-}
-
-void initDMA3(void) {
-
-    /* DMA Channel 3 - ADCD CH01 - String 3 */
-    DMACH3AddrConfig(&CircularBuffer3, &AdcdResultRegs.ADCRESULT0);
-
-    /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
-    DMACH3TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
-
-    /* DMA CH3 Mode Settings
-     * Peripheral Interrupt Source - ADCA INT1
-     * Peripheral Interrupt Enabled
-     * Oneshot Disabled
-     * Continuous Enabled
-     * Sync Disabled
-     * Sync Source
-     * Overflow Disabled
-     * 16-bit Data Size
-     * Channel Interrupt Enabled at Start */
-    DMACH3ModeConfig(DMA_ADCDINT1, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
-                     SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
-                     CHINT_END, CHINT_ENABLE);
-
-    /* Start DMAs */
-    StartDMACH3();
-
-    PieCtrlRegs.PIEIER7.bit.INTx3 = 1; // Enable Group 7 Interrupt 3 - DMA3
-
-}
-
-void initDMA4(void) {
-
-    /* DMA Channel 4 - ADCA CH23 - String 4 */
-    DMACH4AddrConfig(&CircularBuffer4, &AdcaResultRegs.ADCRESULT1);
-
-    /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
-    DMACH4TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
-
-    /* DMA CH4 Mode Settings
-     * Peripheral Interrupt Source - ADCA INT2
-     * Peripheral Interrupt Enabled
-     * Oneshot Disabled
-     * Continuous Enabled
-     * Sync Disabled
-     * Sync Source
-     * Overflow Disabled
-     * 16-bit Data Size
-     * Channel Interrupt Enabled at Start */
-    DMACH4ModeConfig(DMA_ADCAINT2, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
-                     SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
-                     CHINT_END, CHINT_ENABLE);
-
-    /* Start DMAs */
-    StartDMACH4();
-
-    PieCtrlRegs.PIEIER7.bit.INTx4 = 1; // Enable Group 7 Interrupt 4 - DMA4
-
-}
-
-void initDMA5(void) {
-
-    /* DMA Channel 5 - ADCB CH01 - String 5 */
-    DMACH5AddrConfig(&CircularBuffer5, &AdcbResultRegs.ADCRESULT0);
-
-    /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
-    DMACH5TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
-
-    /* DMA CH5 Mode Settings
-     * Peripheral Interrupt Source - ADCA INT1
-     * Peripheral Interrupt Enabled
-     * Oneshot Disabled
-     * Continuous Enabled
-     * Sync Disabled
-     * Sync Source
-     * Overflow Disabled
-     * 16-bit Data Size
-     * Channel Interrupt Enabled at Start */
-    DMACH5ModeConfig(DMA_ADCBINT1, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
-                     SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
-                     CHINT_END, CHINT_ENABLE);
-
-    /* Start DMAs */
-    StartDMACH5();
-
-    PieCtrlRegs.PIEIER7.bit.INTx5 = 1; // Enable Group 7 Interrupt 5 - DMA5
-
-}
-
-void initDMA6(void) {
-
-    /* DMA Channel 6 - ADCC CH23 - String 6 */
-    DMACH6AddrConfig(&CircularBuffer6, &AdccResultRegs.ADCRESULT0);
-
-    /* TRANSFER_SIZE=256, SRC_T_STEP=0, DES_T_STEP=1 */
-    DMACH6TransferConfig(DMA_BUFFER_SIZE - 1, 0, 1);
-
-    /* DMA CH6 Mode Settings
-     * Peripheral Interrupt Source - ADCC INT2
-     * Peripheral Interrupt Enabled
-     * Oneshot Disabled
-     * Continuous Enabled
-     * Sync Disabled
-     * Sync Source
-     * Overflow Disabled
-     * 16-bit Data Size
-     * Channel Interrupt Enabled at Start */
-    DMACH6ModeConfig(DMA_ADCCINT1, PERINT_ENABLE, ONESHOT_DISABLE, CONT_ENABLE,
-                     SYNC_DISABLE, SYNC_SRC, OVRFLOW_DISABLE, SIXTEEN_BIT,
-                     CHINT_END, CHINT_ENABLE);
-
-    /* Start DMAs */
-    StartDMACH6();
-
-    PieCtrlRegs.PIEIER7.bit.INTx6 = 1; // Enable Group 7 Interrupt 6 - DMA6
-
-}
 
 /* ------------------------------------------------------------------------------ */
 
