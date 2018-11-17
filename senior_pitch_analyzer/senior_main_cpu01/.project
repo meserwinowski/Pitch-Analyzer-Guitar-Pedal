@@ -46,6 +46,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Headers/Senior_FFT.h</locationURI>
 		</link>
 		<link>
+			<name>Senior Headers/Senior_SCI.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Headers/Senior_SCI.h</locationURI>
+		</link>
+		<link>
 			<name>Senior Headers/Senior_SPI.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Headers/Senior_SPI.h</locationURI>
@@ -69,6 +74,11 @@
 			<name>Senior Source/Senior_FFT.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Source/Senior_FFT.c</locationURI>
+		</link>
+		<link>
+			<name>Senior Source/Senior_SCI.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Source/Senior_SCI.c</locationURI>
 		</link>
 		<link>
 			<name>Senior Source/Senior_SPI.c</name>
@@ -149,6 +159,11 @@
 			<name>Source/F2837xD_SysCtrl.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/F28379D%20Source/F2837xD_SysCtrl.c</locationURI>
+		</link>
+		<link>
+			<name>Source/F2837xD_sci_io.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/F28379D%20Source/F2837xD_sci_io.c</locationURI>
 		</link>
 		<link>
 			<name>Source/F2837xD_usDelay.asm</name>

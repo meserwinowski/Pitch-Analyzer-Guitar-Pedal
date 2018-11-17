@@ -209,6 +209,10 @@ void initMain(void) {
     // Initialize PIE Control Registers
     InitPieCtrl();
 
+    GPIO_SetupPinMux(19, GPIO_MUX_CPU1, 2); // Launchpad SCIB RX
+    GPIO_SetupPinOptions(19, GPIO_INPUT, GPIO_PUSHPULL);
+    GPIO_SetupPinMux(18, GPIO_MUX_CPU1, 2); // Launchpad SCIB TX
+    GPIO_SetupPinOptions(18, GPIO_OUTPUT, GPIO_ASYNC);
     // Clear Interrupts, Disable CPU __interrupts and clear CPU __interrupt flags
     DINT;
     IER = 0x0000;
@@ -229,6 +233,7 @@ void initMain(void) {
     EDIS;
 
     // Initialize ADCs and DMA
+    initSCI();
     initCPU2();
     initADC();
     initDMA();
@@ -238,10 +243,10 @@ void initMain(void) {
     initEPWM();
     initFFT(handler_rfft1);
 
-
     // Enable global Interrupts and higher priority real-time debug events
     EINT;  // Enable Global interrupt INTM
     ERTM;  // Enable Global real-time interrupt DBGM
+
 }
 
 void initCPU2(void) {

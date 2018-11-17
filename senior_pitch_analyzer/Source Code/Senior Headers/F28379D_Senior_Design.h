@@ -15,6 +15,7 @@
 #include "Senior_ePWM.h"
 #include "Senior_FFT.h"
 #include "Senior_SPI.h"
+#include "Senior_SCI.h"
 
 #define M_PI            (3.1415926)                  // pi 32-bit floating
 #define M_2_PI          (6.2831853)                  // 2pi 32-bit floating
