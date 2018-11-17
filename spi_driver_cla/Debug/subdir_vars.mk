@@ -19,9 +19,8 @@ C_SRCS += \
 ../Cla.c \
 ../DefaultIsr_9_10.c \
 ../EPwm.c \
-../F2837xD_Adc.c \
+../F2837xD_Gpio.c \
 ../F2837xD_Spi.c \
-../Gpio.c \
 ../Main.c \
 ../PieCtrl.c \
 ../PieVect.c \
@@ -35,9 +34,8 @@ C_DEPS += \
 ./Cla.d \
 ./DefaultIsr_9_10.d \
 ./EPwm.d \
-./F2837xD_Adc.d \
+./F2837xD_Gpio.d \
 ./F2837xD_Spi.d \
-./Gpio.d \
 ./Main.d \
 ./PieCtrl.d \
 ./PieVect.d \
@@ -51,9 +49,8 @@ OBJS += \
 ./DefaultIsr_9_10.obj \
 ./DelayUs.obj \
 ./EPwm.obj \
-./F2837xD_Adc.obj \
+./F2837xD_Gpio.obj \
 ./F2837xD_Spi.obj \
-./Gpio.obj \
 ./Main.obj \
 ./PieCtrl.obj \
 ./PieVect.obj \
@@ -71,9 +68,8 @@ OBJS__QUOTED += \
 "DefaultIsr_9_10.obj" \
 "DelayUs.obj" \
 "EPwm.obj" \
-"F2837xD_Adc.obj" \
+"F2837xD_Gpio.obj" \
 "F2837xD_Spi.obj" \
-"Gpio.obj" \
 "Main.obj" \
 "PieCtrl.obj" \
 "PieVect.obj" \
@@ -84,9 +80,8 @@ C_DEPS__QUOTED += \
 "Cla.d" \
 "DefaultIsr_9_10.d" \
 "EPwm.d" \
-"F2837xD_Adc.d" \
+"F2837xD_Gpio.d" \
 "F2837xD_Spi.d" \
-"Gpio.d" \
 "Main.d" \
 "PieCtrl.d" \
 "PieVect.d" \
@@ -104,9 +99,8 @@ C_SRCS__QUOTED += \
 "../Cla.c" \
 "../DefaultIsr_9_10.c" \
 "../EPwm.c" \
-"../F2837xD_Adc.c" \
+"../F2837xD_Gpio.c" \
 "../F2837xD_Spi.c" \
-"../Gpio.c" \
 "../Main.c" \
 "../PieCtrl.c" \
 "../PieVect.c" \

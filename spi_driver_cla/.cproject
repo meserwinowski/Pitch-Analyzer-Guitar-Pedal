@@ -80,7 +80,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="F2837xD_headers/cmd/F2837xD_Headers_nonBIOS_cpu2.cmd|F2837xD_headers/cmd/F2837xD_Headers_BIOS_cpu1.cmd|F2837xD_headers/cmd/F2837xD_Headers_BIOS_cpu2.cmd|ClaTasks.asm" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="F2837xD_headers/cmd/F2837xD_Headers_nonBIOS_cpu2.cmd|F2837xD_headers/cmd/F2837xD_Headers_BIOS_cpu1.cmd|F2837xD_headers/cmd/F2837xD_Headers_BIOS_cpu2.cmd" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

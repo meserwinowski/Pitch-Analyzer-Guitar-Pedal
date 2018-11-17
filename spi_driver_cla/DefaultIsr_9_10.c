@@ -512,8 +512,8 @@ interrupt void SPIA_RX_ISR(void)					// PIE6.1 @ 0x000D90  SPI-A RX interrupt
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP6;			// Must acknowledge the PIE group
 
 // Next two lines for debug only - remove after inserting your ISR
-	asm (" ESTOP0");								// Emulator Halt instruction
-	while(1);
+//	asm (" ESTOP0");								// Emulator Halt instruction
+//	while(1);
 }
 
 //---------------------------------------------------------------------
@@ -522,8 +522,8 @@ interrupt void SPIA_TX_ISR(void)					// PIE6.2 @ 0x000D92  SPI-A TX interrupt
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP6;			// Must acknowledge the PIE group
 
 // Next two lines for debug only - remove after inserting your ISR
-	asm (" ESTOP0");								// Emulator Halt instruction
-	while(1);
+//	asm (" ESTOP0");								// Emulator Halt instruction
+//	while(1);
 }
 
 //---------------------------------------------------------------------

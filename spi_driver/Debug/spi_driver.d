@@ -4,13 +4,13 @@ spi_driver.obj: ../spi_driver.c
 spi_driver.obj: C:/ti/F2837xD/Device_support/F2837xD_common/include/F28x_Project.h
 spi_driver.obj: C:/ti/F2837xD/Device_support/F2837xD_common/include/F2837xD_Cla_typedefs.h
 spi_driver.obj: C:/ti/F2837xD/Device_support/F2837xD_headers/include/F2837xD_device.h
-spi_driver.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/assert.h
-spi_driver.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_ti_config.h
-spi_driver.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/linkage.h
-spi_driver.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stdarg.h
-spi_driver.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stdbool.h
-spi_driver.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stddef.h
-spi_driver.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stdint.h
+spi_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/assert.h
+spi_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/_ti_config.h
+spi_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/linkage.h
+spi_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/stdarg.h
+spi_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/stdbool.h
+spi_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/stddef.h
+spi_driver.obj: C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/stdint.h
 spi_driver.obj: C:/ti/F2837xD/Device_support/F2837xD_headers/include/F2837xD_adc.h
 spi_driver.obj: C:/ti/F2837xD/Device_support/F2837xD_headers/include/F2837xD_analogsubsys.h
 spi_driver.obj: C:/ti/F2837xD/Device_support/F2837xD_headers/include/F2837xD_cla.h
@@ -62,13 +62,13 @@ spi_driver.obj: C:/ti/F2837xD/Device_support/F2837xD_common/include/F2837xD_defa
 C:/ti/F2837xD/Device_support/F2837xD_common/include/F28x_Project.h: 
 C:/ti/F2837xD/Device_support/F2837xD_common/include/F2837xD_Cla_typedefs.h: 
 C:/ti/F2837xD/Device_support/F2837xD_headers/include/F2837xD_device.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/assert.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/_ti_config.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/linkage.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stdarg.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stdbool.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stddef.h: 
-C:/ti/ccsv8/tools/compiler/ti-cgt-c2000_18.1.1.LTS/include/stdint.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/assert.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/_ti_config.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/linkage.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/stdarg.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/stdbool.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/stddef.h: 
+C:/ti/ccsv7/tools/compiler/ti-cgt-c2000_18.1.3.LTS/include/stdint.h: 
 C:/ti/F2837xD/Device_support/F2837xD_headers/include/F2837xD_adc.h: 
 C:/ti/F2837xD/Device_support/F2837xD_headers/include/F2837xD_analogsubsys.h: 
 C:/ti/F2837xD/Device_support/F2837xD_headers/include/F2837xD_cla.h: 

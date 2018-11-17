@@ -73,7 +73,7 @@ int main(void)
         // Send Frame
         int i, j;
         Uint32 rdata = 0;
-        Uint16 temp;
+      Uint16 temp;
         for (i = 0; i < dataLength - 1; i++) {
             rdata = data[i];
             for (j = 0; j < 4; j++) {

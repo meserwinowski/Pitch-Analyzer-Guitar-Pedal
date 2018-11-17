@@ -1,7 +1,7 @@
 ******************************************************************************
-             TMS320C2000 Linker PC v18.1.1                     
+             TMS320C2000 Linker PC v18.1.3                     
 ******************************************************************************
->> Linked Fri Oct 19 14:28:39 2018
+>> Linked Fri Nov 16 17:09:07 2018
 
 OUTPUT FILE NAME:   <spi_driver.out>
 ENTRY POINT SYMBOL: "_c_int00"  address: 00000384
@@ -19,7 +19,7 @@ PAGE 0:
   RAMLS2                00009000   00000800  00000000  00000800  RWIX
   RAMLS3                00009800   00000800  00000000  00000800  RWIX
   RAMLS4                0000a000   00000800  00000000  00000800  RWIX
-  RAMD0                 0000b000   00000800  00000734  000000cc  RWIX
+  RAMD0                 0000b000   00000800  000006d2  0000012e  RWIX
   RESET                 003fffc0   00000002  00000000  00000002  RWIX
 
 PAGE 1:
@@ -591,30 +591,29 @@ CpuSysRegsFile
 .text.2    0    00008000    0000033b     
                   00008000    0000033b     F2837xD_SysCtrl.obj (.text)
 
-.text.3    0    0000b000    00000734     
+.text.3    0    0000b000    000006d2     
                   0000b000    00000585     F2837xD_DefaultISR.obj (.text:retain)
-                  0000b585    0000009e     spi_driver.obj (.text)
-                  0000b623    00000046     F2837xD_Spi.obj (.text)
-                  0000b669    00000029     rts2800_fpu32.lib : exit.c.obj (.text)
-                  0000b692    00000028     F2837xD_PieCtrl.obj (.text)
-                  0000b6ba    00000024     rts2800_fpu32.lib : cpy_tbl.c.obj (.text)
-                  0000b6de    0000001e                       : memcpy.c.obj (.text)
-                  0000b6fc    00000019                       : args_main.c.obj (.text)
-                  0000b715    0000000b                       : u_div28.asm.obj (.text)
-                  0000b720    00000009                       : _lock.c.obj (.text)
-                  0000b729    00000008     F2837xD_CodeStartBranch.obj (.text)
-                  0000b731    00000002     rts2800_fpu32.lib : pre_init.c.obj (.text)
-                  0000b733    00000001                       : startup.c.obj (.text)
+                  0000b585    00000048     spi_driver.obj (.text)
+                  0000b5cd    00000046     F2837xD_Spi.obj (.text)
+                  0000b613    00000029     rts2800_fpu32.lib : exit.c.obj (.text)
+                  0000b63c    00000028     F2837xD_PieCtrl.obj (.text)
+                  0000b664    00000024     rts2800_fpu32.lib : cpy_tbl.c.obj (.text)
+                  0000b688    0000001d                       : memcpy.c.obj (.text)
+                  0000b6a5    00000019                       : args_main.c.obj (.text)
+                  0000b6be    00000009                       : _lock.c.obj (.text)
+                  0000b6c7    00000008     F2837xD_CodeStartBranch.obj (.text)
+                  0000b6cf    00000002     rts2800_fpu32.lib : pre_init.c.obj (.text)
+                  0000b6d1    00000001                       : startup.c.obj (.text)
 
 MODULE SUMMARY
 
        Module                           code   initialized data   uninitialized data
        ------                           ----   ----------------   ------------------
     .\
-       spi_driver.obj                   158    14                 0                 
+       spi_driver.obj                   72     14                 0                 
        F2837xD_Spi.obj                  70     0                  0                 
     +--+--------------------------------+------+------------------+--------------------+
-       Total:                           228    14                 0                 
+       Total:                           142    14                 0                 
                                                                                     
     .\Source\
        F2837xD_GlobalVariableDefs.obj   0      0                  8047              
@@ -628,22 +627,21 @@ MODULE SUMMARY
     +--+--------------------------------+------+------------------+--------------------+
        Total:                           2912   448                8047              
                                                                                     
-    C:\ti\ccsv8\tools\compiler\ti-cgt-c2000_18.1.1.LTS\lib\rts2800_fpu32.lib
+    C:\ti\ccsv7\tools\compiler\ti-cgt-c2000_18.1.3.LTS\lib\rts2800_fpu32.lib
        boot28.asm.obj                   86     0                  0                 
        exit.c.obj                       41     14                 6                 
        cpy_tbl.c.obj                    36     0                  0                 
-       memcpy.c.obj                     30     0                  0                 
+       memcpy.c.obj                     29     0                  0                 
        args_main.c.obj                  25     0                  0                 
        _lock.c.obj                      9      10                 4                 
-       u_div28.asm.obj                  11     0                  0                 
        pre_init.c.obj                   2      0                  0                 
        startup.c.obj                    1      0                  0                 
     +--+--------------------------------+------+------------------+--------------------+
-       Total:                           241    24                 10                
+       Total:                           229    24                 10                
                                                                                     
        Stack:                           0      0                  512               
     +--+--------------------------------+------+------------------+--------------------+
-       Grand Total:                     3381   486                8569              
+       Grand Total:                     3283   486                8569              
 
 
 GLOBAL DATA SYMBOLS: SORTED BY DATA PAGE
@@ -834,9 +832,7 @@ GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name
 page  address   name                                  
 ----  -------   ----                                  
 abs   ffffffff  .text                                 
-0     0000b669  C$$EXIT                               
-0     0000b715  U$$DIV                                
-0     0000b71a  U$$MOD                                
+0     0000b613  C$$EXIT                               
 0     0000b0be  _ADCA1_ISR                            
 0     0000b33e  _ADCA2_ISR                            
 0     0000b348  _ADCA3_ISR                            
@@ -985,7 +981,7 @@ abs   ffffffff  .text
 1     00047800  _Emif2Regs                            
 1     00000d01  _EmuBMode                             
 1     00000d00  _EmuKey                               
-0     0000b6b1  _EnableInterrupts                     
+0     0000b65b  _EnableInterrupts                     
 0     0000013c  _F28x_usDelay                         
 0     0000b528  _FLASH_CORRECTABLE_ERROR_ISR          
 0     0000b3fc  _FPU_OVERFLOW_ISR                     
@@ -1025,11 +1021,11 @@ abs   ffffffff  .text
 0     000081c8  _InitAuxPll                           
 0     00000140  _InitGpio                             
 0     00008031  _InitPeripheralClocks                 
-0     0000b692  _InitPieCtrl                          
+0     0000b63c  _InitPieCtrl                          
 0     000003da  _InitPieVectTable                     
-0     0000b623  _InitSpi                              
-0     0000b640  _InitSpiGpio                          
-0     0000b643  _InitSpiaGpio                         
+0     0000b5cd  _InitSpi                              
+0     0000b5ea  _InitSpiGpio                          
+0     0000b5ed  _InitSpiaGpio                         
 0     00008000  _InitSysCtrl                          
 0     00008102  _InitSysPll                           
 1     00007900  _InputXbarRegs                        
@@ -1132,22 +1128,22 @@ abs   ffffffff  ___c_args__
 abs   ffffffff  ___etext__                            
 abs   ffffffff  ___pinit__                            
 abs   ffffffff  ___text__                             
-0     0000b6fc  __args_main                           
+0     0000b6a5  __args_main                           
 1     0000a9d4  __lock                                
-0     0000b728  __nop                                 
-0     0000b724  __register_lock                       
-0     0000b720  __register_unlock                     
+0     0000b6c6  __nop                                 
+0     0000b6c2  __register_lock                       
+0     0000b6be  __register_unlock                     
 1     00000400  __stack                               
-0     0000b733  __system_post_cinit                   
-0     0000b731  __system_pre_init                     
+0     0000b6d1  __system_post_cinit                   
+0     0000b6cf  __system_pre_init                     
 1     0000a9d6  __unlock                              
-0     0000b669  _abort                                
+0     0000b613  _abort                                
 0     00000384  _c_int00                              
-0     0000b6ba  _copy_in                              
+0     0000b664  _copy_in                              
 0     0000b58f  _delay_loop                           
-0     0000b66b  _exit                                 
+0     0000b615  _exit                                 
 0     0000b59f  _main                                 
-0     0000b6de  _memcpy                               
+0     0000b688  _memcpy                               
 abs   ffffffff  binit                                 
 0     00000122  cinit                                 
 0     00000000  code_start                            
@@ -1344,24 +1340,22 @@ page  address   name
 0     0000b585  _SpiFIFOInit                          
 0     0000b58f  _delay_loop                           
 0     0000b59f  _main                                 
-0     0000b623  _InitSpi                              
-0     0000b640  _InitSpiGpio                          
-0     0000b643  _InitSpiaGpio                         
-0     0000b669  C$$EXIT                               
-0     0000b669  _abort                                
-0     0000b66b  _exit                                 
-0     0000b692  _InitPieCtrl                          
-0     0000b6b1  _EnableInterrupts                     
-0     0000b6ba  _copy_in                              
-0     0000b6de  _memcpy                               
-0     0000b6fc  __args_main                           
-0     0000b715  U$$DIV                                
-0     0000b71a  U$$MOD                                
-0     0000b720  __register_unlock                     
-0     0000b724  __register_lock                       
-0     0000b728  __nop                                 
-0     0000b731  __system_pre_init                     
-0     0000b733  __system_post_cinit                   
+0     0000b5cd  _InitSpi                              
+0     0000b5ea  _InitSpiGpio                          
+0     0000b5ed  _InitSpiaGpio                         
+0     0000b613  C$$EXIT                               
+0     0000b613  _abort                                
+0     0000b615  _exit                                 
+0     0000b63c  _InitPieCtrl                          
+0     0000b65b  _EnableInterrupts                     
+0     0000b664  _copy_in                              
+0     0000b688  _memcpy                               
+0     0000b6a5  __args_main                           
+0     0000b6be  __register_unlock                     
+0     0000b6c2  __register_lock                       
+0     0000b6c6  __nop                                 
+0     0000b6cf  __system_pre_init                     
+0     0000b6d1  __system_post_cinit                   
 1     00000400  __stack                               
 1     00000600  __STACK_END                           
 1     00000b00  _AdcaResultRegs                       
@@ -1480,4 +1474,4 @@ abs   ffffffff  binit
 abs   ffffffff  etext                                 
 abs   ffffffff  pinit                                 
 
-[320 symbols]
+[318 symbols]

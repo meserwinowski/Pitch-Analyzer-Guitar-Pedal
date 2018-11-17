@@ -8,39 +8,66 @@
 #include "F28x_Project.h"     // Device Header File and Examples Include File
 
 extern Uint16 GPIO34_count;
-extern Uint32 rdata;
-extern Uint16 temp;
-extern Uint16 i, j;
 
-#if 1      // 1 = Use Task1 from this file; 0 = Don't use
+extern Uint16 dataLength;
+extern Uint16 red;
+extern Uint16 green;
+extern Uint16 blue;
+extern Uint32 bright;
+extern Uint16 iter;
+extern Uint32 data[7];
+
+
 /**********************************************************************
 * Task: CLA Task 1
 * 
-* This task is triggered at the end of conversion with an ADC-A interrupt.
-* The ADC-A RESULT0 register is read as soon as it is available. It will then
-* run a FIR filter and places the result into ClaFilter. The CPU will take
-* an interrupt at the end of the task. It will log the ADC-A RESULT0 register
-* for comparison as well as the CLA generated ClaFilter value.
 **********************************************************************/
 interrupt void Cla1Task1 (void)
 {
+    Uint16 i;
+    Uint16 j;
+    Uint32 rdata;
+    Uint16 temp;
+    Uint32 b;
+
     GPIO34_count = GPIO34_count + 1;
 
     __mdebugstop();
 
-//    for (i = 0; i < 7 - 1; i++) {
-////        rdata = data[i];
-//        rdata = 0x01010101;
-//        for (j = 0; j < 4; j++) {
-//            SpiaRegs.SPITXBUF = ((rdata & 0xFF000000) >> 16); // Fill Transmit Buffer
-//            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
-//            temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
-//            rdata = rdata << 8;
-//        }
-//    }
+//    SpiaRegs.SPITXBUF = 0xFFFF; // Fill Transmit Buffer
+//    while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
+//    asm("  RPT #3 || NOP");                // Wait at least 4 cycles
+//    temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+
+    for (i = 0; i < dataLength - 1; i++) {
+        rdata = data[i];
+        for (j = 0; j < 4; j++) {
+            SpiaRegs.SPITXBUF = ((rdata & 0xFF000000) >> 16); // Fill Transmit Buffer
+            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
+            temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+            rdata = rdata << 8;
+        }
+    }
+    SpiaRegs.SPITXBUF = (0x11 << 8); // Fill Transmit Buffer
+    while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
+    temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+
+    if (iter % 50 == 0) {
+        red++;
+        blue++;
+        green++;
+    }
+    iter++;
+
+    data[1] = (red % 0x3F);
+    data[1] |= bright;
+    data[2] = ((green % 0x3F) << 8);
+    data[2] |= bright;
+    b = (blue % 0x3F) << 8;
+    data[3] = (b << 8);
+    data[3] |= bright;
 
 }
-#endif
 /**********************************************************************
 * Task: CLA Task 2
 **********************************************************************/
