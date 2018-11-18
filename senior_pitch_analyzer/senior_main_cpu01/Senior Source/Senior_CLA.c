@@ -15,16 +15,35 @@
 Uint16 GPIO34_count;
 
 #pragma DATA_SECTION(data, "Cla1Data1");
-Uint32 data[7] = { 0x00000000, // Start Frame
+Uint32 data[8] = { 0x00000000, // Start
                    0xE1000000, // Red
                    0xE1000000, // Green
                    0xE1000000, // Blue
-                   0xE13F003F, // Purpink
-                   0xE13F3F3F,
-                   0xF0000000}; // End Frame
+                   0xE11F001F, // Purpink
+                   0xE11F1F1F, // White
+                   0xE0000000, // Off
+                   0xF0000000};// End
+
+#pragma DATA_SECTION(endFrame, "Cla1Data1");
+Uint32 startFrame[4] = { 0x00000000,
+                         0x00000000,
+                         0x00000000,
+                         0x00000000};
+
+#pragma DATA_SECTION(endFrame, "Cla1Data1");
+Uint32 endFrame[4] = { 0xFFFFFFFF,
+                       0xFFFFFFFF,
+                       0xFFFFFFFF,
+                       0xFFFFFFFF};
 
 #pragma DATA_SECTION(dataLength, "Cla1Data1");
-Uint16 dataLength = 7;
+Uint16 dataLength = 8;
+
+#pragma DATA_SECTION(startLength, "Cla1Data1");
+Uint16 startLength = 1;
+
+#pragma DATA_SECTION(endLength, "Cla1Data1");
+Uint16 endLength = 1;
 
 #pragma DATA_SECTION(red, "Cla1Data1");
 Uint16 red = 0x00;
@@ -46,6 +65,9 @@ Uint16 i = 0;
 
 #pragma DATA_SECTION(j, "Cla1Data1");
 Uint16 j = 0;
+
+#pragma DATA_SECTION(fret, "Cla1Data1");
+Uint16 fret = 0;
 
 #pragma DATA_SECTION(rdata, "Cla1Data1");
 Uint32 rdata = 0;

@@ -18,8 +18,12 @@
  */
 
 #if CPU_FRQ_200MHZ
-    #define SPI_BRR     ((200E6 / 4) / 1E6) - 1
+    #define SPI_BRR     ((200E6 / 4) / 3E6) - 1
 #endif
+
+/* It turned out that each LED in a chain inverts the clock and thus delays it for a half of a period.
+ * This enables the shift-register in the LEDs to work correctly. The downside of this simple solution
+ * is that the end of the transmission requires some additional clock cycles (number of LEDs in a string divided by 2). */
 
 /*** Serial Peripheral Interface Functions (SPI) ***/
 

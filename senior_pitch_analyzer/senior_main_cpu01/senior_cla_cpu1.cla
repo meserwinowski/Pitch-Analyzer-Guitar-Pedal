@@ -9,13 +9,17 @@
 
 extern Uint16 GPIO34_count;
 
-extern Uint16 dataLength;
 extern Uint16 red;
 extern Uint16 green;
 extern Uint16 blue;
 extern Uint32 bright;
 extern Uint16 iter;
-extern Uint32 data[7];
+extern Uint32 data[24];
+extern Uint16 dataLength;
+extern Uint32 startFrame[4];
+extern Uint16 startLength;
+extern Uint32 endFrame[4];
+extern Uint16 endLength;
 
 /**********************************************************************
 * Task: CLA Task 1
@@ -26,18 +30,15 @@ interrupt void Cla1Task1 (void) {
     Uint32 rdata;
     Uint16 temp;
     Uint32 b;
+    Uint16 fret;
 
-    GPIO34_count = GPIO34_count + 1;
+    GPIO34_count += 1;
 
     __mdebugstop();
 
-//    SpiaRegs.SPITXBUF = 0xFFFF; // Fill Transmit Buffer
-//    while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
-//    asm("  RPT #3 || NOP");                // Wait at least 4 cycles
-//    temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
-
-    for (i = 0; i < dataLength - 1; i++) {
-        rdata = data[i];
+    // Send Data
+    rdata = data[0];
+    for (i = 0; i < 3; i++) {
         for (j = 0; j < 4; j++) {
             SpiaRegs.SPITXBUF = ((rdata & 0xFF000000) >> 16); // Fill Transmit Buffer
             while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
@@ -45,9 +46,30 @@ interrupt void Cla1Task1 (void) {
             rdata = rdata << 8;
         }
     }
-    SpiaRegs.SPITXBUF = (0x11 << 8); // Fill Transmit Buffer
-    while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
-    temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+    for (fret = 0; fret < 24; fret++) {
+        for (i = 1; i < dataLength - 1; i++) {
+            rdata = data[i];
+            for (j = 0; j < 4; j++) {
+                SpiaRegs.SPITXBUF = ((rdata & 0xFF000000) >> 16); // Fill Transmit Buffer
+                while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
+                temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+                rdata = rdata << 8;
+            }
+        }
+    }
+    rdata = data[7];
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 4; j++) {
+            SpiaRegs.SPITXBUF = ((rdata & 0xFF000000) >> 16); // Fill Transmit Buffer
+            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
+            temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+            rdata = rdata << 8;
+        }
+    }
+//    SpiaRegs.SPITXBUF = (0x11 << 8); // Fill Transmit Buffer
+//    while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
+//    temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+//    temp++;
 
     if (iter % 50 == 0) {
         red++;
