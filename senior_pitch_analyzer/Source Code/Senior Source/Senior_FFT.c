@@ -172,4 +172,7 @@ float32 vocodeAnalysis(volatile float32* phase1, volatile float32* phase2,
     return ((phaseDifference + nSmall) / (DELTA_T_2_PI));
 }
 
+/* ------------------------------------------------------------------------------ */
+
+// End of File
 

@@ -19,6 +19,7 @@
 #define CIRC_MASK               CIRC_BUFF_SIZE - 1
 #define OVERLAP                 4                  // Phase Vocoder FFT Overlap
 
+// Function Prototypes
 void initFFT(RFFT_F32_STRUCT_Handle handler_rfft);
 float32 vocodeAnalysis(volatile float32* phase1,
                        volatile float32* phase2,

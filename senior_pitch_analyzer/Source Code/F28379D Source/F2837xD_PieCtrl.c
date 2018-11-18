@@ -64,6 +64,7 @@ void InitPieCtrl(void)
 	PieCtrlRegs.PIEIFR10.all = 0;
 	PieCtrlRegs.PIEIFR11.all = 0;
 	PieCtrlRegs.PIEIFR12.all = 0;
+
 }
 
 //

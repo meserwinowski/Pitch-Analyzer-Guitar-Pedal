@@ -213,7 +213,7 @@ void initMain(void) {
     PieVectTable.ADCB1_INT = &ADCCH5_ISR;
     EDIS;
 
-    // Initialize ADCs and DMA
+    // Initialize Peripherals and FFT Handler
     initADC();
     initDMA();
     initDMAx(&CircularBuffer1[0], &AdcdResultRegs.ADCRESULT1, DMA_ADCDINT2, 1);

@@ -9,9 +9,8 @@
 #include "F28x_Project.h"
 #include "F28379D_Senior_Design.h"
 
-// Defines
-
-// Global Variables
+//#pragma DATA_SECTION(GPIO34_count, "Cla1Data1");
+//Uint16 GPIO34_count = 0;
 
 // CPU1 Frequency Estimations
 float32 freq_est2;
@@ -63,6 +62,7 @@ __interrupt void ADCCH2_ISR(void);
 __interrupt void ADCCH4_ISR(void);
 __interrupt void ADCCH6_ISR(void);
 __interrupt void EPWM_5_ISR(void);
+__interrupt void CLA_ISR(void);
 
 // Functions
 void initMain(void);
@@ -198,6 +198,14 @@ __interrupt void EPWM_5_ISR(void) {
 
 }
 
+#pragma CODE_SECTION(CLA_ISR, ".TI.ramfunc");
+__interrupt void CLA_ISR(void) {
+
+    // Acknowledge Interrupt Triggered by end of CLA Task 1
+    PieCtrlRegs.PIEACK.all = PIEACK_GROUP11;
+
+}
+
 void initMain(void) {
 
     // Initialize System Control
@@ -208,11 +216,13 @@ void initMain(void) {
 
     // Initialize PIE Control Registers
     InitPieCtrl();
+    EnableInterrupts();
 
     GPIO_SetupPinMux(19, GPIO_MUX_CPU1, 2); // Launchpad SCIB RX
     GPIO_SetupPinOptions(19, GPIO_INPUT, GPIO_PUSHPULL);
     GPIO_SetupPinMux(18, GPIO_MUX_CPU1, 2); // Launchpad SCIB TX
     GPIO_SetupPinOptions(18, GPIO_OUTPUT, GPIO_ASYNC);
+
     // Clear Interrupts, Disable CPU __interrupts and clear CPU __interrupt flags
     DINT;
     IER = 0x0000;
@@ -230,23 +240,28 @@ void initMain(void) {
     PieVectTable.ADCA2_INT = &ADCCH4_ISR;
     PieVectTable.ADCC1_INT = &ADCCH6_ISR;
     PieVectTable.EPWM5_INT = &EPWM_5_ISR;
+    PieVectTable.CLA1_1_INT = &CLA_ISR;
     EDIS;
 
-    // Initialize ADCs and DMA
-    initSCI();
-    initCPU2();
-    initADC();
-    initDMA();
-    initDMAx(&CircularBuffer2[0], &AdcaResultRegs.ADCRESULT0, DMA_ADCAINT1, 2);
-    initDMAx(&CircularBuffer4[0], &AdcaResultRegs.ADCRESULT1, DMA_ADCAINT2, 4);
-    initDMAx(&CircularBuffer6[0], &AdccResultRegs.ADCRESULT0, DMA_ADCCINT1, 6);
-    initEPWM();
-    initFFT(handler_rfft1);
+    // Initialize CPU2, CLA, Peripherals and FFT Handler
+    initCPU2();                 // Initialize CPU2
+//    initSCI();                  // Initialize Serial Communications Interface - UART
+    initSPI();                  // Initialize Serial Peripheral Interface
+    initCLA();                  // Initialize Control Law Accelerator - CPU1
+    initEPWM();                 // Initialize Enchanced Pulse Width Modulation Channels
+
+//    initADC();                  // Initialize Analog-to-Digital Convertors
+//    initDMA();                  // Initialize Direct Memory Access Channels
+//    initDMAx(&CircularBuffer2[0], &AdcaResultRegs.ADCRESULT0, DMA_ADCAINT1, 2);
+//    initDMAx(&CircularBuffer4[0], &AdcaResultRegs.ADCRESULT1, DMA_ADCAINT2, 4);
+//    initDMAx(&CircularBuffer6[0], &AdccResultRegs.ADCRESULT0, DMA_ADCCINT1, 6);
+//    initFFT(handler_rfft1);     // Initialize Fast Fourier Transform Handler
 
     // Enable global Interrupts and higher priority real-time debug events
     EINT;  // Enable Global interrupt INTM
     ERTM;  // Enable Global real-time interrupt DBGM
 
+    run_cla_blinky();
 }
 
 void initCPU2(void) {

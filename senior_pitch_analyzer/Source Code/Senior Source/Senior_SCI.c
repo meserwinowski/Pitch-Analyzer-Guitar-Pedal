@@ -111,6 +111,7 @@ void initSCIBFIFO(void)
     ScibRegs.SCIFFRX.all = 0x2044;
     ScibRegs.SCIFFCT.all = 0x0;
 }
+
 /* ------------------------------------------------------------------------------ */
 
 // End of File

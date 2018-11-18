@@ -36,6 +36,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Headers/Senior_ADC.h</locationURI>
 		</link>
 		<link>
+			<name>Senior Headers/Senior_CLA.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Headers/Senior_CLA.h</locationURI>
+		</link>
+		<link>
 			<name>Senior Headers/Senior_DMA.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Headers/Senior_DMA.h</locationURI>

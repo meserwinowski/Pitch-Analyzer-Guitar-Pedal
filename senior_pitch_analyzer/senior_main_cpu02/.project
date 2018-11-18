@@ -46,11 +46,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Headers/Senior_FFT.h</locationURI>
 		</link>
 		<link>
-			<name>Senior Headers/Senior_SPI.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Headers/Senior_SPI.h</locationURI>
-		</link>
-		<link>
 			<name>Senior Headers/Senior_ePWM.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Headers/Senior_ePWM.h</locationURI>
@@ -69,11 +64,6 @@
 			<name>Senior Source/Senior_FFT.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Source/Senior_FFT.c</locationURI>
-		</link>
-		<link>
-			<name>Senior Source/Senior_SPI.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Source%20Code/Senior%20Source/Senior_SPI.c</locationURI>
 		</link>
 		<link>
 			<name>Senior Source/Senior_ePWM.c</name>

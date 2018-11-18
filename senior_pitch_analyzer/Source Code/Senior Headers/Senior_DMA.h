@@ -13,6 +13,7 @@
 /*** Direct Memory Access Functions (DMA) ***/
 #define DMA_BUFFER_SIZE     256
 
+// Function Prototypes
 void initDMA(void);
 void initDMAx(volatile uint16_t * CB, volatile uint16_t * ADCRR, uint16_t ADCINT, uint16_t dma);
 

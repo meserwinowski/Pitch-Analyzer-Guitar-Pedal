@@ -158,7 +158,7 @@ void InitPeripheralClocks(void)
     CpuSysRegs.PCLKCR0.bit.HRPWM = 1;
 #endif
 
-    CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
+    CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 0; // Handled by initEPWM()
 
 #ifdef CPU1
     CpuSysRegs.PCLKCR1.bit.EMIF1 = 1;
@@ -233,6 +233,11 @@ void InitPeripheralClocks(void)
     CpuSysRegs.PCLKCR16.bit.DAC_A = 1;
     CpuSysRegs.PCLKCR16.bit.DAC_B = 1;
     CpuSysRegs.PCLKCR16.bit.DAC_C = 1;
+
+    //--- Configure access to the common peripherals
+    CpuSysRegs.SECMSEL.bit.PF1SEL = 0;                  // PF1 (ePWM,eCAP,eQEP,CMPSS,DAC,SDFM) access, 0=CLA, 1=DMA
+    CpuSysRegs.SECMSEL.bit.PF2SEL = 0;                  // PF2 (SPI, McBSP, UPP) access, 0=CLA, 1=DMA
+
 
     EDIS;
 }

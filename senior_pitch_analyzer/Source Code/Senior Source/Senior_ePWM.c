@@ -41,6 +41,9 @@ void initEPWM(void) {
 
     initEPWM5(); // CLA Task 1 Interrupt
 
+    // Enable Group 3 Interrupts for ePWM5
+    IER |= M_INT3;
+
     // Enable ePWM Peripheral Clock
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
 #endif
@@ -65,9 +68,6 @@ void initEPWM(void) {
     // Enable ePWM Peripheral Clock
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
 #endif
-
-    // Enable Group 3 Interrupts for ePWM5
-    IER |= M_INT3;
 
     EDIS;
 }
@@ -362,8 +362,8 @@ void initEPWM5(void) {
     // bit 7-4       0000:   reserved
     // bit 3         0:      INTEN,     1 = enable interrupt
     // bit 2-0       000:    INTSEL,    interrupt every single event
-    EPwm5Regs.ETSEL.bit.INTSEL = 0x1;
-    EPwm5Regs.ETSEL.bit.INTEN = 0x1;
+    EPwm5Regs.ETSEL.bit.INTSEL = 1;
+    EPwm5Regs.ETSEL.bit.INTEN = 1;
 
     /* Configure Event Trigger Pre Scale */
     // bit 15-14     00:     ePWMxSOCB, read-only
@@ -373,7 +373,7 @@ void initEPWM5(void) {
     // bit 7-4       0000:   reserved
     // bit 3-2       00:     INTCNT,    don't care
     // bit 1-0       00:     INTPRD,    don't care
-    EPwm5Regs.ETPS.bit.INTPRD = 0x1;
+    EPwm5Regs.ETPS.bit.INTPRD = 1;
 
     // Enable Event Trigger Counter Initialization Enable
     EPwm5Regs.ETCNTINITCTL.bit.INTINITEN = 1;
@@ -383,7 +383,9 @@ void initEPWM5(void) {
 
     // Enable ePWM5 Interrupt
     PieCtrlRegs.PIEIER3.bit.INTx5 = 1;
+
 }
+
 /* ------------------------------------------------------------------------------ */
 
 // End of File

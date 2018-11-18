@@ -1,0 +1,124 @@
+/*
+ * senior_cla_cpu1.cla
+ *
+ *  Created on: Nov 17, 2018
+ *      Author: meser
+ */
+
+#include "F28379D_Senior_Design.h"
+
+extern Uint16 GPIO34_count;
+
+extern Uint16 dataLength;
+extern Uint16 red;
+extern Uint16 green;
+extern Uint16 blue;
+extern Uint32 bright;
+extern Uint16 iter;
+extern Uint32 data[7];
+
+/**********************************************************************
+* Task: CLA Task 1
+**********************************************************************/
+interrupt void Cla1Task1 (void) {
+    Uint16 i;
+    Uint16 j;
+    Uint32 rdata;
+    Uint16 temp;
+    Uint32 b;
+
+    GPIO34_count = GPIO34_count + 1;
+
+    __mdebugstop();
+
+//    SpiaRegs.SPITXBUF = 0xFFFF; // Fill Transmit Buffer
+//    while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
+//    asm("  RPT #3 || NOP");                // Wait at least 4 cycles
+//    temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+
+    for (i = 0; i < dataLength - 1; i++) {
+        rdata = data[i];
+        for (j = 0; j < 4; j++) {
+            SpiaRegs.SPITXBUF = ((rdata & 0xFF000000) >> 16); // Fill Transmit Buffer
+            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
+            temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+            rdata = rdata << 8;
+        }
+    }
+    SpiaRegs.SPITXBUF = (0x11 << 8); // Fill Transmit Buffer
+    while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
+    temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
+
+    if (iter % 50 == 0) {
+        red++;
+        blue++;
+        green++;
+    }
+    iter++;
+
+    data[1] = (red % 0x3F);
+    data[1] |= bright;
+    data[2] = ((green % 0x3F) << 8);
+    data[2] |= bright;
+    b = (blue % 0x3F) << 8;
+    data[3] = (b << 8);
+    data[3] |= bright;
+
+}
+
+/**********************************************************************
+* Task: CLA Task 2
+**********************************************************************/
+interrupt void Cla1Task2 (void) {
+
+}
+
+/**********************************************************************
+* Task: CLA Task 3
+**********************************************************************/
+interrupt void Cla1Task3 (void) {
+
+}
+
+/**********************************************************************
+* Task: CLA Task 4
+**********************************************************************/
+interrupt void Cla1Task4 (void) {
+
+}
+
+/**********************************************************************
+* Task: CLA Task 5
+**********************************************************************/
+interrupt void Cla1Task5 (void) {
+
+}
+
+/**********************************************************************
+* Task: CLA Task 6
+**********************************************************************/
+interrupt void Cla1Task6 (void) {
+
+}
+
+/**********************************************************************
+* Task: CLA Task 7
+**********************************************************************/
+interrupt void Cla1Task7 (void) {
+
+}
+
+/**********************************************************************
+* Task: CLA Task 8
+*
+* The delay elements xDelay are placed in the section Cla1ToCpuMsgRAM.
+* The C28x does not have write access to this array. Therefore, this
+* array will not be initialized at startup time by the cinit routine.
+* The purpose of this task is to do a one-time initialization of the
+* delay buffer and set the elements to zero.
+**********************************************************************/
+interrupt void Cla1Task8 (void) {
+
+}
+
+// End of File

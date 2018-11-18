@@ -13,6 +13,7 @@
 /*** Analog to Digital Converter (ADC) ***/
 #define EX_ADC_RESOLUTION       16
 
+// Function Prototypes
 void configureADCs(void);
 void initializeADCs(void);
 void initADC(void);

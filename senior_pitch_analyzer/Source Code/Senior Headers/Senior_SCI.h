@@ -5,8 +5,8 @@
  *      Author: meser
  */
 
-#ifndef _SENIOR_HEADERS_SENIOR_SCI_H_
-#define _SENIOR_HEADERS_SENIOR_SCI_H_
+#ifndef _SENIOR_SCI_H_
+#define _SENIOR_SCI_H_
 
 /*** Serial Communication Interface Functions (SCI) ***/
 
@@ -19,4 +19,4 @@ void SCIB_MSG(char *msg);
 
 /* ------------------------------------------------------------------------------ */
 
-#endif /* _SENIOR_HEADERS_SENIOR_SCI_H_ */
+#endif /* _SENIOR_SCI_H_ */
