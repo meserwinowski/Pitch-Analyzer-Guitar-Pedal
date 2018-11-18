@@ -1,1 +1,0 @@
-"./Cla.obj" "./ClaTasks_C.obj" "./CodeStartBranch.obj" "./DefaultIsr_9_10.obj" "./DelayUs.obj" "./EPwm.obj" "./F2837xD_Gpio.obj" "./F2837xD_Spi.obj" "./Main.obj" "./PieCtrl.obj" "./PieVect.obj" "./SysCtrl.obj" "./Watchdog.obj" "./F2837xD_headers/source/F2837xD_GlobalVariableDefs.obj" "../Command_Linker.cmd" "../F2837xD_headers/cmd/F2837xD_Headers_nonBIOS_cpu1.cmd" -llibc.a 
