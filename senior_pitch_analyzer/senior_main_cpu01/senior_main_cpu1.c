@@ -9,9 +9,6 @@
 #include "F28x_Project.h"
 #include "F28379D_Senior_Design.h"
 
-//#pragma DATA_SECTION(GPIO34_count, "Cla1Data1");
-//Uint16 GPIO34_count = 0;
-
 // CPU1 Frequency Estimations
 float32 freq_est2;
 float32 freq_est4;
@@ -55,18 +52,27 @@ volatile uint16_t CircularBuffer6[CIRC_BUFF_SIZE];
 extern RFFT_F32_STRUCT_Handle handler_rfft1;
 
 // Interrupts
-__interrupt void DMACH2_ISR(void); // Because DMA ISRs are in the same group, the lowest
-__interrupt void DMACH4_ISR(void); // number has priority
-__interrupt void DMACH6_ISR(void);
-__interrupt void ADCCH2_ISR(void);
-__interrupt void ADCCH4_ISR(void);
-__interrupt void ADCCH6_ISR(void);
-__interrupt void EPWM_5_ISR(void);
-__interrupt void CLA_ISR(void);
+#pragma CODE_SECTION(DMACH2_ISR, ".TI.ramfunc");
+interrupt void DMACH2_ISR(void); // Because DMA ISRs are in the same group, the lowest
+#pragma CODE_SECTION(DMACH4_ISR, ".TI.ramfunc");
+interrupt void DMACH4_ISR(void); // number has priority
+#pragma CODE_SECTION(DMACH6_ISR, ".TI.ramfunc");
+interrupt void DMACH6_ISR(void);
+#pragma CODE_SECTION(ADCCH2_ISR, ".TI.ramfunc");
+interrupt void ADCCH2_ISR(void);
+#pragma CODE_SECTION(ADCCH4_ISR, ".TI.ramfunc");
+interrupt void ADCCH4_ISR(void);
+#pragma CODE_SECTION(ADCCH6_ISR, ".TI.ramfunc");
+interrupt void ADCCH6_ISR(void);
+#pragma CODE_SECTION(EPWM_5_ISR, ".TI.ramfunc");
+interrupt void EPWM_5_ISR(void);
+#pragma CODE_SECTION(CLA_ISR, ".TI.ramfunc");
+interrupt void CLA_ISR(void);
 
 // Functions
 void initMain(void);
 void initCPU2(void);
+void CLA_configClaMemory(void);
 
 // Main Routine
 int main(void) {
@@ -124,8 +130,7 @@ int main(void) {
     return FAIL;
 }
 
-#pragma CODE_SECTION(DMACH2_ISR, ".TI.ramfunc");
-__interrupt void DMACH2_ISR(void) {
+interrupt void DMACH2_ISR(void) {
 
     // Move DMA Buffer Pointer
     x2 = (x2 + DMA_BUFFER_SIZE) & CIRC_MASK;
@@ -137,8 +142,7 @@ __interrupt void DMACH2_ISR(void) {
 
 }
 
-#pragma CODE_SECTION(DMACH4_ISR, ".TI.ramfunc");
-__interrupt void DMACH4_ISR(void) {
+interrupt void DMACH4_ISR(void) {
 
     // Move DMA Buffer Pointer
     x4 = (x4 + DMA_BUFFER_SIZE) & CIRC_MASK;
@@ -150,8 +154,7 @@ __interrupt void DMACH4_ISR(void) {
 
 }
 
-#pragma CODE_SECTION(DMACH6_ISR, ".TI.ramfunc");
-__interrupt void DMACH6_ISR(void) {
+interrupt void DMACH6_ISR(void) {
 
     // Move DMA Buffer Pointer
     x6 = (x6 + DMA_BUFFER_SIZE) & CIRC_MASK;
@@ -163,16 +166,14 @@ __interrupt void DMACH6_ISR(void) {
 
 }
 
-#pragma CODE_SECTION(ADCCH2_ISR, ".TI.ramfunc");
-__interrupt void ADCCH2_ISR(void) {
+interrupt void ADCCH2_ISR(void) {
 
     // Acknowledge Interrupt Triggered by ePWM1 SOCA
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; // clear ADCA INT1 flag for channels 01
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }
 
-#pragma CODE_SECTION(ADCCH4_ISR, ".TI.ramfunc");
-__interrupt void ADCCH4_ISR(void) {
+interrupt void ADCCH4_ISR(void) {
 
     // Acknowledge Interrupt Triggered by ePWM1 SOCB
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT2 = 1; // Clear ADCA INT2 flag for channels 45
@@ -180,8 +181,7 @@ __interrupt void ADCCH4_ISR(void) {
 
 }
 
-#pragma CODE_SECTION(ADCCH6_ISR, ".TI.ramfunc");
-__interrupt void ADCCH6_ISR(void) {
+interrupt void ADCCH6_ISR(void) {
 
     // Acknowledge Interrupt Triggered by ePWM2 SOCA
     AdccRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; // Clear ADCC INT2 flag for channels 23
@@ -189,8 +189,7 @@ __interrupt void ADCCH6_ISR(void) {
 
 }
 
-#pragma CODE_SECTION(EPWM_5_ISR, ".TI.ramfunc");
-__interrupt void EPWM_5_ISR(void) {
+interrupt void EPWM_5_ISR(void) {
 
     // Acknowledge Interrupt Triggered by ePWM5
     EPwm5Regs.ETCLR.bit.INT = 1; // Clear EPWM5 INT flag
@@ -198,8 +197,7 @@ __interrupt void EPWM_5_ISR(void) {
 
 }
 
-#pragma CODE_SECTION(CLA_ISR, ".TI.ramfunc");
-__interrupt void CLA_ISR(void) {
+interrupt void CLA_ISR(void) {
 
     // Acknowledge Interrupt Triggered by end of CLA Task 1
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP11;
@@ -218,11 +216,6 @@ void initMain(void) {
     InitPieCtrl();
     EnableInterrupts();
 
-    GPIO_SetupPinMux(19, GPIO_MUX_CPU1, 2); // Launchpad SCIB RX
-    GPIO_SetupPinOptions(19, GPIO_INPUT, GPIO_PUSHPULL);
-    GPIO_SetupPinMux(18, GPIO_MUX_CPU1, 2); // Launchpad SCIB TX
-    GPIO_SetupPinOptions(18, GPIO_OUTPUT, GPIO_ASYNC);
-
     // Clear Interrupts, Disable CPU __interrupts and clear CPU __interrupt flags
     DINT;
     IER = 0x0000;
@@ -230,6 +223,7 @@ void initMain(void) {
 
     // Initialize PIE Vector Tables with pointers to shell ISRs
     InitPieVectTable();
+    initCPU2();                 // Initialize CPU2
 
     // Connect ISRs to Main Defined Interrupts
     EALLOW;
@@ -244,7 +238,7 @@ void initMain(void) {
     EDIS;
 
     // Initialize CPU2, CLA, Peripherals and FFT Handler
-    initCPU2();                 // Initialize CPU2
+    CLA_configClaMemory();
 //    initSCI();                  // Initialize Serial Communications Interface - UART
     initSPI();                  // Initialize Serial Peripheral Interface
     initCLA();                  // Initialize Control Law Accelerator - CPU1
@@ -284,6 +278,35 @@ void initCPU2(void) {
     DevCfgRegs.CPUSEL11.bit.ADC_B = 1;
     DevCfgRegs.CPUSEL11.bit.ADC_D = 1;
     EDIS;
-//    IPCBootCPU2(C1C2_BROM_BOOTMODE_BOOT_FROM_RAM);
+}
+
+void CLA_configClaMemory(void) {
+    extern uint32_t Cla1funcsRunStart, Cla1funcsLoadStart, Cla1funcsLoadSize;
+    EALLOW;
+
+#ifdef _FLASH
+    //
+    // Copy over code from FLASH to RAM
+    //
+    memcpy((uint32_t *)&Cla1funcsRunStart, (uint32_t *)&Cla1funcsLoadStart,
+           (uint32_t)&Cla1funcsLoadSize);
+#endif //_FLASH
+
+    //
+    // Initialize and wait for CLA1ToCPUMsgRAM
+    //
+    MemCfgRegs.MSGxINIT.bit.INIT_CLA1TOCPU = 1;
+    while(MemCfgRegs.MSGxINITDONE.bit.INITDONE_CLA1TOCPU != 1){};
+
+    //
+    // Initialize and wait for CPUToCLA1MsgRAM
+    //
+    MemCfgRegs.MSGxINIT.bit.INIT_CPUTOCLA1 = 1;
+    while(MemCfgRegs.MSGxINITDONE.bit.INITDONE_CPUTOCLA1 != 1){};
+
+    MemCfgRegs.MSGxINIT.bit.INIT_CPUTOCPU = 1;
+    while(MemCfgRegs.MSGxINITDONE.bit.INITDONE_CPUTOCPU != 1){};
+
+    EDIS;
 }
 

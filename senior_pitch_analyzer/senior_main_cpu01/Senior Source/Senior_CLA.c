@@ -12,16 +12,16 @@
 /*** Control Law Accelerator - CPU1 ***/
 
 #pragma DATA_SECTION(GPIO34_count, "Cla1Data1");
-Uint16 GPIO34_count;
+Uint16 GPIO34_count = 0;
 
 #pragma DATA_SECTION(data, "Cla1Data1");
 Uint32 data[8] = { 0x00000000, // Start
-                   0xE1000000, // Red
-                   0xE1000000, // Green
-                   0xE1000000, // Blue
-                   0xE11F001F, // Purpink
+                   0xE11F1F1F, // Red
+                   0xE11F1F1F, // Green
+                   0xE11F1F1F, // Blue
+                   0xE11F1F1F, // Purpink
                    0xE11F1F1F, // White
-                   0xE0000000, // Off
+                   0xE11F1F1F, // White
                    0xF0000000};// End
 
 #pragma DATA_SECTION(endFrame, "Cla1Data1");
@@ -136,6 +136,7 @@ void initCLA(void) {
 
 }
 
+Uint32 GPIO34_count1 = 0;
 // Blink Red LED on Launchpad as a status indicator for debug (Infinite Loop)
 void run_cla_blinky(void) {
 
@@ -147,9 +148,10 @@ void run_cla_blinky(void) {
     EDIS;
 
     while(1) {
-        if (GPIO34_count > 2500) {                  // Toggle slowly to see the LED blink
+        GPIO34_count1 += 1;
+        if (GPIO34_count1 > 1000) {                  // Toggle slowly to see the LED blink
             GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;  // Toggle the pin
-            GPIO34_count = 0;                       // Reset counter
+            GPIO34_count1 = 0;                       // Reset counter
         }
     }
 

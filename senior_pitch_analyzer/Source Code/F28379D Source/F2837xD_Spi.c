@@ -64,6 +64,7 @@ void InitSpi() {
 //               Comment out other unwanted lines.
 //
 
+#ifdef CPU1
 void InitSpiGpio()
 {
    InitSpiaGpio();
@@ -121,6 +122,8 @@ void InitSpiaGpio()
 
     EDIS;
 }
+
+#endif
 
 //
 // End of file

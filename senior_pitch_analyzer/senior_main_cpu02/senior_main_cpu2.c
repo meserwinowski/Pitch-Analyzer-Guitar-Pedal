@@ -21,6 +21,8 @@ float32 freq_est5;
 #pragma DATA_SECTION(freq_est_cpu2, "FECPU2");
 volatile float32 freq_est_cpu2[7];
 
+Uint32 GPIO34_count1;
+
 // CPU1 Phase Calculations
 volatile float32 phaseOld_1 = 0;
 volatile float32 phaseNew_1 = 0;
@@ -57,12 +59,18 @@ volatile uint16_t CircularBuffer5[CIRC_BUFF_SIZE];
 extern RFFT_F32_STRUCT_Handle handler_rfft2;
 
 // Interrupts
-__interrupt void DMACH1_ISR(void); // Because DMA ISRs are in the same group, the lowest
-__interrupt void DMACH3_ISR(void); // number has priority
-__interrupt void DMACH5_ISR(void);
-__interrupt void ADCCH1_ISR(void);
-__interrupt void ADCCH3_ISR(void);
-__interrupt void ADCCH5_ISR(void);
+#pragma CODE_SECTION(DMACH1_ISR, ".TI.ramfunc");
+interrupt void DMACH1_ISR(void); // Because DMA ISRs are in the same group, the lowest
+#pragma CODE_SECTION(DMACH3_ISR, ".TI.ramfunc");
+interrupt void DMACH3_ISR(void); // number has priority
+#pragma CODE_SECTION(DMACH5_ISR, ".TI.ramfunc");
+interrupt void DMACH5_ISR(void);
+#pragma CODE_SECTION(ADCCH1_ISR, ".TI.ramfunc");
+interrupt void ADCCH1_ISR(void);
+#pragma CODE_SECTION(ADCCH3_ISR, ".TI.ramfunc");
+interrupt void ADCCH3_ISR(void);
+#pragma CODE_SECTION(ADCCH5_ISR, ".TI.ramfunc");
+interrupt void ADCCH5_ISR(void);
 
 // Functions
 void initMain(void);
@@ -119,8 +127,7 @@ int main(void) {
     return FAIL;
 }
 
-#pragma CODE_SECTION(DMACH1_ISR, ".TI.ramfunc");
-__interrupt void DMACH1_ISR(void) {
+interrupt void DMACH1_ISR(void) {
 
     // Move DMA Buffer Pointer
     x1 = (x1 + DMA_BUFFER_SIZE) & CIRC_MASK;
@@ -132,8 +139,7 @@ __interrupt void DMACH1_ISR(void) {
 
 }
 
-#pragma CODE_SECTION(DMACH3_ISR, ".TI.ramfunc");
-__interrupt void DMACH3_ISR(void) {
+interrupt void DMACH3_ISR(void) {
 
     // Move DMA Buffer Pointer
     x3 = (x3 + DMA_BUFFER_SIZE) & CIRC_MASK;
@@ -145,8 +151,7 @@ __interrupt void DMACH3_ISR(void) {
 
 }
 
-#pragma CODE_SECTION(DMACH5_ISR, ".TI.ramfunc");
-__interrupt void DMACH5_ISR(void) {
+interrupt void DMACH5_ISR(void) {
 
     // Move DMA Buffer Pointer
     x5 = (x5 + DMA_BUFFER_SIZE) & CIRC_MASK;
@@ -158,16 +163,14 @@ __interrupt void DMACH5_ISR(void) {
 
 }
 
-#pragma CODE_SECTION(ADCCH1_ISR, ".TI.ramfunc");
-__interrupt void ADCCH1_ISR(void) {
+interrupt void ADCCH1_ISR(void) {
 
     // Acknowledge Interrupt Triggered by ePWM4 SOCB
     AdcdRegs.ADCINTFLGCLR.bit.ADCINT2 = 1; // clear ADCD INT2 flag for channels 23
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP10;
 }
 
-#pragma CODE_SECTION(ADCCH3_ISR, ".TI.ramfunc");
-__interrupt void ADCCH3_ISR(void) {
+interrupt void ADCCH3_ISR(void) {
 
     // Acknowledge Interrupt Triggered by ePWM4 SOCA
     AdcdRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; // Clear ADCD INT1 flag for channels 01
@@ -175,8 +178,7 @@ __interrupt void ADCCH3_ISR(void) {
 
 }
 
-#pragma CODE_SECTION(ADCCH5_ISR, ".TI.ramfunc");
-__interrupt void ADCCH5_ISR(void) {
+interrupt void ADCCH5_ISR(void) {
 
     // Acknowledge Interrupt Triggered by ePWM3 SOCA
     AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; // Clear ADCB INT1 flag for channels 01
@@ -221,6 +223,15 @@ void initMain(void) {
     initDMAx(&CircularBuffer5[0], &AdcbResultRegs.ADCRESULT0, DMA_ADCBINT1, 5);
     initEPWM();
     initFFT(handler_rfft2);
+
+    GPIO34_count1 = 0;
+    while(1) {
+        GPIO34_count1 += 1;
+//        if (GPIO34_count1 > 1000000) {                  // Toggle slowly to see the LED blink
+//            GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;  // Toggle the pin
+//            GPIO34_count1 = 0;                       // Reset counter
+//        }
+    }
 
     // Enable global Interrupts and higher priority real-time debug events
     EINT;  // Enable Global interrupt INTM

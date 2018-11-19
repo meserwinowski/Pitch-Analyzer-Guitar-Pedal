@@ -62,6 +62,7 @@ PAGE 1: /*** Data Memory ***/
 
    CPU2TOCPU1RAM   : origin = 0x03F800, length = 0x000400
    CPU1TOCPU2RAM   : origin = 0x03FC00, length = 0x000400
+
 }
 
 --define RFFT_ALIGNMENT=2048
@@ -71,33 +72,30 @@ PAGE 1: /*** Data Memory ***/
 
 SECTIONS
 {
-   /* The ramfunc attribute is a TI compiler feature which allows code to easily specify
-    that a function will be placed in and executed out of RAM. This allows the compiler to
-    optimize functions for RAM execution, as well as to automatically copy functions to
-    RAM on flash-based devices. */
-   ramfuncs         : > RAMM0      PAGE = 0
-   .TI.ramfunc 		: {} > RAMM0,  PAGE = 0
-
-//#ifdef __TI_COMPILER_VERSION__
-	//#if __TI_COMPILER_VERSION__ >= 15009000
-		//.TI.ramfunc : {} > RAMM0,  PAGE = 0
-   //#else
-   	//	ramfuncs    : > RAMM0,     PAGE = 0
-   //#endif
-//#endif
-
    /*** Allocate Program Areas ***/
    codestart        : > BEGIN,     PAGE = 0
-   //.cinit			: > FLASHB,	   PAGE = 0 // Tables which initialize global variables
    .cinit			: > RAMGS9,    PAGE = 1 /* Tables which initialize global variables */
    .pinit           : > RAMM0,     PAGE = 0 /* Table of C++ contructors called at startup */
    .text            : >>RAMD0 | RAMD1 |
    					    RAMLS0 | RAMLS1 | RAMLS2 | RAMLS3 | RAMLS4,   PAGE = 0 /* Executable Code */
+   /* The ramfunc attribute is a TI compiler feature which allows code to easily specify
+    that a function will be placed in and executed out of RAM. This allows the compiler to
+    optimize functions for RAM execution, as well as to automatically copy functions to
+    RAM on flash-based devices. */
+   ramfuncs         : > RAMM0,     PAGE = 0
+   .TI.ramfunc 		: {} > RAMM0,  PAGE = 0
+
+#ifdef __TI_COMPILER_VERSION__
+   #if __TI_COMPILER_VERSION__ >= 15009000
+    .TI.ramfunc 	: {} > RAMM0,  PAGE = 0
+   #else
+    ramfuncs    	: > RAMM0,	   PAGE = 0
+   #endif
+#endif
 
    /*** Uninitialized Sections ***/
    .stack           : > RAMM1,     PAGE = 0 /* System Stack */
-   //.ebss            : >>FLASHF | FLASHG,    PAGE = 0 /* Global Variables */
-   .ebss			: > RAMGS10,   PAGE = 1 /* Global Variables */
+   .ebss			: > RAMLS4,    PAGE = 0 /* Global Variables */
    .esysmem         : > RAMLS5,    PAGE = 0 /* Malloc Heap */
 
    /*** Initialized Sections ***/
@@ -157,7 +155,7 @@ SECTIONS
    //Cla1Data2        : > RAMLS2,     PAGE = 0        /* Link to CLA Data RAM */
    Cla1Prog         : > RAMLS2,     PAGE = 0        /* Link to CLA Program RAM */
 
-   //FECPU2			: > CPU2TOCPU1RAM, PAGE = 1
+   FECPU2			: > CPU2TOCPU1RAM, PAGE = 1
 }
 
 /*

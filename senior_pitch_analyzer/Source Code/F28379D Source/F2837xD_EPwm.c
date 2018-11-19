@@ -68,6 +68,7 @@ void InitEPwmGpio(void)
 //
 // InitEPwm1Gpio - Initialize EPWM1 GPIOs
 //
+#ifdef CPU1
 void InitEPwm1Gpio(void)
 {
     EALLOW;
@@ -434,3 +435,5 @@ void InitEPwm12Gpio(void)
 
     EDIS;
 }
+
+#endif

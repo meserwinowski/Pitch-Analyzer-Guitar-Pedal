@@ -71,20 +71,20 @@ interrupt void Cla1Task1 (void) {
 //    temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
 //    temp++;
 
-    if (iter % 50 == 0) {
-        red++;
-        blue++;
-        green++;
-    }
-    iter++;
-
-    data[1] = (red % 0x3F);
-    data[1] |= bright;
-    data[2] = ((green % 0x3F) << 8);
-    data[2] |= bright;
-    b = (blue % 0x3F) << 8;
-    data[3] = (b << 8);
-    data[3] |= bright;
+//    if (iter % 50 == 0) {
+//        red++;
+//        blue++;
+//        green++;
+//    }
+//    iter++;
+//
+//    data[1] = (red % 0x3F);
+//    data[1] |= bright;
+//    data[2] = ((green % 0x3F) << 8);
+//    data[2] |= bright;
+//    b = (blue % 0x3F) << 8;
+//    data[3] = (b << 8);
+//    data[3] |= bright;
 
 }
 

@@ -21,6 +21,8 @@
 
 // Function Prototypes
 void initFFT(RFFT_F32_STRUCT_Handle handler_rfft);
+
+//#pragma CODE_SECTION(vocodeAnalysis, ".TI.ramfunc");
 float32 vocodeAnalysis(volatile float32* phase1,
                        volatile float32* phase2,
                        RFFT_F32_STRUCT_Handle handler_rfft);

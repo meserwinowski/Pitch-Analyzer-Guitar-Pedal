@@ -1,4 +1,15 @@
 eclipse.preferences.version=1
+encoding//FLASH_DEBUG/Linker/subdir_rules.mk=UTF-8
+encoding//FLASH_DEBUG/Linker/subdir_vars.mk=UTF-8
+encoding//FLASH_DEBUG/Senior\ Source/subdir_rules.mk=UTF-8
+encoding//FLASH_DEBUG/Senior\ Source/subdir_vars.mk=UTF-8
+encoding//FLASH_DEBUG/Source/subdir_rules.mk=UTF-8
+encoding//FLASH_DEBUG/Source/subdir_vars.mk=UTF-8
+encoding//FLASH_DEBUG/makefile=UTF-8
+encoding//FLASH_DEBUG/objects.mk=UTF-8
+encoding//FLASH_DEBUG/sources.mk=UTF-8
+encoding//FLASH_DEBUG/subdir_rules.mk=UTF-8
+encoding//FLASH_DEBUG/subdir_vars.mk=UTF-8
 encoding//RAM_DEBUG/Linker/subdir_rules.mk=UTF-8
 encoding//RAM_DEBUG/Linker/subdir_vars.mk=UTF-8
 encoding//RAM_DEBUG/Senior\ Source/subdir_rules.mk=UTF-8

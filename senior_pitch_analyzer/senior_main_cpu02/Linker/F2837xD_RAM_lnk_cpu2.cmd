@@ -9,6 +9,9 @@ PAGE 0 :
    RAMM0		: origin = 0x000122, length = 0x0002DE
    RAMM1		: origin = 0x000400, length = 0x000400  /* on-chip RAM block M1 */
 
+   CLA1_MSGRAML : origin = 0x001480, length = 0x000080  /* CLA to CPU Message RAM, DCSM secure */
+   CLA1_MSGRAMH : origin = 0x001500, length = 0x000080  /* CPU to CLA Message RAM, DCSM secure */
+
    /*** Local Shared Memory ***/
    RAMLS0		: origin = 0x008000, length = 0x000800
    RAMLS1		: origin = 0x008800, length = 0x000800
@@ -70,6 +73,12 @@ PAGE 1: /*** Data Memory ***/
 
 SECTIONS
 {
+   /*** Allocate Program Areas ***/
+   codestart        : > BEGIN,     PAGE = 0
+   .cinit			: > RAMLS3,    PAGE = 0 /* Tables which initialize global variables */
+   .pinit           : > RAMM0,     PAGE = 0 /* Table of C++ contructors called at startup */
+   .text            : >>RAMD0 | RAMD1 |  RAMLS0 | RAMLS1 | RAMLS2 | RAMLS3 | RAMLS4,   PAGE = 0 // Executable Code
+
    /* The ramfunc attribute is a TI compiler feature which allows code to easily specify
     that a function will be placed in and executed out of RAM. This allows the compiler to
     optimize functions for RAM execution, as well as to automatically copy functions to
@@ -79,31 +88,23 @@ SECTIONS
 
 #ifdef __TI_COMPILER_VERSION__
    #if __TI_COMPILER_VERSION__ >= 15009000
-   	.TI.ramfunc 		: {} > RAMM0,  PAGE = 0
+   	.TI.ramfunc 	: {} > RAMM0,  PAGE = 0
    #else
-   	ramfuncs    		: > RAMM0,     PAGE = 0
+   	ramfuncs    	: > RAMM0,     PAGE = 0
    #endif
 #endif
 
-   /*** Allocate Program Areas ***/
-   codestart        : > BEGIN,     PAGE = 0
-   //.cinit			: > FLASHB,	   PAGE = 0 // Tables which initialize global variables
-   .cinit			: > RAMLS3,   PAGE = 0
-   .pinit           : > RAMM0,     PAGE = 0 // Table of C++ contructors called at startup
-   .text            : >>RAMD0 | RAMD1 |  RAMLS0 | RAMLS1 | RAMLS2 | RAMLS3 | RAMLS4,   PAGE = 0 // Executable Code
-
    /*** Uninitialized Sections ***/
-   .stack           : > RAMM1,     PAGE = 0 // System Stack
-   //.ebss            : >>FLASHF | FLASHG,    PAGE = 0 // Global Variables
-   .ebss			: > RAMLS4,   PAGE = 0
-   .esysmem         : > RAMLS5,    PAGE = 0 // Malloc Heap
+   .stack           : > RAMM1,     PAGE = 0 /* System Stack */
+   .ebss			: > RAMLS4,    PAGE = 0 /* Global Variables */
+   .esysmem         : > RAMLS5,    PAGE = 0 /* Malloc Heap */
 
    /*** Initialized Sections ***/
-   .switch          : > RAMM0,     PAGE = 0 // Jump Tables for certain switch statements
-   .econst          : > RAMLS5,    PAGE = 0 // Initialized Global Variables
+   .switch          : > RAMM0,     PAGE = 0 /* Jump Tables for certain switch statements */
+   .econst          : > RAMLS5,    PAGE = 0 /* Initialized Global Variables */
 
    /*** Reset - Dummy Sections ***/
-   .reset           : > RESET,     PAGE = 0, TYPE = DSECT /* not used, */
+   .reset           : > RESET,     PAGE = 0, TYPE = DSECT /* Not used */
 
     /*** The following section definitions are required when using the IPC API Drivers ***/
     GROUP : > CPU2TOCPU1RAM, PAGE = 1

@@ -82,28 +82,16 @@ SECTIONS
 
    /*** Uninitialized Sections ***/
    .stack              : > RAMM1,		PAGE = 0 /* System Stack */
-   .ebss               : > RAMLS5,		PAGE = 0 /* Global Variables */
+   .ebss               : > RAMLS4,		PAGE = 0 /* Global Variables */
    .esysmem            : > RAMLS5,		PAGE = 0 /* Malloc Heap */
    .cio				   : > RAMLS5,		PAGE = 0
 
    /*** Initialized Sections - Goes in Flash ***/
-   .econst             : >>FLASHF | FLASHG | FLASHH, 	PAGE = 0, ALIGN(4) /* Initialized Global Variables */
-   .switch             : > FLASHB,						PAGE = 0, ALIGN(4) /* Jump Tables for certain switch statements */
+   .switch             : > FLASHB,					PAGE = 0, ALIGN(4) /* Jump Tables for certain switch statements */
+   .econst             : >>FLASHF | FLASHG | FLASHH,PAGE = 0, ALIGN(4) /* Initialized Global Variables */
 
    /*** Reset - Dummy Sections ***/
    .reset              : > RESET,     	PAGE = 0, TYPE = DSECT /* Not used */
-
-   /*** CLA Compiler Required Sections ***/
-   .scratchpad         : > RAMLS0,    	PAGE = 0 /* Scratchpad memory for the CLA C Compiler */
-
-       /* CLA specific sections */
-   Cla1Prog         : LOAD = FLASHD,
-                      RUN = RAMLS2,
-                      LOAD_START(_Cla1funcsLoadStart),
-                      LOAD_END(_Cla1funcsLoadEnd),
-                      RUN_START(_Cla1funcsRunStart),
-                      LOAD_SIZE(_Cla1funcsLoadSize),
-                      PAGE = 0, ALIGN(4)
 
    /* The ramfunc attribute is a TI compiler feature which allows code to easily specify
     that a function will be placed in and executed out of RAM. This allows the compiler to
@@ -133,7 +121,7 @@ SECTIONS
                          PAGE = 0, ALIGN(4)
    #endif
 #endif
-
+   
    /*** The following section definitions are required when using the IPC API Drivers ***/
     GROUP : > CPU1TOCPU2RAM, PAGE = 1 
     {
@@ -173,13 +161,6 @@ SECTIONS
    CircBuff1		: > RAMGS7,		PAGE = 1 // CPU2
    CircBuff3		: > RAMGS7,		PAGE = 1
    CircBuff5		: > RAMGS8,		PAGE = 1
-
-   /*** CLA Memory Regions ***/
-   Cla1ToCpuMsgRAM  : > CLA1_MSGRAML,	PAGE = 0    /* Link to CLA Message RAM */
-   CpuToCla1MsgRAM  : > CLA1_MSGRAMH,	PAGE = 0	/* Link to CLA Message RAM */
-   Cla1Data1        : > RAMLS1,     	PAGE = 0    /* Link to CLA Data RAM */
-   //Cla1Data2        : > RAMLS2,     PAGE = 0        /* Link to CLA Data RAM */
-   //Cla1Prog         : > RAMLS2,     	PAGE = 0    /* Link to CLA Program RAM */
 
    FECPU2			: > CPU2TOCPU1RAM, PAGE = 1
 

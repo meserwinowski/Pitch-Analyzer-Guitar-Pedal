@@ -21,8 +21,8 @@
 #include "F2837xD_device.h"
 #include "F2837xD_Examples.h"
 
-#define STATUS_FAIL          0
-#define STATUS_SUCCESS       1
+//#define STATUS_FAIL          0
+//#define STATUS_SUCCESS       1
 
 //
 // Functions that will be run from RAM need to be assigned to a different
@@ -36,8 +36,8 @@
 //  AN EXCEPTION WHEN A CALL TO DELAY_US() IS MADE.
 //
 #ifndef __cplusplus
-#pragma CODE_SECTION(InitFlash, "ramfuncs");
-#pragma CODE_SECTION(FlashOff, "ramfuncs");
+#pragma CODE_SECTION(InitFlash, ".TI.ramfunc");
+#pragma CODE_SECTION(FlashOff, ".TI.ramfunc");
 #endif
 
 //
@@ -276,7 +276,7 @@ void DisablePeripheralClocks(void)
 // will yield unpredictable results.
 //
 #ifdef __cplusplus
-#pragma CODE_SECTION("ramfuncs");
+#pragma CODE_SECTION(".TI.ramfunc");
 #endif
 void InitFlash(void)
 {
@@ -358,7 +358,7 @@ void InitFlash(void)
 // order to power it down.
 //
 #ifdef __cplusplus
-#pragma CODE_SECTION("ramfuncs");
+#pragma CODE_SECTION(".TI.ramfunc");
 #endif
 void FlashOff(void)
 {

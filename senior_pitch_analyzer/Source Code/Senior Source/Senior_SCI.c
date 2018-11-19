@@ -16,6 +16,11 @@ Uint16 LoopCount;
 /*** Serial Communication Interface ***/
 void initSCI(void) {
 
+    GPIO_SetupPinMux(19, GPIO_MUX_CPU1, 2); // Launchpad SCIB RX
+    GPIO_SetupPinOptions(19, GPIO_INPUT, GPIO_PUSHPULL);
+    GPIO_SetupPinMux(18, GPIO_MUX_CPU1, 2); // Launchpad SCIB TX
+    GPIO_SetupPinOptions(18, GPIO_OUTPUT, GPIO_ASYNC);
+
     Uint16 ReceivedChar;
     char *msg;
 
