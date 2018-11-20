@@ -7,89 +7,126 @@
 
 #include "F28379D_Senior_Design.h"
 
-extern Uint16 GPIO34_count;
+extern uint16_t GPIO34_count;
 
-extern Uint16 red;
-extern Uint16 green;
-extern Uint16 blue;
-extern Uint32 bright;
-extern Uint16 iter;
-extern Uint32 data[24];
-extern Uint16 dataLength;
-extern Uint32 startFrame[4];
-extern Uint16 startLength;
-extern Uint32 endFrame[4];
-extern Uint16 endLength;
+extern volatile LED_DATA frameLUT[6][25];
+extern volatile float32 fo_n_cpu1[7];
 
 /**********************************************************************
-* Task: CLA Task 1
+* Task: CLA Task 1 - Update LUT, Output display frame to LED Matrix - Increment Status LED
 **********************************************************************/
 interrupt void Cla1Task1 (void) {
-    Uint16 i;
-    Uint16 j;
-    Uint32 rdata;
-    Uint16 temp;
-    Uint32 b;
-    Uint16 fret;
+    uint16_t i;         // Local variables for indexing
+    uint16_t j;
+    uint16_t fret;
+    int16_t string;
+    int16_t note_index;
+    uint32_t LEDdata;   // Holds LED data
+    uint_fast8_t temp;      // Temporary variable for reading SPI RX
 
-    GPIO34_count += 1;
+//    __mdebugstop();     // Debug Stop
 
-    __mdebugstop();
-
-    // Send Data
-    rdata = data[0];
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 4; j++) {
-            SpiaRegs.SPITXBUF = ((rdata & 0xFF000000) >> 16); // Fill Transmit Buffer
-            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
-            temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
-            rdata = rdata << 8;
+    /* Update LUT */
+    for (string = 1; string < 7; string++) {
+        note_index = (int16_t) fo_n_cpu1[string];
+        if (note_index >= 1) {
+            frameLUT[string - 1][note_index].red = 0x1F;
         }
-    }
-    for (fret = 0; fret < 24; fret++) {
-        for (i = 1; i < dataLength - 1; i++) {
-            rdata = data[i];
-            for (j = 0; j < 4; j++) {
-                SpiaRegs.SPITXBUF = ((rdata & 0xFF000000) >> 16); // Fill Transmit Buffer
-                while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
-                temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
-                rdata = rdata << 8;
+        else if (note_index == 0) {
+//            __mdebugstop();     // Debug Stop
+            for (i = 0; i < 25; i++) {
+                frameLUT[string - 1][i].red = 0x00;
+                frameLUT[string - 1][i].green = 0x00;
+
             }
         }
     }
-    rdata = data[7];
+
+    /* Send Start Frame */
+    LEDdata = START_FRAME;
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 4; j++) {
-            SpiaRegs.SPITXBUF = ((rdata & 0xFF000000) >> 16); // Fill Transmit Buffer
-            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
-            temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
-            rdata = rdata << 8;
+            // Fill Transmit Buffer
+            SpiaRegs.SPITXBUF = ((LEDdata & 0xFF000000) >> 16);
+
+            // Wait for Receive Buffer to Fill
+            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1);
+
+            // Read Receive Buffer
+            temp = SpiaRegs.SPIRXBUF;
+
+            // Shift data for next byte
+            LEDdata = LEDdata << 8;
         }
     }
-//    SpiaRegs.SPITXBUF = (0x11 << 8); // Fill Transmit Buffer
-//    while(SpiaRegs.SPIFFRX.bit.RXFFST != 1); // Wait for Receive Buffer to Fill
-//    temp = SpiaRegs.SPIRXBUF; // Read Receive Buffer
-//    temp++;
 
-//    if (iter % 50 == 0) {
-//        red++;
-//        blue++;
-//        green++;
-//    }
-//    iter++;
-//
-//    data[1] = (red % 0x3F);
-//    data[1] |= bright;
-//    data[2] = ((green % 0x3F) << 8);
-//    data[2] |= bright;
-//    b = (blue % 0x3F) << 8;
-//    data[3] = (b << 8);
-//    data[3] |= bright;
+    /* Send LUT Data */
+    for (fret = 1; fret < 25; fret++) {
+        string = 5;
+        for (string = 5; string >= 0; string--) {
+            SpiaRegs.SPITXBUF = frameLUT[string][fret].sbright << 8;
+            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1);
+            temp = SpiaRegs.SPIRXBUF;
+            SpiaRegs.SPITXBUF = frameLUT[string][fret].blue << 8;
+            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1);
+            temp = SpiaRegs.SPIRXBUF;
+            SpiaRegs.SPITXBUF = frameLUT[string][fret].green << 8;
+            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1);
+            temp = SpiaRegs.SPIRXBUF;
+            SpiaRegs.SPITXBUF = frameLUT[string][fret].red << 8;
+            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1);
+            temp = SpiaRegs.SPIRXBUF;
+        }
+    }
+
+    /* Send End Frame */
+    LEDdata = END_FRAME;
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 4; j++) {
+            // Fill Transmit Buffer
+            SpiaRegs.SPITXBUF = ((LEDdata & 0xFF000000) >> 16);
+
+            // Wait for Receive Buffer to Fill
+            while(SpiaRegs.SPIFFRX.bit.RXFFST != 1);
+
+            // Read Receive Buffer
+            temp = SpiaRegs.SPIRXBUF;
+
+            // Shift data for next byte
+            LEDdata = LEDdata << 8;
+        }
+    }
+
+    /* Decay LUT Data */
+    if ((GPIO34_count & 0x255) == 1) {
+        __mdebugstop();     // Debug Stop
+        for (fret = 1; fret < 25; fret++) {
+            __mdebugstop();     // Debug Stop
+            for (string = 0; string < 6; string++) {
+                __mdebugstop();     // Debug Stop
+                temp = frameLUT[string][fret].blue;
+                if (temp > 0) {
+                    frameLUT[string][fret].blue--;
+                }
+    //            temp = frameLUT[string][fret].blue;
+    //            if (temp > 0) {
+    //                frameLUT[string][fret].blue = temp - 1;
+    //            }
+    //            temp = frameLUT[string][fret].green;
+    //            if (temp > 0) {
+    //                frameLUT[string][fret].green = temp - 1;
+    //            }
+            }
+        }
+    }
+
+    /* Increment Count for Status LED */
+    GPIO34_count += 1;
 
 }
 
 /**********************************************************************
-* Task: CLA Task 2
+* Task: CLA Task 2 - Decay brightness in LUT
 **********************************************************************/
 interrupt void Cla1Task2 (void) {
 

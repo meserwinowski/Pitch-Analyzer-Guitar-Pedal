@@ -24,6 +24,18 @@ volatile float32 smallest;               // Temporary Loop value to hold the sma
 volatile float32 nSmall = 0;             // Pi value of smallest difference iteration
 volatile float32 n2pi = 0;               // 2 Pi Accumulator variable
 
+// Fixed String Frequencies
+float32 fn[7] = { 0,
+                  82.41,     // E4 - String 1
+                  110.0,     // B3 - String 2
+                  146.83,    // G3 - String 3
+                  195.998,   // D3 - String 4
+                  246.94,    // A2 - String 5
+                  329.63};   // E2 - String 6
+
+#pragma DATA_SECTION(fo_n_cpu2, "FECPU2");
+volatile float32 fo_n_cpu2[7];
+
 // Initialize and Define Windowing Filter
 #pragma DATA_SECTION(RFFTwindow, "RFFTwindow");
 float32 RFFTwindow[RFFT_SIZE/2] = HANN1024;
@@ -136,6 +148,9 @@ float32 vocodeAnalysis(volatile float32* phase1, volatile float32* phase2,
 
     // Calculate frequency normally for comparison later
     resFFT = (((float32) magIndex) / RFFT_SIZE) * NYQT_FREQ;
+    if (resFFT < 55) {
+        return -1;
+    }
 
     // Save phase value at the same index as maximum magnitude
     *phase2 = handler_rfft->PhaseBuf[magIndex];

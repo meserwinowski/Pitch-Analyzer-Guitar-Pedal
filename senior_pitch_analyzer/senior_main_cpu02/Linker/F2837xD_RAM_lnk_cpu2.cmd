@@ -1,10 +1,14 @@
+--define RFFT_ALIGNMENT=2048
+#if !defined(RFFT_ALIGNMENT)
+#error define RFFT_ALIGNMENT under C2000 Linker -> Advanced Options -> Command File Preprocessing -> --define
+#endif
 
 MEMORY
 {
 PAGE 0 :
 /*** BEGIN is used for the "boot to SARAM" bootloader mode   ***/
    BEGIN		: origin = 0x000000, length = 0x000002
-   BOOT_RSVD	: origin = 0x000002, length = 0x000120  /* Part of M0, BOOT rom will use this for stack */
+   BOOT_RSVD	: origin = 0x000002, length = 0x00007E  /* Part of M0, BOOT rom will use this for stack */
 
    RAMM0		: origin = 0x000122, length = 0x0002DE
    RAMM1		: origin = 0x000400, length = 0x000400  /* on-chip RAM block M1 */
@@ -65,11 +69,6 @@ PAGE 1: /*** Data Memory ***/
    CPU1TOCPU2RAM   	: origin = 0x03FC00, length = 0x000400
 
 }
-
---define RFFT_ALIGNMENT=2048
-#if !defined(RFFT_ALIGNMENT)
-#error define RFFT_ALIGNMENT under C2000 Linker -> Advanced Options -> Command File Preprocessing -> --define
-#endif
 
 SECTIONS
 {

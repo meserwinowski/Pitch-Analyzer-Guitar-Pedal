@@ -14,7 +14,10 @@ float32 freq_est2;
 float32 freq_est4;
 float32 freq_est6;
 
-volatile float32 freq_est_cpu1[7];
+volatile float32 fo_est_cpu1[7];
+extern volatile float32 fo_n_cpu1[7];
+extern volatile float32 fo_n_cpu2[7];
+extern float32 fn[7];
 
 // CPU1 Phase Calculations
 volatile float32 phaseOld_2 = 0;
@@ -66,13 +69,15 @@ interrupt void ADCCH4_ISR(void);
 interrupt void ADCCH6_ISR(void);
 #pragma CODE_SECTION(EPWM_5_ISR, ".TI.ramfunc");
 interrupt void EPWM_5_ISR(void);
-#pragma CODE_SECTION(CLA_ISR, ".TI.ramfunc");
-interrupt void CLA_ISR(void);
+#pragma CODE_SECTION(CLA_ISR1, ".TI.ramfunc");
+interrupt void CLA_ISR1(void);
+
+#pragma DATA_SECTION(GPIO34_count, "Cla1Data1");
+uint16_t GPIO34_count = 0;
 
 // Functions
 void initMain(void);
 void initCPU2(void);
-void CLA_configClaMemory(void);
 
 // Main Routine
 int main(void) {
@@ -80,8 +85,8 @@ int main(void) {
     initMain();
 
     while(1) {
-        // Sync CPUs across flag 0
-        IpcSync(0);
+        // Sync CPUs using IPC API and IPC Flag 0
+//        IpcSync(0);
 
         if (done2) { // String 2
             // Fill FFT Input Buffer with new values
@@ -92,7 +97,8 @@ int main(void) {
 
             // Pass in phases by reference
 //            freq_est2 = vocodeAnalysis(&phaseOld_2, &phaseNew_2, handler_rfft1);
-            freq_est_cpu1[2] = vocodeAnalysis(&phaseOld_2, &phaseNew_2, handler_rfft1);
+            fo_est_cpu1[2] = vocodeAnalysis(&phaseOld_2, &phaseNew_2, handler_rfft1);
+            fo_n_cpu2[2] = roundf(logf(fn[2] / fo_est_cpu1[2]) / logf(ETSE_CONSTANT));
             done2 = 0;
         }
         if (done4) { // String 4
@@ -104,7 +110,8 @@ int main(void) {
 
             // Pass in phases by reference
 //            freq_est4 = vocodeAnalysis(&phaseOld_4, &phaseNew_4, handler_rfft1);
-            freq_est_cpu1[4] = vocodeAnalysis(&phaseOld_4, &phaseNew_4, handler_rfft1);
+            fo_est_cpu1[4] = vocodeAnalysis(&phaseOld_4, &phaseNew_4, handler_rfft1);
+            fo_n_cpu2[4] = roundf(logf(fn[4] / fo_est_cpu1[4]) / logf(ETSE_CONSTANT));
             done4 = 0;
         }
         if (done6) { // String 6
@@ -116,18 +123,32 @@ int main(void) {
 
             // Pass in phases by reference
 //            freq_est6 = vocodeAnalysis(&phaseOld_6, &phaseNew_6, handler_rfft1);
-            freq_est_cpu1[6] = vocodeAnalysis(&phaseOld_6, &phaseNew_6, handler_rfft1);
+            fo_est_cpu1[6] = vocodeAnalysis(&phaseOld_6, &phaseNew_6, handler_rfft1);
+            fo_n_cpu2[6] = roundf(logf(fn[6] / fo_est_cpu1[6]) / logf(ETSE_CONSTANT));
             done6 = 0;
         }
 
-//        for (int i = 1; i < 7; i+2) {
-//            freq_est_cpu1[i] =
-//        }
 
+        if (GPIO34_count > 250) {                  // Toggle slowly to see the LED blink
+            GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;  // Toggle the pin
+            GPIO34_count = 0;                       // Reset counter
+            for (int i = 1; i < 7; i++) {
+                fo_n_cpu1[i]++;
+                if(fo_n_cpu1[i] == 25) {
+                    fo_n_cpu1[i] = 0;
+                }
+            }
+
+        }
+
+//        fo_n_cpu1[1] = fo_n_cpu2[1];
+//        fo_n_cpu1[2] = fo_n_cpu2[2];
+//        fo_n_cpu1[3] = fo_n_cpu2[3];
+//        fo_n_cpu1[4] = fo_n_cpu2[4];
+//        fo_n_cpu1[5] = fo_n_cpu2[5];
+//        fo_n_cpu1[6] = fo_n_cpu2[6];
     }
 
-    ESTOP0;
-    return FAIL;
 }
 
 interrupt void DMACH2_ISR(void) {
@@ -197,9 +218,10 @@ interrupt void EPWM_5_ISR(void) {
 
 }
 
-interrupt void CLA_ISR(void) {
+interrupt void CLA_ISR1(void) {
 
     // Acknowledge Interrupt Triggered by end of CLA Task 1
+    Cla1ForceTask2andWait()
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP11;
 
 }
@@ -223,7 +245,7 @@ void initMain(void) {
 
     // Initialize PIE Vector Tables with pointers to shell ISRs
     InitPieVectTable();
-    initCPU2();                 // Initialize CPU2
+//    initCPU2();                 // Initialize CPU2
 
     // Connect ISRs to Main Defined Interrupts
     EALLOW;
@@ -234,32 +256,39 @@ void initMain(void) {
     PieVectTable.ADCA2_INT = &ADCCH4_ISR;
     PieVectTable.ADCC1_INT = &ADCCH6_ISR;
     PieVectTable.EPWM5_INT = &EPWM_5_ISR;
-    PieVectTable.CLA1_1_INT = &CLA_ISR;
+    PieVectTable.CLA1_1_INT = &CLA_ISR1;
     EDIS;
 
     // Initialize CPU2, CLA, Peripherals and FFT Handler
-    CLA_configClaMemory();
 //    initSCI();                  // Initialize Serial Communications Interface - UART
     initSPI();                  // Initialize Serial Peripheral Interface
     initCLA();                  // Initialize Control Law Accelerator - CPU1
     initEPWM();                 // Initialize Enchanced Pulse Width Modulation Channels
 
-//    initADC();                  // Initialize Analog-to-Digital Convertors
-//    initDMA();                  // Initialize Direct Memory Access Channels
-//    initDMAx(&CircularBuffer2[0], &AdcaResultRegs.ADCRESULT0, DMA_ADCAINT1, 2);
-//    initDMAx(&CircularBuffer4[0], &AdcaResultRegs.ADCRESULT1, DMA_ADCAINT2, 4);
-//    initDMAx(&CircularBuffer6[0], &AdccResultRegs.ADCRESULT0, DMA_ADCCINT1, 6);
-//    initFFT(handler_rfft1);     // Initialize Fast Fourier Transform Handler
+    initADC();                  // Initialize Analog-to-Digital Convertors
+    initDMA();                  // Initialize Direct Memory Access Channels
+    initDMAx(&CircularBuffer2[0], &AdcaResultRegs.ADCRESULT0, DMA_ADCAINT1, 2);
+    initDMAx(&CircularBuffer4[0], &AdcaResultRegs.ADCRESULT1, DMA_ADCAINT2, 4);
+    initDMAx(&CircularBuffer6[0], &AdccResultRegs.ADCRESULT0, DMA_ADCCINT1, 6);
+    initFFT(handler_rfft1);     // Initialize Fast Fourier Transform Handler
 
     // Enable global Interrupts and higher priority real-time debug events
     EINT;  // Enable Global interrupt INTM
     ERTM;  // Enable Global real-time interrupt DBGM
 
-    run_cla_blinky();
+    fo_n_cpu1[1] = 5;
+    fo_n_cpu1[2] = 6;
+    fo_n_cpu1[3] = 7;
+    fo_n_cpu1[4] = 8;
+    fo_n_cpu1[5] = 9;
+    fo_n_cpu1[6] = 10;
+
 }
 
 void initCPU2(void) {
+
     EALLOW;
+
     // Transfer Memory Control to CPU2
     MemCfgRegs.MSGxINIT.bit.INIT_CPUTOCPU = 1;
     MemCfgRegs.GSxMSEL.bit.MSEL_GS2 = 1;    // RFFT2 Buffers
@@ -273,40 +302,22 @@ void initCPU2(void) {
     DevCfgRegs.CPUSEL0.bit.EPWM3 = 1;
     DevCfgRegs.CPUSEL0.bit.EPWM4 = 1;
 
-//    DevCfgRegs.CPUSEL5.bit.SCI_B = 1;
-
+    // Transfer ADC Control to CPU2
     DevCfgRegs.CPUSEL11.bit.ADC_B = 1;
     DevCfgRegs.CPUSEL11.bit.ADC_D = 1;
-    EDIS;
-}
 
-void CLA_configClaMemory(void) {
-    extern uint32_t Cla1funcsRunStart, Cla1funcsLoadStart, Cla1funcsLoadSize;
-    EALLOW;
-
-#ifdef _FLASH
-    //
-    // Copy over code from FLASH to RAM
-    //
-    memcpy((uint32_t *)&Cla1funcsRunStart, (uint32_t *)&Cla1funcsLoadStart,
-           (uint32_t)&Cla1funcsLoadSize);
-#endif //_FLASH
-
-    //
-    // Initialize and wait for CLA1ToCPUMsgRAM
-    //
-    MemCfgRegs.MSGxINIT.bit.INIT_CLA1TOCPU = 1;
-    while(MemCfgRegs.MSGxINITDONE.bit.INITDONE_CLA1TOCPU != 1){};
-
-    //
-    // Initialize and wait for CPUToCLA1MsgRAM
-    //
-    MemCfgRegs.MSGxINIT.bit.INIT_CPUTOCLA1 = 1;
-    while(MemCfgRegs.MSGxINITDONE.bit.INITDONE_CPUTOCLA1 != 1){};
-
+    // Initialize and wiat for CPUtoCPUMsgRAM
     MemCfgRegs.MSGxINIT.bit.INIT_CPUTOCPU = 1;
     while(MemCfgRegs.MSGxINITDONE.bit.INITDONE_CPUTOCPU != 1){};
 
+#ifdef _STANDALONE
+#ifdef _FLASH
+    //  Send boot command to allow the CPU02 application to begin execution
+    IPCBootCPU2(C1C2_BROM_BOOTMODE_BOOT_FROM_FLASH);
+#endif
+#endif
+
     EDIS;
 }
+
 

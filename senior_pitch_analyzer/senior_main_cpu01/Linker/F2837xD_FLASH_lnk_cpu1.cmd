@@ -24,8 +24,8 @@ PAGE 0: /*** Program Memory ***/
    /*** Local Shared Memory ***/
    RAMLS0          	: origin = 0x008000, length = 0x000800
    RAMLS1          	: origin = 0x008800, length = 0x000800
-   RAMLS2      		: origin = 0x009000, length = 0x000800
-   RAMLS3      		: origin = 0x009800, length = 0x000800
+   RAMLS2      		: origin = 0x009000, length = 0x000A00
+   RAMLS3      		: origin = 0x009A00, length = 0x000600
    RAMLS4      		: origin = 0x00A000, length = 0x000800
    RAMLS5      		: origin = 0x00A800, length = 0x000800
    
@@ -43,7 +43,7 @@ PAGE 0: /*** Program Memory ***/
    FLASHK           : origin = 0x0B8000, length = 0x002000	/* on-chip Flash */
    FLASHL           : origin = 0x0BA000, length = 0x002000	/* on-chip Flash */
    FLASHM           : origin = 0x0BC000, length = 0x002000	/* on-chip Flash */
-   FLASHN           : origin = 0x0BE000, length = 0x002000	/* on-chip Flash */   
+   FLASHN           : origin = 0x0BE000, length = 0x002000	/* on-chip Flash */
 
    RESET           	: origin = 0x3FFFC0, length = 0x000002
 
@@ -83,8 +83,8 @@ SECTIONS
    /*** Uninitialized Sections ***/
    .stack              : > RAMM1,		PAGE = 0 /* System Stack */
    .ebss               : > RAMLS5,		PAGE = 0 /* Global Variables */
-   .esysmem            : > RAMLS5,		PAGE = 0 /* Malloc Heap */
-   .cio				   : > RAMLS5,		PAGE = 0
+   .esysmem            : > RAMD0,		PAGE = 0 /* Malloc Heap */
+   .cio				   : > RAMD0,		PAGE = 0
 
    /*** Initialized Sections - Goes in Flash ***/
    .econst             : >>FLASHF | FLASHG | FLASHH, 	PAGE = 0, ALIGN(4) /* Initialized Global Variables */
@@ -98,7 +98,7 @@ SECTIONS
 
        /* CLA specific sections */
    Cla1Prog         : LOAD = FLASHD,
-                      RUN = RAMLS2,
+                      RUN = RAMLS2 | RAMLS3,
                       LOAD_START(_Cla1funcsLoadStart),
                       LOAD_END(_Cla1funcsLoadEnd),
                       RUN_START(_Cla1funcsRunStart),
@@ -113,7 +113,7 @@ SECTIONS
 #ifdef __TI_COMPILER_VERSION__
    #if __TI_COMPILER_VERSION__ >= 15009000
     .TI.ramfunc 	   : {} LOAD = FLASHB | FLASHC | FLASHD | FLASHE
-                         RUN = RAMLS3 | RAMLS4 | RAMLS5,
+                         RUN = RAMLS4 | RAMLS5,
                          LOAD_START(_RamfuncsLoadStart),
                          LOAD_SIZE(_RamfuncsLoadSize),
                          LOAD_END(_RamfuncsLoadEnd),
@@ -179,7 +179,6 @@ SECTIONS
    CpuToCla1MsgRAM  : > CLA1_MSGRAMH,	PAGE = 0	/* Link to CLA Message RAM */
    Cla1Data1        : > RAMLS1,     	PAGE = 0    /* Link to CLA Data RAM */
    //Cla1Data2        : > RAMLS2,     PAGE = 0        /* Link to CLA Data RAM */
-   //Cla1Prog         : > RAMLS2,     	PAGE = 0    /* Link to CLA Program RAM */
 
    FECPU2			: > CPU2TOCPU1RAM, PAGE = 1
 

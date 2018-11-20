@@ -18,8 +18,10 @@ float32 freq_est1;
 float32 freq_est3;
 float32 freq_est5;
 
-#pragma DATA_SECTION(freq_est_cpu2, "FECPU2");
-volatile float32 freq_est_cpu2[7];
+
+volatile float32 fo_est_cpu2[7];
+extern volatile float32 fo_n_cpu2[7];
+extern float32 fn[7];
 
 Uint32 GPIO34_count1;
 
@@ -93,7 +95,8 @@ int main(void) {
 
             // Pass in phases by reference
 //            freq_est1 = vocodeAnalysis(&phaseOld_1, &phaseNew_1, handler_rfft2);
-            freq_est_cpu2[1] = vocodeAnalysis(&phaseOld_1, &phaseNew_1, handler_rfft2);
+            fo_est_cpu2[1] = vocodeAnalysis(&phaseOld_1, &phaseNew_1, handler_rfft2);
+            fo_n_cpu2[1] = roundf(logf(fn[1] / fo_est_cpu2[1]) / logf(ETSE_CONSTANT));
             done1 = 0;
         }
         if (done3) { // String 3
@@ -105,7 +108,8 @@ int main(void) {
 
             // Pass in phases by reference
 //            freq_est3 = vocodeAnalysis(&phaseOld_3, &phaseNew_3, handler_rfft2);
-            freq_est_cpu2[3] = vocodeAnalysis(&phaseOld_3, &phaseNew_3, handler_rfft2);
+            fo_est_cpu2[3] = vocodeAnalysis(&phaseOld_3, &phaseNew_3, handler_rfft2);
+            fo_n_cpu2[3] = roundf(logf(fn[3] / fo_est_cpu2[3]) / logf(ETSE_CONSTANT));
             done3 = 0;
         }
         if (done5) { // String 5
@@ -117,9 +121,12 @@ int main(void) {
 
             // Pass in phases by reference
 //            freq_est5 = vocodeAnalysis(&phaseOld_5, &phaseNew_5, handler_rfft2);
-            freq_est_cpu2[5] = vocodeAnalysis(&phaseOld_5, &phaseNew_5, handler_rfft2);
+            fo_est_cpu2[5] = vocodeAnalysis(&phaseOld_5, &phaseNew_5, handler_rfft2);
+            fo_n_cpu2[5] = roundf(logf(fn[5] / fo_est_cpu2[5]) / logf(ETSE_CONSTANT));
             done5 = 0;
         }
+
+
 
     }
 
@@ -224,17 +231,20 @@ void initMain(void) {
     initEPWM();
     initFFT(handler_rfft2);
 
-    GPIO34_count1 = 0;
-    while(1) {
-        GPIO34_count1 += 1;
-//        if (GPIO34_count1 > 1000000) {                  // Toggle slowly to see the LED blink
-//            GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;  // Toggle the pin
-//            GPIO34_count1 = 0;                       // Reset counter
-//        }
-    }
+//    GPIO34_count1 = 0;
+//    while(1) {
+//        GPIO34_count1 += 1;
+////        if (GPIO34_count1 > 1000000) {                  // Toggle slowly to see the LED blink
+////            GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;  // Toggle the pin
+////            GPIO34_count1 = 0;                       // Reset counter
+////        }
+//    }
 
     // Enable global Interrupts and higher priority real-time debug events
     EINT;  // Enable Global interrupt INTM
     ERTM;  // Enable Global real-time interrupt DBGM
 }
+
+
+
 

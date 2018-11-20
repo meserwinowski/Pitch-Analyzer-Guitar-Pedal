@@ -10,7 +10,7 @@ PAGE 0: /*** Program Memory ***/
    /* Memory (RAM/FLASH) blocks can be moved to PAGE1 for data allocation */
    /* BEGIN is used for the "boot to Flash" bootloader mode   */
    BEGIN           	: origin = 0x080000, length = 0x000002
-   BOOT_RSVD        : origin = 0x000002, length = 0x000120     /* Part of M0, BOOT rom will use this for stack */
+   BOOT_RSVD        : origin = 0x000002, length = 0x00007E     /* Part of M0, BOOT rom will use this for stack */
 
    RAMM0           	: origin = 0x000122, length = 0x0002DE
    RAMM1            : origin = 0x000400, length = 0x000400     /* on-chip RAM block M1 */

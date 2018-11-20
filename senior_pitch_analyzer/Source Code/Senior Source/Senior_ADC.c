@@ -66,7 +66,8 @@ void configureADCs(void) {
     IER |= M_INT1; // Enable PIE Group 1 for ADC INT1s
     IER |= M_INT10;// Enable PIE Group 10 for other ADC INTs
 
-    DELAY_US(1000); // Delay for 1ms to allow ADCs time to power up
+//    DELAY_US(1000); // Delay for 1ms to allow ADCs time to power up
+    for (int i = 0; i < 1000; i++) {}
 
     EDIS;
 }
