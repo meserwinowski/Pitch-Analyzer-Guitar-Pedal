@@ -27,8 +27,8 @@ void initSCI(void) {
 // Step 4. User specific code:
     LoopCount = 0;
 
-    initSCIBFIFO();       // Initialize the SCI FIFO
-    initSCIB();   // Initialize SCI for echoback
+    initSCIBFIFO();        // Initialize the SCI FIFO
+    initSCIB();            // Initialize SCI for Echoback
 
     msg = "\r\n\n\nHello World!\0";
     SCIB_MSG(msg);
@@ -61,59 +61,74 @@ void initSCI(void) {
     }
 }
 
-//  scib_echoback_init - Test 1,scib  DLB, 8-bit word, baud rate 0x000F,
-//                       default, 1 STOP bit, no parity
-void initSCIB(void)
-{
-    //
-    // Note: Clocks were turned on to the scib peripheral
+// SCIB DLB, 8-bit word, baud rate 0x000F, default, 1 STOP bit, no parity
+void initSCIB(void) {
+    // Note: Clocks were turned on for the SCIB peripheral
     // in the InitSysCtrl() function
-    //
 
-    ScibRegs.SCICCR.all = 0x0007;   // 1 stop bit,  No loopback
-                                    // No parity,8 char bits,
-                                    // async mode, idle-line protocol
-    ScibRegs.SCICTL1.all = 0x0003;  // enable TX, RX, internal SCICLK,
-                                    // Disable RX ERR, SLEEP, TXWAKE
-    ScibRegs.SCICTL2.all = 0x0003;
-    ScibRegs.SCICTL2.bit.TXINTENA = 1;
-    ScibRegs.SCICTL2.bit.RXBKINTENA = 1;
+    // SCI Communications Control Register
+    ScibRegs.SCICCR.bit.STOPBITS = 0;       // 1 Stop Bit
+    ScibRegs.SCICCR.bit.PARITY = 0;         // Odd Parity (No Parity)
+    ScibRegs.SCICCR.bit.PARITYENA = 0;      // Party Disabled
+    ScibRegs.SCICCR.bit.LOOPBKENA = 0;      // Loopback Test Mode Disabled
+    ScibRegs.SCICCR.bit.ADDRIDLE_MODE = 0;  // Idle-line mode protocol (No extra bit)
+    ScibRegs.SCICCR.bit.SCICHAR = 0x7;      // SCICHAR Length = 8-bits
 
-    //
-    // scib at 9600 baud
-    // @LSPCLK = 50 MHz (200 MHz SYSCLK) HBAUD = 0x02 and LBAUD = 0x8B.
-    // @LSPCLK = 30 MHz (120 MHz SYSCLK) HBAUD = 0x01 and LBAUD = 0x86.
-    //
-    ScibRegs.SCIHBAUD.all = 0x0002;
-    ScibRegs.SCILBAUD.all = 0x008B;
+    // SCI Control Register 1
+    ScibRegs.SCICTL1.bit.RXERRINTENA = 0;   // Disable RX Error Interrupt
+    ScibRegs.SCICTL1.bit.SWRESET = 0;       // Initialize SCI State Machine and Flags to reset
+    ScibRegs.SCICTL1.bit.TXWAKE = 0;        // Disable TXWAKE
+    ScibRegs.SCICTL1.bit.SLEEP = 0;         // Disable SCI Sleep
+    ScibRegs.SCICTL1.bit.TXENA = 1;         // Enable SCI Transmitter (TX)
+    ScibRegs.SCICTL1.bit.RXENA = 1;         // Enable SCI Receiver (RX)
 
-    ScibRegs.SCICTL1.all = 0x0023;  // Relinquish SCI from Reset
+    // SCI Control Register 2
+    ScibRegs.SCICTL2.bit.RXBKINTENA = 1;    // Enable Receiver-buffer/break Interrupt
+    ScibRegs.SCICTL2.bit.TXINTENA = 1;      // Enable TXBUF Interrupt (Ready for next character)
+
+    // SCI Baud Rate - SCI Async Baud -> BRR = LSPCLK / (SCI Sync Baud * 8) - 1
+    // SCIB at 9600 Baud
+    // @LSPCLK = 50 MHz (200 MHz SYSCLK) HBAUD = 0x02 and LBAUD = 0x8B
+    ScibRegs.SCIHBAUD.bit.BAUD = 0x02;      // MS Byte
+    ScibRegs.SCILBAUD.bit.BAUD = 0x8B;      // LS Byte
+
+    ScibRegs.SCICTL1.bit.SWRESET = 1;       // Relinquish SCI from Reset
 }
 
-// scib_xmit - Transmit a character from the SCI
-void SCIB_TX(int a)
-{
+// SCIB_TX - Transmit a character from the SCIB
+void SCIB_TX(int a) {
     while (ScibRegs.SCIFFTX.bit.TXFFST != 0) {}
-    ScibRegs.SCITXBUF.all =a;
+    ScibRegs.SCITXBUF.all = a;
 }
 
-// scib_msg - Transmit message via scib
-void SCIB_MSG(char *msg)
-{
+// SCIB_MSG - Transmit message via SCIB
+void SCIB_MSG(char *msg) {
     int i;
     i = 0;
-    while(msg[i] != '\0')
-    {
+    while(msg[i] != '\0') {
         SCIB_TX(msg[i]);
         i++;
     }
 }
 
 // scib_fifo_init - Initialize the SCI FIFO
-void initSCIBFIFO(void)
-{
-    ScibRegs.SCIFFTX.all = 0xE040;
-    ScibRegs.SCIFFRX.all = 0x2044;
+void initSCIBFIFO(void) {
+    // SCI FIFO Transmit Register
+//    ScibRegs.SCIFFTX.all = 0xE040;
+    ScibRegs.SCIFFTX.bit.SCIFFENA = 1;      // Enable SCI FIFO TX
+    ScibRegs.SCIFFTX.bit.TXFIFORESET = 1;   // Re-enable TX FIFO Operation
+    ScibRegs.SCIFFTX.bit.TXFFST = 0x0;      // TX FIFO is Empty
+    ScibRegs.SCIFFTX.bit.TXFFINTCLR = 1;    // Clear TX FIFO Interrupt Flag
+    ScibRegs.SCIFFTX.bit.SCIRST = 1;        // Release FIFO TX from Reset
+
+    // SCI FIFO Receive Register
+//    ScibRegs.SCIFFRX.all = 0x2044;
+    ScibRegs.SCIFFRX.bit.RXFIFORESET = 1;   // Re-enable RX FIFO Operation
+    ScibRegs.SCIFFRX.bit.RXFFST = 0x0;      // RX FIFO is Empty
+    ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;    // Clear RX FIFO Interrupt Flag
+    ScibRegs.SCIFFRX.bit.RXFFIL = 0x4;      // Receive FIFO Interrupt Level Bits
+
+    // SCI FIFO Control Register
     ScibRegs.SCIFFCT.all = 0x0;
 }
 

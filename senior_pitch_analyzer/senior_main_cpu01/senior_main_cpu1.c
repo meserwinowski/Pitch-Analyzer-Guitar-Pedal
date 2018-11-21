@@ -129,7 +129,7 @@ int main(void) {
         }
 
 
-        if (GPIO34_count > 250) {                  // Toggle slowly to see the LED blink
+        if (GPIO34_count > 75) {                  // Toggle slowly to see the LED blink
             GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;  // Toggle the pin
             GPIO34_count = 0;                       // Reset counter
             for (int i = 1; i < 7; i++) {
@@ -260,7 +260,7 @@ void initMain(void) {
     EDIS;
 
     // Initialize CPU2, CLA, Peripherals and FFT Handler
-//    initSCI();                  // Initialize Serial Communications Interface - UART
+    initSCI();                  // Initialize Serial Communications Interface - UART
     initSPI();                  // Initialize Serial Peripheral Interface
     initCLA();                  // Initialize Control Law Accelerator - CPU1
     initEPWM();                 // Initialize Enchanced Pulse Width Modulation Channels
@@ -277,11 +277,11 @@ void initMain(void) {
     ERTM;  // Enable Global real-time interrupt DBGM
 
     fo_n_cpu1[1] = 5;
-    fo_n_cpu1[2] = 6;
-    fo_n_cpu1[3] = 7;
-    fo_n_cpu1[4] = 8;
-    fo_n_cpu1[5] = 9;
-    fo_n_cpu1[6] = 10;
+    fo_n_cpu1[2] = 5;
+    fo_n_cpu1[3] = 5;
+    fo_n_cpu1[4] = 5;
+    fo_n_cpu1[5] = 5;
+    fo_n_cpu1[6] = 5;
 
 }
 

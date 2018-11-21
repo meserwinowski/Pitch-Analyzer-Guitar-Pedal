@@ -24,8 +24,8 @@ PAGE 0: /*** Program Memory ***/
    /*** Local Shared Memory ***/
    RAMLS0          	: origin = 0x008000, length = 0x000800
    RAMLS1          	: origin = 0x008800, length = 0x000800
-   RAMLS2      		: origin = 0x009000, length = 0x000A00
-   RAMLS3      		: origin = 0x009A00, length = 0x000600
+   RAMLS2      		: origin = 0x009000, length = 0x000C00
+   RAMLS3      		: origin = 0x009C00, length = 0x000400
    RAMLS4      		: origin = 0x00A000, length = 0x000800
    RAMLS5      		: origin = 0x00A800, length = 0x000800
    
@@ -82,7 +82,7 @@ SECTIONS
 
    /*** Uninitialized Sections ***/
    .stack              : > RAMM1,		PAGE = 0 /* System Stack */
-   .ebss               : > RAMLS5,		PAGE = 0 /* Global Variables */
+   .ebss               : > RAMD1,		PAGE = 0 /* Global Variables */
    .esysmem            : > RAMD0,		PAGE = 0 /* Malloc Heap */
    .cio				   : > RAMD0,		PAGE = 0
 
@@ -98,7 +98,7 @@ SECTIONS
 
        /* CLA specific sections */
    Cla1Prog         : LOAD = FLASHD,
-                      RUN = RAMLS2 | RAMLS3,
+                      RUN = RAMLS2,
                       LOAD_START(_Cla1funcsLoadStart),
                       LOAD_END(_Cla1funcsLoadEnd),
                       RUN_START(_Cla1funcsRunStart),

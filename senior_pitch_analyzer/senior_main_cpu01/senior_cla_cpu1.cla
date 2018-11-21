@@ -31,14 +31,17 @@ interrupt void Cla1Task1 (void) {
         note_index = (int16_t) fo_n_cpu1[string];
         if (note_index >= 1) {
             frameLUT[string - 1][note_index].red = 0x1F;
+            frameLUT[string - 1][note_index].blue = 0x1F;
+            frameLUT[string - 1][note_index].green = 0x1F;
         }
         else if (note_index == 0) {
-//            __mdebugstop();     // Debug Stop
-            for (i = 0; i < 25; i++) {
-                frameLUT[string - 1][i].red = 0x00;
-                frameLUT[string - 1][i].green = 0x00;
-
-            }
+            __mdebugstop();     // Debug Stop
+//            for (fret = 1; fret < 25; i++) {
+//                frameLUT[string - 1][fret].red = 0x1F;
+//                frameLUT[string - 1][fret].blue = 0x1F;
+//                frameLUT[string - 1][fret].green = 0x1F;
+//
+//            }
         }
     }
 
@@ -104,18 +107,18 @@ interrupt void Cla1Task1 (void) {
             __mdebugstop();     // Debug Stop
             for (string = 0; string < 6; string++) {
                 __mdebugstop();     // Debug Stop
-                temp = frameLUT[string][fret].blue;
-                if (temp > 0) {
+//                temp = frameLUT[string][fret].red;
+                if (frameLUT[string][fret].red > 0) {
+                    frameLUT[string][fret].red--;
+                }
+//                temp = frameLUT[string][fret].blue;
+                if (frameLUT[string][fret].blue > 0) {
                     frameLUT[string][fret].blue--;
                 }
-    //            temp = frameLUT[string][fret].blue;
-    //            if (temp > 0) {
-    //                frameLUT[string][fret].blue = temp - 1;
-    //            }
-    //            temp = frameLUT[string][fret].green;
-    //            if (temp > 0) {
-    //                frameLUT[string][fret].green = temp - 1;
-    //            }
+//                temp = frameLUT[string][fret].green;
+                if (frameLUT[string][fret].green > 0) {
+                    frameLUT[string][fret].green--;
+                }
             }
         }
     }

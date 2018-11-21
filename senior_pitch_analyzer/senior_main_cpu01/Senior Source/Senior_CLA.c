@@ -49,7 +49,7 @@ void initCLA(void) {
     MemCfgRegs.LSxMSEL.bit.MSEL_LS0 = 1;        // 0=CPU | 1=CPU and CLA
     MemCfgRegs.LSxMSEL.bit.MSEL_LS1 = 1;        // 0=CPU | 1=CPU and CLA
     MemCfgRegs.LSxMSEL.bit.MSEL_LS2 = 1;        // 0=CPU | 1=CPU and CLA
-    MemCfgRegs.LSxMSEL.bit.MSEL_LS3 = 0;        // 0=CPU | 1=CPU and CLA
+    MemCfgRegs.LSxMSEL.bit.MSEL_LS3 = 1;        // 0=CPU | 1=CPU and CLA
     MemCfgRegs.LSxMSEL.bit.MSEL_LS4 = 0;        // 0=CPU | 1=CPU and CLA
     MemCfgRegs.LSxMSEL.bit.MSEL_LS5 = 0;        // 0=CPU | 1=CPU and CLA
 
@@ -57,8 +57,8 @@ void initCLA(void) {
     MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS0 = 0;    // 0=CLA data memory | 1=CLA program memory
     MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS1 = 0;    // 0=CLA data memory | 1=CLA program memory
     MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS2 = 1;    // 0=CLA data memory | 1=CLA program memory
-    MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS3 = 0;    // 0=CLA data memory | 1=CLA program memory
-    MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS4 = 1;    // 0=CLA data memory | 1=CLA program memory
+    MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS3 = 1;    // 0=CLA data memory | 1=CLA program memory
+    MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS4 = 0;    // 0=CLA data memory | 1=CLA program memory
     MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS5 = 0;    // 0=CLA data memory | 1=CLA program memory
 
     // Initialize CLA task interrupt vectors
