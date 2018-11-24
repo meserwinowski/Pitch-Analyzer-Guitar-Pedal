@@ -10,22 +10,26 @@
 #include "F2837xD_device.h"
 #include "F2837xD_Examples.h"
 
-// Globals
-Uint16 LoopCount;
+#pragma DATA_SECTION(diatonic, "Cla1Data1");
+uint_least8_t diatonic[7] = {2, 2, 1, 2, 2, 2, 1};
+#pragma DATA_SECTION(pentatonic, "Cla1Data1");
+uint_least8_t pentatonic[5] = {2, 2, 3, 2, 3};
 
 /*** Serial Communication Interface ***/
 void initSCI(void) {
 
-    GPIO_SetupPinMux(19, GPIO_MUX_CPU1, 2); // Launchpad SCIB RX
-    GPIO_SetupPinOptions(19, GPIO_INPUT, GPIO_PUSHPULL);
-    GPIO_SetupPinMux(18, GPIO_MUX_CPU1, 2); // Launchpad SCIB TX
-    GPIO_SetupPinOptions(18, GPIO_OUTPUT, GPIO_ASYNC);
+//    GPIO_SetupPinMux(19, GPIO_MUX_CPU1, 2); // Launchpad SCIB RX
+//    GPIO_SetupPinOptions(19, GPIO_INPUT, GPIO_PUSHPULL);
+//    GPIO_SetupPinMux(18, GPIO_MUX_CPU1, 2); // Launchpad SCIB TX
+//    GPIO_SetupPinOptions(18, GPIO_OUTPUT, GPIO_ASYNC);
 
-    Uint16 ReceivedChar;
+    // Set GPIO
+    GPIO_SetupPinMux(87, GPIO_MUX_CPU1, 5); // Main Board SCIB RX
+    GPIO_SetupPinOptions(87, GPIO_INPUT, GPIO_PUSHPULL);
+    GPIO_SetupPinMux(86, GPIO_MUX_CPU1, 5); // Main Board SCIB TX
+    GPIO_SetupPinOptions(86, GPIO_OUTPUT, GPIO_ASYNC);
+
     char *msg;
-
-// Step 4. User specific code:
-    LoopCount = 0;
 
     initSCIBFIFO();        // Initialize the SCI FIFO
     initSCIB();            // Initialize SCI for Echoback
@@ -36,29 +40,11 @@ void initSCI(void) {
     msg = "\r\nYou will enter a character, and the DSP will echo it back! \n\0";
     SCIB_MSG(msg);
 
-    for(;;) {
-        msg = "\r\nEnter a character: \0";
-        SCIB_MSG(msg);
+    msg = "\r\nEnter a character: \0";
+    SCIB_MSG(msg);
 
-       //
-       // Wait for inc character
-       //
-        while(ScibRegs.SCIFFRX.bit.RXFFST == 0) { } // wait for empty state
 
-       //
-       // Get character
-       //
-        ReceivedChar = ScibRegs.SCIRXBUF.all;
-
-       //
-       // Echo character back
-       //
-        msg = "  You sent: \0";
-        SCIB_MSG(msg);
-        SCIB_TX(ReceivedChar);
-
-        LoopCount++;
-    }
+//    for(;;) {}
 }
 
 // SCIB DLB, 8-bit word, baud rate 0x000F, default, 1 STOP bit, no parity
@@ -92,44 +78,133 @@ void initSCIB(void) {
     ScibRegs.SCIHBAUD.bit.BAUD = 0x02;      // MS Byte
     ScibRegs.SCILBAUD.bit.BAUD = 0x8B;      // LS Byte
 
+    IER |= M_INT9;                          // Enable Group 9 Interrupts (SCI)
+    PieCtrlRegs.PIEIER9.bit.INTx3 = 1;      // Enable SCIB RX Interrupt
+
     ScibRegs.SCICTL1.bit.SWRESET = 1;       // Relinquish SCI from Reset
 }
 
+// initSCIBFIFO - Initialize the SCI FIFO
+// Interrupts on 5 Receives, and 1 Transmit
+void initSCIBFIFO(void) {
+    // SCI FIFO Transmit Register
+    ScibRegs.SCIFFTX.bit.SCIRST = 1;        // Release FIFO TX from Reset
+    ScibRegs.SCIFFTX.bit.SCIFFENA = 1;      // Enable SCI FIFO TX
+    ScibRegs.SCIFFTX.bit.TXFFST = 0x0;      // TX FIFO is Empty
+    ScibRegs.SCIFFTX.bit.TXFFINTCLR = 1;    // Clear TX FIFO Interrupt Flag
+    ScibRegs.SCIFFTX.bit.TXFFIENA = 1;      // Enable TX FIFO Interrupt
+
+    // SCI FIFO Receive Register
+    ScibRegs.SCIFFRX.bit.RXFFST = 0x0;      // RX FIFO is Empty
+    ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;    // Clear RX FIFO Interrupt Flag
+    ScibRegs.SCIFFRX.bit.RXFFIENA = 1;      // Enable RX FIFO Interrupt
+    ScibRegs.SCIFFRX.bit.RXFFIL = 0x5;      // Receive FIFO Interrupt Level Bits
+
+    // SCI FIFO Control Register
+    ScibRegs.SCIFFCT.all = 0x0;
+
+    ScibRegs.SCIFFTX.bit.TXFIFORESET = 1;   // Re-enable TX FIFO Operation
+    ScibRegs.SCIFFRX.bit.RXFIFORESET = 1;   // Re-enable RX FIFO Operation
+}
+
+// Determine Command from GUI
+void determineCommand(void) {
+    uint_fast8_t cmd;
+    uint_fast8_t data1;
+    uint_fast8_t data2;
+    uint_fast8_t data3;
+    uint_fast8_t data4;
+    uint32_t dataPacket;
+    float32 tuning;
+    char *msg;
+
+    cmd = ScibRegs.SCIRXBUF.all;
+    data1 = ScibRegs.SCIRXBUF.all; // MSByte | Bright | Mode
+    data2 = ScibRegs.SCIRXBUF.all; //        | Red    | Scale
+    data3 = ScibRegs.SCIRXBUF.all; //        | Green  | Root
+    data4 = ScibRegs.SCIRXBUF.all; // LSByte | Blue   | XXXX
+
+    // Merge data transmission (May be unused)
+    dataPacket = data1 << 8 | data2;
+    dataPacket = dataPacket << 8 | data3;
+    dataPacket = dataPacket << 8 | data4;
+    tuning = (float32) dataPacket;
+
+    msg = "  You sent: \0";
+    SCIB_MSG(msg);
+    SCIB_TX(data3);
+
+    msg = "\r\nEnter a character: \0";
+    SCIB_MSG(msg);
+
+//    /*** Determine Command ***/
+//    if (cmd == CHANGE_MODE) {
+//        // Real-time Mirror Mode
+//        if (data1 == MIRROR_MODE) {
+//
+//        }
+//        // Learning Mode
+//        else if (data1 == LEARNING_MODE) {
+//
+//        }
+//        // Invalid Data
+//        else {
+//            SCIB_TX(INVALID);
+//            return;
+//        }
+//    }
+//    // Change Color
+//    else if (cmd == CHANGE_COLOR) {
+//
+//    }
+//    // Change Tuning (String 1)
+//    else if (cmd == CHANGE_TUNING_S1) {
+//
+//    }
+//    // Change Tuning (String 2)
+//    else if (cmd == CHANGE_TUNING_S2) {
+//
+//    }
+//    // Change Tuning (String 3)
+//    else if (cmd == CHANGE_TUNING_S3) {
+//
+//    }
+//    // Change Tuning (String 4)
+//    else if (cmd == CHANGE_TUNING_S4) {
+//
+//    }
+//    // Change Tuning (String 5)
+//    else if (cmd == CHANGE_TUNING_S5) {
+//
+//    }
+//    // Change Tuning (String 6)
+//    else if (cmd == CHANGE_TUNING_S6) {
+//
+//    }
+//
+//    // Invalid Command
+//    else {
+//        SCIB_TX(INVALID);
+//        return;
+//    }
+//
+//    // Send Acknowledge to GUI
+//    SCIB_TX(ACK);
+}
+
 // SCIB_TX - Transmit a character from the SCIB
-void SCIB_TX(int a) {
+void SCIB_TX(uint_fast8_t a) {
     while (ScibRegs.SCIFFTX.bit.TXFFST != 0) {}
     ScibRegs.SCITXBUF.all = a;
 }
 
 // SCIB_MSG - Transmit message via SCIB
 void SCIB_MSG(char *msg) {
-    int i;
-    i = 0;
+    uint16_t i = 0;
     while(msg[i] != '\0') {
         SCIB_TX(msg[i]);
         i++;
     }
-}
-
-// scib_fifo_init - Initialize the SCI FIFO
-void initSCIBFIFO(void) {
-    // SCI FIFO Transmit Register
-//    ScibRegs.SCIFFTX.all = 0xE040;
-    ScibRegs.SCIFFTX.bit.SCIFFENA = 1;      // Enable SCI FIFO TX
-    ScibRegs.SCIFFTX.bit.TXFIFORESET = 1;   // Re-enable TX FIFO Operation
-    ScibRegs.SCIFFTX.bit.TXFFST = 0x0;      // TX FIFO is Empty
-    ScibRegs.SCIFFTX.bit.TXFFINTCLR = 1;    // Clear TX FIFO Interrupt Flag
-    ScibRegs.SCIFFTX.bit.SCIRST = 1;        // Release FIFO TX from Reset
-
-    // SCI FIFO Receive Register
-//    ScibRegs.SCIFFRX.all = 0x2044;
-    ScibRegs.SCIFFRX.bit.RXFIFORESET = 1;   // Re-enable RX FIFO Operation
-    ScibRegs.SCIFFRX.bit.RXFFST = 0x0;      // RX FIFO is Empty
-    ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;    // Clear RX FIFO Interrupt Flag
-    ScibRegs.SCIFFRX.bit.RXFFIL = 0x4;      // Receive FIFO Interrupt Level Bits
-
-    // SCI FIFO Control Register
-    ScibRegs.SCIFFCT.all = 0x0;
 }
 
 /* ------------------------------------------------------------------------------ */

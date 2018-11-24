@@ -71,6 +71,8 @@ interrupt void ADCCH6_ISR(void);
 interrupt void EPWM_5_ISR(void);
 #pragma CODE_SECTION(CLA_ISR1, ".TI.ramfunc");
 interrupt void CLA_ISR1(void);
+#pragma CODE_SECTION(SCIB_ISR, ".TI.ramfunc");
+interrupt void SCIB_ISR(void);
 
 #pragma DATA_SECTION(GPIO34_count, "Cla1Data1");
 uint16_t GPIO34_count = 0;
@@ -214,15 +216,27 @@ interrupt void EPWM_5_ISR(void) {
 
     // Acknowledge Interrupt Triggered by ePWM5
     EPwm5Regs.ETCLR.bit.INT = 1; // Clear EPWM5 INT flag
-    PieCtrlRegs.PIEACK.all = PIEACK_GROUP3;
+    PieCtrlRegs.PIEACK.all |= PIEACK_GROUP3;
 
 }
 
 interrupt void CLA_ISR1(void) {
 
     // Acknowledge Interrupt Triggered by end of CLA Task 1
-    Cla1ForceTask2andWait()
-    PieCtrlRegs.PIEACK.all = PIEACK_GROUP11;
+    PieCtrlRegs.PIEACK.all |= PIEACK_GROUP11;
+
+}
+
+interrupt void SCIB_ISR(void) {
+
+    determineCommand();
+
+    // Clear RX FIFO Flags
+    ScibRegs.SCIFFRX.bit.RXFFOVRCLR=1;   // Clear Overflow flag
+    ScibRegs.SCIFFRX.bit.RXFFINTCLR=1;   // Clear Interrupt flag
+
+    // Acknowledge Interrupt Triggered by SCIB Receive
+    PieCtrlRegs.PIEACK.all |= PIEACK_GROUP9;
 
 }
 
@@ -237,6 +251,7 @@ void initMain(void) {
     // Initialize PIE Control Registers
     InitPieCtrl();
     EnableInterrupts();
+//    DisableDog();
 
     // Clear Interrupts, Disable CPU __interrupts and clear CPU __interrupt flags
     DINT;
@@ -257,10 +272,15 @@ void initMain(void) {
     PieVectTable.ADCC1_INT = &ADCCH6_ISR;
     PieVectTable.EPWM5_INT = &EPWM_5_ISR;
     PieVectTable.CLA1_1_INT = &CLA_ISR1;
+    PieVectTable.SCIB_RX_INT = &SCIB_ISR;
     EDIS;
+
+    EINT;  // Enable Global interrupt INTM
+    ERTM;  // Enable Global real-time interrupt DBGM
 
     // Initialize CPU2, CLA, Peripherals and FFT Handler
     initSCI();                  // Initialize Serial Communications Interface - UART
+
     initSPI();                  // Initialize Serial Peripheral Interface
     initCLA();                  // Initialize Control Law Accelerator - CPU1
     initEPWM();                 // Initialize Enchanced Pulse Width Modulation Channels
