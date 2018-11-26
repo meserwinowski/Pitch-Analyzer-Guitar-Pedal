@@ -11,81 +11,46 @@
 
 /*** Control Law Accelerator - CPU1 ***/
 
-#pragma DATA_SECTION(GPIO34_count, "Cla1Data1");
-Uint16 GPIO34_count = 0;
+//typedef struct LEDdata {
+//    unsigned int sbright:   8;
+//    unsigned int blue:      8;
+//    unsigned int green:     8;
+//    unsigned int red:       8;
+//} LED_DATA;
 
-#pragma DATA_SECTION(data, "Cla1Data1");
-Uint32 data[8] = { 0x00000000, // Start
-                   0xE11F1F1F, // Red
-                   0xE11F1F1F, // Green
-                   0xE11F1F1F, // Blue
-                   0xE11F1F1F, // Purpink
-                   0xE11F1F1F, // White
-                   0xE11F1F1F, // White
-                   0xF0000000};// End
+#pragma DATA_SECTION(frameLUT, "Cla1Data1");
+LED_DATA frameLUT[6][25];
 
-#pragma DATA_SECTION(endFrame, "Cla1Data1");
-Uint32 startFrame[4] = { 0x00000000,
-                         0x00000000,
-                         0x00000000,
-                         0x00000000};
-
-#pragma DATA_SECTION(endFrame, "Cla1Data1");
-Uint32 endFrame[4] = { 0xFFFFFFFF,
-                       0xFFFFFFFF,
-                       0xFFFFFFFF,
-                       0xFFFFFFFF};
-
-#pragma DATA_SECTION(dataLength, "Cla1Data1");
-Uint16 dataLength = 8;
-
-#pragma DATA_SECTION(startLength, "Cla1Data1");
-Uint16 startLength = 1;
-
-#pragma DATA_SECTION(endLength, "Cla1Data1");
-Uint16 endLength = 1;
-
-#pragma DATA_SECTION(red, "Cla1Data1");
-Uint16 red = 0x00;
-
-#pragma DATA_SECTION(green, "Cla1Data1");
-Uint16 green = 0x00;
-
-#pragma DATA_SECTION(blue, "Cla1Data1");
-Uint16 blue = 0x00;
-
-#pragma DATA_SECTION(bright, "Cla1Data1");
-Uint32 bright = 0xE1000000;
-
-#pragma DATA_SECTION(iter, "Cla1Data1");
-Uint16 iter = 0;
-
-#pragma DATA_SECTION(i, "Cla1Data1");
-Uint16 i = 0;
-
-#pragma DATA_SECTION(j, "Cla1Data1");
-Uint16 j = 0;
-
-#pragma DATA_SECTION(fret, "Cla1Data1");
-Uint16 fret = 0;
-
-#pragma DATA_SECTION(rdata, "Cla1Data1");
-Uint32 rdata = 0;
-
-#pragma DATA_SECTION(b, "Cla1Data1");
-Uint32 b = 0;
-
-#pragma DATA_SECTION(temp, "Cla1Data1");
-Uint16 temp = 0;
+#pragma DATA_SECTION(fo_n_cpu, "CpuToCla1MsgRAM");
+float32 fo_n_cpu[7] = {-1, -1, -1, -1, -1, -1, -1};
 
 void initCLA(void) {
+
+    extern uint32_t Cla1funcsRunStart, Cla1funcsLoadStart, Cla1funcsLoadSize;
+
+    // Initialize Lookup Table
+    initLUT();
+
     EALLOW;
+
+    // GPIO For Red Status LED to make sure CLA is running
+    GpioCtrlRegs.GPBGMUX1.bit.GPIO34 = 0;
+    GpioCtrlRegs.GPBDIR.bit.GPIO34 = 1;     // 1=OUTput, 0=INput
+    GpioDataRegs.GPBSET.bit.GPIO34 = 1;     // Set High initially
+    GpioCtrlRegs.GPBCSEL1.bit.GPIO34 = 0;   // 0=CPU1, 1=CPU1.CLA1, 2=CPU2, 3=CPU2.CLA
+
+#ifdef _FLASH
+    // Copy over code from FLASH to RAM for the CLA
+    memcpy((uint32_t *) &Cla1funcsRunStart,
+           (uint32_t *) &Cla1funcsLoadStart,
+           (uint32_t) &Cla1funcsLoadSize);
+#endif //_FLASH
 
     // Memory Configuration - Master CPU and CLA Select
     MemCfgRegs.LSxMSEL.bit.MSEL_LS0 = 1;        // 0=CPU | 1=CPU and CLA
     MemCfgRegs.LSxMSEL.bit.MSEL_LS1 = 1;        // 0=CPU | 1=CPU and CLA
     MemCfgRegs.LSxMSEL.bit.MSEL_LS2 = 1;        // 0=CPU | 1=CPU and CLA
-    MemCfgRegs.LSxMSEL.bit.MSEL_LS3 = 0;        // 0=CPU | 1=CPU and CLA
+    MemCfgRegs.LSxMSEL.bit.MSEL_LS3 = 1;        // 0=CPU | 1=CPU and CLA
     MemCfgRegs.LSxMSEL.bit.MSEL_LS4 = 0;        // 0=CPU | 1=CPU and CLA
     MemCfgRegs.LSxMSEL.bit.MSEL_LS5 = 0;        // 0=CPU | 1=CPU and CLA
 
@@ -93,8 +58,8 @@ void initCLA(void) {
     MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS0 = 0;    // 0=CLA data memory | 1=CLA program memory
     MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS1 = 0;    // 0=CLA data memory | 1=CLA program memory
     MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS2 = 1;    // 0=CLA data memory | 1=CLA program memory
-    MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS3 = 0;    // 0=CLA data memory | 1=CLA program memory
-    MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS4 = 1;    // 0=CLA data memory | 1=CLA program memory
+    MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS3 = 1;    // 0=CLA data memory | 1=CLA program memory
+    MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS4 = 0;    // 0=CLA data memory | 1=CLA program memory
     MemCfgRegs.LSxCLAPGM.bit.CLAPGM_LS5 = 0;    // 0=CLA data memory | 1=CLA program memory
 
     // Initialize CLA task interrupt vectors
@@ -122,39 +87,38 @@ void initCLA(void) {
     DmaClaSrcSelRegs.CLA1TASKSRCSELLOCK.bit.CLA1TASKSRCSEL1 = 0;     // Write a 1 to lock (cannot be cleared once set)
     DmaClaSrcSelRegs.CLA1TASKSRCSELLOCK.bit.CLA1TASKSRCSEL2 = 0;     // Write a 1 to lock (cannot be cleared once set)
 
+    // Initialize and wait for CLA1ToCPUMsgRAM
+    MemCfgRegs.MSGxINIT.bit.INIT_CLA1TOCPU = 1;
+    while(MemCfgRegs.MSGxINITDONE.bit.INITDONE_CLA1TOCPU != 1){};
+
+    // Initialize and wait for CPUToCLA1MsgRAM
+    MemCfgRegs.MSGxINIT.bit.INIT_CPUTOCLA1 = 1;
+    while(MemCfgRegs.MSGxINITDONE.bit.INITDONE_CPUTOCLA1 != 1){};
+
     // Enable use software to start a task (IACK)
     Cla1Regs.MCTL.bit.IACKE = 1;
 
     // Enable CLA task interrupts
-    Cla1Regs.MIER.all = M_INT1;             // Enable CLA interrupt 1 (and disable interrupt 8)
-
-    EDIS;
+    Cla1Regs.MIER.bit.INT1 = 1;             // Enable CLA interrupt 1 (and disable interrupt 8)
 
     // Enable the CLA interrupt
     PieCtrlRegs.PIEIER11.bit.INTx1 = 1;     // Enable CLA Task1 in PIE group #11
     IER |= M_INT11;                         // Enable INT11 in IER to enable PIE group 11
 
+    EDIS;
 }
 
-Uint32 GPIO34_count1 = 0;
-// Blink Red LED on Launchpad as a status indicator for debug (Infinite Loop)
-void run_cla_blinky(void) {
-
-    EALLOW;
-    GpioCtrlRegs.GPBGMUX1.bit.GPIO34 = 0;
-    GpioCtrlRegs.GPBDIR.bit.GPIO34 = 1;     // 1=OUTput, 0=INput
-    GpioDataRegs.GPBSET.bit.GPIO34 = 1;     // Set High initially
-    GpioCtrlRegs.GPBCSEL1.bit.GPIO34 = 0;   // 0=CPU1, 1=CPU1.CLA1, 2=CPU2, 3=CPU2.CLA
-    EDIS;
-
-    while(1) {
-        GPIO34_count1 += 1;
-        if (GPIO34_count1 > 1000) {                  // Toggle slowly to see the LED blink
-            GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;  // Toggle the pin
-            GPIO34_count1 = 0;                       // Reset counter
+// Initialize Lookup Table with data frame
+void initLUT(void) {
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 25; j++) {
+//            frameLUT[i][j] = DEFAULT_LED_WHITE;
+            frameLUT[i][j].sbright = 0x00E1;
+            frameLUT[i][j].blue = 0x001F;
+            frameLUT[i][j].green = 0x001F;
+            frameLUT[i][j].red = 0x001F;
         }
     }
-
 }
 
 /* ------------------------------------------------------------------------------ */

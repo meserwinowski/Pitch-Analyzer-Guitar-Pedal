@@ -124,9 +124,9 @@ void InitSysCtrl(void)
     //  PLLSYSCLK = (XTAL_OSC) * (IMULT + FMULT) / (PLLSYSCLKDIV)
     //
 #ifdef _LAUNCHXL_F28379D
-    InitSysPll(XTAL_OSC,IMULT_40,FMULT_0,PLLCLK_BY_2);
+    InitSysPll(XTAL_OSC, IMULT_40, FMULT_0, PLLCLK_BY_2);
 #else
-    InitSysPll(XTAL_OSC, IMULT_20, FMULT_0, PLLCLK_BY_2);
+    InitSysPll(XTAL_OSC, IMULT_40, FMULT_0, PLLCLK_BY_2);
 #endif // _LAUNCHXL_F28379D
 
 #endif // CPU1

@@ -66,7 +66,8 @@ void configureADCs(void) {
     IER |= M_INT1; // Enable PIE Group 1 for ADC INT1s
     IER |= M_INT10;// Enable PIE Group 10 for other ADC INTs
 
-    DELAY_US(1000); // Delay for 1ms to allow ADCs time to power up
+//    DELAY_US(1000); // Delay for 1ms to allow ADCs time to power up
+    for (int i = 0; i < 1000; i++) {}
 
     EDIS;
 }
@@ -87,7 +88,7 @@ void initializeADCs(void) {
 
     // ADCSOCx Control - Map SOC to specific channels
     AdcaRegs.ADCSOC0CTL.bit.CHSEL = 0; // ADC A SOC0 will convert on channel 0 to ARES0 - String 2
-    AdcaRegs.ADCSOC1CTL.bit.CHSEL = 4; // ADC A SOC1 will convert on channel 4 to ARES1 - String 4
+    AdcaRegs.ADCSOC1CTL.bit.CHSEL = 2; // ADC A SOC1 will convert on channel 2 to ARES1 - String 4
     AdccRegs.ADCSOC0CTL.bit.CHSEL = 2; // ADC C SOC0 will convert on channel 2 to CRES0 - String 6
 
     // ADCSOCx Control - Set Acquisition Prescale/Sets window in SYSCLK cycles
@@ -134,7 +135,7 @@ void initializeADCs(void) {
 
 
     // ADCINTx Select EOC Conversion
-    AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0;  // ADC C EOC0
+    AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0;  // ADC B EOC0
     AdcdRegs.ADCINTSEL1N2.bit.INT1SEL = 0;  // ADC D EOC0
     AdcdRegs.ADCINTSEL1N2.bit.INT2SEL = 1;  // ADC D EOC1
 

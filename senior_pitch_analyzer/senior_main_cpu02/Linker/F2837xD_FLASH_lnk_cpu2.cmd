@@ -10,7 +10,7 @@ PAGE 0: /*** Program Memory ***/
    /* Memory (RAM/FLASH) blocks can be moved to PAGE1 for data allocation */
    /* BEGIN is used for the "boot to Flash" bootloader mode   */
    BEGIN           	: origin = 0x080000, length = 0x000002
-   BOOT_RSVD        : origin = 0x000002, length = 0x000120     /* Part of M0, BOOT rom will use this for stack */
+   BOOT_RSVD        : origin = 0x000002, length = 0x00007E     /* Part of M0, BOOT rom will use this for stack */
 
    RAMM0           	: origin = 0x000122, length = 0x0002DE
    RAMM1            : origin = 0x000400, length = 0x000400     /* on-chip RAM block M1 */
@@ -28,6 +28,7 @@ PAGE 0: /*** Program Memory ***/
    RAMLS3      		: origin = 0x009800, length = 0x000800
    RAMLS4      		: origin = 0x00A000, length = 0x000800
    RAMLS5      		: origin = 0x00A800, length = 0x000800
+   //RAMLS45			: origin = 0x00A000, length = 0x001000
    
    /*** Flash sectors ***/
    FLASHA           : origin = 0x080002, length = 0x001FFE	/* on-chip Flash */
@@ -82,9 +83,9 @@ SECTIONS
 
    /*** Uninitialized Sections ***/
    .stack              : > RAMM1,		PAGE = 0 /* System Stack */
-   .ebss               : > RAMLS4,		PAGE = 0 /* Global Variables */
-   .esysmem            : > RAMLS5,		PAGE = 0 /* Malloc Heap */
-   .cio				   : > RAMLS5,		PAGE = 0
+   .ebss               : > RAMD1,		PAGE = 0 /* Global Variables */
+   .esysmem            : > RAMD0,		PAGE = 0 /* Malloc Heap */
+   .cio				   : > RAMD0,		PAGE = 0
 
    /*** Initialized Sections - Goes in Flash ***/
    .switch             : > FLASHB,					PAGE = 0, ALIGN(4) /* Jump Tables for certain switch statements */
@@ -101,7 +102,7 @@ SECTIONS
 #ifdef __TI_COMPILER_VERSION__
    #if __TI_COMPILER_VERSION__ >= 15009000
     .TI.ramfunc 	   : {} LOAD = FLASHB | FLASHC | FLASHD | FLASHE
-                         RUN = RAMLS3 | RAMLS4 | RAMLS5,
+                         RUN = RAMLS4 | RAMLS5,
                          LOAD_START(_RamfuncsLoadStart),
                          LOAD_SIZE(_RamfuncsLoadSize),
                          LOAD_END(_RamfuncsLoadEnd),
@@ -111,7 +112,7 @@ SECTIONS
                          PAGE = 0, ALIGN(4)
    #else
       ramfuncs         : LOAD = FLASHB | FLASHC | FLASHD | FLASHE,
-                         RUN = RAMLS3 | RAMLS4 | RAMLS5,
+                         RUN = RAMLS4 | RAMLS5,
                          LOAD_START(_RamfuncsLoadStart),
                          LOAD_SIZE(_RamfuncsLoadSize),
                          LOAD_END(_RamfuncsLoadEnd),
@@ -162,7 +163,7 @@ SECTIONS
    CircBuff3		: > RAMGS7,		PAGE = 1
    CircBuff5		: > RAMGS8,		PAGE = 1
 
-   FECPU2			: > CPU2TOCPU1RAM, PAGE = 1
+   FE_CPU2_MSG		: > CPU2TOCPU1RAM, PAGE = 1
 
 }
 

@@ -10,7 +10,7 @@
 
 /*** Control Law Accelerator (CLA) - CPU1 ***/
 
-// CLA Function Prototypes
+/* CLA Function Prototypes */
 extern interrupt void Cla1Task1();
 extern interrupt void Cla1Task2();
 extern interrupt void Cla1Task3();
@@ -20,9 +20,17 @@ extern interrupt void Cla1Task6();
 extern interrupt void Cla1Task7();
 extern interrupt void Cla1Task8();
 
-// Function Prototypes
+/* CLA Data */
+#define DEFAULT_FRAME       0xE0000000
+#define DEFAULT_LED_WHITE   0xE21F1F1F
+#define DEFAULT_LED_BLUE    0xE21F0000
+#define DEFAULT_LED_RED     0xE200001F
+#define START_FRAME         0x00000000
+#define END_FRAME           0xF0000000
+
+/* Function Prototypes */
 void initCLA(void);
-void run_cla_blinky(void);
+void initLUT(void);
 
 /* ------------------------------------------------------------------------------ */
 
