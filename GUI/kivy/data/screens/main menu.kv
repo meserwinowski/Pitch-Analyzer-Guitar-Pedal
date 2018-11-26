@@ -1,0 +1,73 @@
+ShowcaseScreen:
+    name: 'Main Menu'
+        		 						
+			
+	Label:
+		text: 'Select a Play Mode'
+		font_size: '20sp'	
+    Label:
+		text: ''
+		font_size: '80sp'
+	Label:
+		text: ''
+		font_size: '80sp'
+	Label:
+		text: ''
+		font_size: '80sp'
+		
+	BoxLayout:
+		spacing: '8dp'
+		size_hint_y: None
+		height: self.minimum_height
+		Button:
+			size_hint_y: None
+			height: '48dp'
+			text: 'Mirror Mode'
+			on_press: app.go_screen(1)
+				
+			BoxLayout:
+	            orientation: 'vertical'
+					
+                Label:
+                    text: '                Presented by:'
+                    font_size: '15sp'
+                Label:
+                    text: '               Team Signal Shred'
+                    font_name: 'HeavyData'
+                    font_size: '20sp'
+                    			        
+		Button:
+			size_hint_y: None
+			height: '48dp'
+			text: 'Lessons'
+			on_press: app.go_screen(2)
+				
+					
+    BoxLayout:
+		spacing: '8dp'
+		size_hint_y: None
+		height: self.minimum_height
+		
+		Image:
+            source: r'.\data\free_play_2.png'
+            size_hint_y: None
+			height: '78dp'
+			
+		Image:
+            source: r'.\data\lessons_2.png'
+            size_hint_y: None
+			height: '88dp'
+		
+    Label:
+		text: ''
+		font_size: '80sp'
+	Label:
+		text: ''
+		font_size: '80sp'
+	Label:
+		text: ''
+		font_size: '80sp'
+		
+					
+					
+

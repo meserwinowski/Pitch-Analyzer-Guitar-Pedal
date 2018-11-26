@@ -1,0 +1,81 @@
+ShowcaseScreen:
+    name: 'Lessons'
+
+    fullscreen: True
+
+    Accordion:
+
+        orientation: 'horizontal'
+        
+        AccordionItem:
+            title: 'Scales'
+            collapse: False
+            
+            BoxLayout:
+        		orientation: 'vertical'
+                Label:
+                    text: 'Scale Overlay:'
+            
+                
+                Spinner:
+                    text: 'None'
+                    values: ('None', 'Pentatonic- Ionian', 'Pentatonic- Dorian', 'Pentatonic- Phrygian', 'Pentatonic- Mixolydian', 'Pentatonic- Aeolian', 'Diatonic- Ionian', 'Diatonic- Dorian', 'Diatonic- Phrygian', 'Diatonic- Lydian', 'Diatonic- Mixolydian', 'Diatonic- Aeolian', 'Diatonic- Locrian')
+                    size_hint_y: None
+                    height: '48dp'
+                    on_text: app.mode_switch_w_scale_root(), root.write_scale(self.text), root.write_root(self.text), root.write_dummy()
+
+                
+                Label:
+                    text: 'Root Note Overlay:'
+                
+                
+                Spinner:
+                    text: 'None'
+                    values: ('None', 'C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'A#/Bb', 'B')
+                    size_hint_y: None
+                    height: '48dp'
+                    on_text: app.mode_switch_w_scale_root(), root.write_scale(self.text), root.write_root(self.text), root.write_dummy()
+                    
+                Label:
+                    text: ''
+                    font_size: '80sp' 
+                    
+                BoxLayout:
+                    size_hint_y: None
+                    height: '30dp'
+            
+                    Label:
+                        text: 'Speed'
+            
+                    Slider:
+                        id: s5
+                        min: 1
+                        max: 100
+                        step: 1
+                        disabled: True
+                        on_value: root.write_speed(*args)
+            
+                    Label:
+                        text: '{}'.format(s5.value)
+                Label:
+                    text: ''
+                    font_size: '80sp' 
+                        
+                Button:
+                    height: '48dp'
+                    disabled: True
+        			text: 'Play'
+        			on_press: root.btn_play()
+
+        AccordionItem:
+            title: 'Chord Progression'
+            Label:
+                text: 'Stay tuned...'
+                text_size: self.width, None
+                
+        AccordionItem:
+            title: 'More to Come'
+            Label:
+                text: 'Stay tuned...'
+                text_size: self.width, None
+
