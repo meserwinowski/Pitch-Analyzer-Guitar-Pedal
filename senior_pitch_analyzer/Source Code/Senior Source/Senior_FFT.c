@@ -13,28 +13,32 @@
 #define DELTA_T_2_PI            (M_2_PI * DELTA_T)
 
 // Variables
-volatile float32 resFFT = 0;             // FFT Bin Conversion Result
-volatile float32 n = 0.0;                // Phase Vocoder Estimation Iteration
-volatile float32 magMax = 0.0;           // FFT Magnitude Maximum Value
-volatile uint16_t magIndex = 0;          // FFT Magnitude Maximum Index
-volatile float32 phaseDifference = 0;    // Difference between the two given phase values
-volatile float32 test_est = 0;           // Temporary variable to hold phase estimation
-volatile float32 absDiff = 0;            // Absolute difference between FFT estimate and Phase estimate
-volatile float32 smallest;               // Temporary Loop value to hold the smallest difference
-volatile float32 nSmall = 0;             // Pi value of smallest difference iteration
-volatile float32 n2pi = 0;               // 2 Pi Accumulator variable
+float32 resFFT = 0;             // FFT Bin Conversion Result
+float32 n = 0.0;                // Phase Vocoder Estimation Iteration
+float32 magMax = 0.0;           // FFT Magnitude Maximum Value
+uint16_t magIndex = 0;          // FFT Magnitude Maximum Index
+float32 phaseDifference = 0;    // Difference between the two given phase values
+float32 test_est = 0;           // Temporary variable to hold phase estimation
+float32 absDiff = 0;            // Absolute difference between FFT estimate and Phase estimate
+float32 smallest;               // Temporary Loop value to hold the smallest difference
+float32 nSmall = 0;             // Pi value of smallest difference iteration
+float32 n2pi = 0;               // 2 Pi Accumulator variable
+float32 zFreq = 0;
 
 // Fixed String Frequencies
 float32 fn[7] = { 0,
-                  82.41,     // E4 - String 1
-                  110.0,     // B3 - String 2
-                  146.83,    // G3 - String 3
-                  195.998,   // D3 - String 4
-                  246.94,    // A2 - String 5
-                  329.63};   // E2 - String 6
+                  329.63,     // E4 - String 1
+                  246.94,     // B3 - String 2
+                  195.998,    // G3 - String 3
+                  146.838,   // D3 - String 4
+                  110.0,    // A2 - String 5
+                  82.41};   // E2 - String 6
 
-#pragma DATA_SECTION(fo_n_cpu2, "FECPU2");
-volatile float32 fo_n_cpu2[7];
+#pragma DATA_SECTION(fo_est_cpu2, "FE_CPU2_MSG");
+float32 fo_est_cpu2[7] = {FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN};
+
+#pragma DATA_SECTION(fo_n_cpu2, "FE_CPU2_MSG");
+float32 fo_n_cpu2[7] = {FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN};
 
 // Initialize and Define Windowing Filter
 #pragma DATA_SECTION(RFFTwindow, "RFFTwindow");
@@ -123,11 +127,25 @@ void initFFT(RFFT_F32_STRUCT_Handle handler_rfft) {
 /*** Phase Vocoder Analysis Function ***/
 // Takes in two phase values by reference
 // Returns a fundamental frequency estimation
-float32 vocodeAnalysis(volatile float32* phase1, volatile float32* phase2,
-                       RFFT_F32_STRUCT_Handle handler_rfft) {
-
+float32 vocodeAnalysis(STRING_DATA* string, RFFT_F32_STRUCT_Handle handler_rfft) {
     // Window Input Data
-    RFFT_f32_win(handler_rfft->InBuf,  (float *)&RFFTwindow, RFFT_SIZE);
+//    RFFT_f32_win(handler_rfft->InBuf,  (float *)&RFFTwindow, RFFT_SIZE);
+
+    // Zero-Crossing Test
+//    uint16_t cross1 = 0;
+//    uint16_t cross2 = 0;
+//    uint16_t crossCount = 0;
+//    float32 zPer = 0;
+//    for (int i = 1; i < (RFFT_SIZE); i++) {
+//        if (handler_rfft->InBuf[i - 1] > 0 && handler_rfft->InBuf[i] < 0) {
+//            cross1 = cross2;
+//            cross2 = i;
+//            zPer += (cross2 - cross1) * SAMP_PER;
+//            crossCount++;
+//        }
+//    }
+//    zPer = zPer / crossCount;
+//    zFreq = (1 / zPer);
 
     // Run RFFT
     RFFT_f32(handler_rfft);
@@ -146,14 +164,28 @@ float32 vocodeAnalysis(volatile float32* phase1, volatile float32* phase2,
         }
     }
 
+//    // Find index of first local Magnitude Peak
+//    for (int i = 1; i < (RFFT_SIZE / 2); i++) {
+//        volatile bool_t case1 = (handler_rfft->MagBuf[i - 1] < handler_rfft->MagBuf[i]);
+//        volatile bool_t case2 = (handler_rfft->MagBuf[i] > handler_rfft->MagBuf[i + 1]);
+//        if (case1 && case2) {
+//            magMax = handler_rfft->MagBuf[i];
+//            magIndex = i;
+//            break;
+//        }
+//    }
+
     // Calculate frequency normally for comparison later
     resFFT = (((float32) magIndex) / RFFT_SIZE) * NYQT_FREQ;
-    if (resFFT < 55) {
-        return -1;
+
+    // If calculated frequency is below A1 (55 Hz) return invalid
+    // Or if the max magnitude is below the threshold
+    if ((resFFT < 55) || (magMax < MAG_THRESHOLD)) {
+        return FREQ_NAN;
     }
 
     // Save phase value at the same index as maximum magnitude
-    *phase2 = handler_rfft->PhaseBuf[magIndex];
+    string->phaseNew = handler_rfft->PhaseBuf[magIndex];
 
     // Run Phase Vocoder Analysis Routine
     n = 0;                  // Reset loop count
@@ -164,7 +196,7 @@ float32 vocodeAnalysis(volatile float32* phase1, volatile float32* phase2,
     // Phase Analysis cannot determine what the right frequency will be so
     // the equation will need to loop and increase by 2pi each time until
     // a frequency value similar to the FFT result is found
-    phaseDifference = *phase2 - *phase1;
+    phaseDifference = string->phaseNew - string->phaseOld;
     while (n < PV_LOOP_COUNT) {
 
         // Calculate Phase Estimation
@@ -183,8 +215,15 @@ float32 vocodeAnalysis(volatile float32* phase1, volatile float32* phase2,
     }
 
     // Save phase for next iteration and return F0 estimation
-    *phase1 = *phase2;
+    string->phaseOld = string->phaseNew;
     return ((phaseDifference + nSmall) / (DELTA_T_2_PI));
+//    volatile float32 tempPD = (roundf(logf(fn[string.str] / string.fo_est) / logf(ETSE_CONSTANT)));
+//    if (tempPD < 0 || tempPD > 24) {
+//        return -1;
+//    }
+//    else {
+//        return tempPD;
+//    }
 }
 
 /* ------------------------------------------------------------------------------ */

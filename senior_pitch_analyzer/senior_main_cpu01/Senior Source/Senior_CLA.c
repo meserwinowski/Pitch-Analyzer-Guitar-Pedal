@@ -19,10 +19,10 @@
 //} LED_DATA;
 
 #pragma DATA_SECTION(frameLUT, "Cla1Data1");
-volatile LED_DATA frameLUT[6][25];
+LED_DATA frameLUT[6][25];
 
-#pragma DATA_SECTION(fo_n_cpu1, "CpuToCla1MsgRAM");
-volatile float32 fo_n_cpu1[7] = {-1, -1, -1, -1, -1, -1, -1};
+#pragma DATA_SECTION(fo_n_cpu, "CpuToCla1MsgRAM");
+float32 fo_n_cpu[7] = {-1, -1, -1, -1, -1, -1, -1};
 
 void initCLA(void) {
 
@@ -41,8 +41,9 @@ void initCLA(void) {
 
 #ifdef _FLASH
     // Copy over code from FLASH to RAM for the CLA
-    memcpy((uint32_t *)&Cla1funcsRunStart, (uint32_t *)&Cla1funcsLoadStart,
-           (uint32_t)&Cla1funcsLoadSize);
+    memcpy((uint32_t *) &Cla1funcsRunStart,
+           (uint32_t *) &Cla1funcsLoadStart,
+           (uint32_t) &Cla1funcsLoadSize);
 #endif //_FLASH
 
     // Memory Configuration - Master CPU and CLA Select

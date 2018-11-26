@@ -145,7 +145,7 @@ SECTIONS
    CircBuff3		: > RAMGS7,		PAGE = 1
    CircBuff5		: > RAMGS8,		PAGE = 1
 
-   FECPU2			: > CPU2TOCPU1RAM, PAGE = 1
+   FE_CPU2_MSG		: > CPU2TOCPU1RAM, PAGE = 1
 
 }
 

@@ -9,8 +9,8 @@
 
 extern uint16_t GPIO34_count;
 
-extern volatile LED_DATA frameLUT[6][25];
-extern volatile float32 fo_n_cpu1[7];
+extern LED_DATA frameLUT[6][25];
+extern float32 fo_n_cpu[7];
 
 /**********************************************************************
 * Task: CLA Task 1 - Update LUT, Output display frame to LED Matrix - Increment Status LED
@@ -24,16 +24,20 @@ interrupt void Cla1Task1 (void) {
     uint32_t LEDdata;   // Holds LED data
     uint_fast8_t temp;      // Temporary variable for reading SPI RX
 
-//    __mdebugstop();     // Debug Stop
+    __mdebugstop();     // Debug Stop
 
     /* Update LUT */
     for (string = 1; string < 7; string++) {
-        note_index = (int16_t) fo_n_cpu1[string];
-        if (note_index >= 1) {
+        note_index = (int16_t) fo_n_cpu[string];
+
+        // Update LUT with detected note
+        if ((note_index) >= 1 && (note_index <= 24)) {
             frameLUT[string - 1][note_index].red = 0x1F;
             frameLUT[string - 1][note_index].blue = 0x1F;
             frameLUT[string - 1][note_index].green = 0x1F;
         }
+
+        // Else if note_index is zero, then it's an open string
         else if (note_index == 0) {
             __mdebugstop();     // Debug Stop
 //            for (fret = 1; fret < 25; i++) {
@@ -43,6 +47,7 @@ interrupt void Cla1Task1 (void) {
 //
 //            }
         }
+        // Else no or bad value - don't update LUT
     }
 
     /* Send Start Frame */
@@ -101,7 +106,7 @@ interrupt void Cla1Task1 (void) {
     }
 
     /* Decay LUT Data */
-    if ((GPIO34_count & 0x255) == 1) {
+    if ((GPIO34_count & 0x181) == 1) {
         __mdebugstop();     // Debug Stop
         for (fret = 1; fret < 25; fret++) {
             __mdebugstop();     // Debug Stop

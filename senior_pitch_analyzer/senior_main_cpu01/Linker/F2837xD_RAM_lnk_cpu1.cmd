@@ -155,7 +155,7 @@ SECTIONS
    //Cla1Data2        : > RAMLS2,     PAGE = 0        /* Link to CLA Data RAM */
    Cla1Prog         : > RAMLS2,     PAGE = 0        /* Link to CLA Program RAM */
 
-   FECPU2			: > CPU2TOCPU1RAM, PAGE = 1
+   FE_CPU2_MSG		: > CPU2TOCPU1RAM, PAGE = 1
 }
 
 /*

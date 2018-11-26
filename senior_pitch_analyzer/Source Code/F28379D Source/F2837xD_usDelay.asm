@@ -43,7 +43,7 @@
 ;//###########################################################################
 
        .def _F28x_usDelay
-       .sect "ramfuncs"
+       .sect ".TI.ramfunc"
 
         .global  __F28x_usDelay
 _F28x_usDelay:

@@ -9,58 +9,34 @@
 #include "F28x_Project.h"
 #include "F28379D_Senior_Design.h"
 
-// Defines
-
-// Global Variables
-
-// CPU1 Frequency Estimations
-float32 freq_est1;
-float32 freq_est3;
-float32 freq_est5;
-
-
-volatile float32 fo_est_cpu2[7];
-extern volatile float32 fo_n_cpu2[7];
 extern float32 fn[7];
 
-Uint32 GPIO34_count1;
+// Frequency Estimation Buffers
+extern float32 fo_est_cpu2[7];
+extern float32 fo_n_cpu2[7];
 
-// CPU1 Phase Calculations
-volatile float32 phaseOld_1 = 0;
-volatile float32 phaseNew_1 = 0;
-volatile float32 phaseOld_3 = 0;
-volatile float32 phaseNew_3 = 0;
-volatile float32 phaseOld_5 = 0;
-volatile float32 phaseNew_5 = 0;
-
-// CPU1 DMA Buffer Indices
-volatile uint16_t x1;         // Circular Buffer 1 Index
-volatile uint16_t x3;         // Circular Buffer 3 Index
-volatile uint16_t x5;         // Circular Buffer 5 Index
-
-// CPU1 DMA Done Flags
-volatile bool_t done1 = 0;    // String 1 DMA Interrupt Done Flag
-volatile bool_t done3 = 0;    // String 3 DMA Interrupt Done Flag
-volatile bool_t done5 = 0;    // String 5 DMA Interrupt Done Flag
-
-// Circular Buffers
+// CPU2 Circular Buffers
 #pragma DATA_SECTION(CircularBuffer1, "CircBuff1");
-//#pragma DATA_SECTION(CircularBuffer2, "CircBuff2");
 #pragma DATA_SECTION(CircularBuffer3, "CircBuff3");
-//#pragma DATA_SECTION(CircularBuffer4, "CircBuff4");
 #pragma DATA_SECTION(CircularBuffer5, "CircBuff5");
-//#pragma DATA_SECTION(CircularBuffer6, "CircBuff6");
-volatile uint16_t CircularBuffer1[CIRC_BUFF_SIZE];
-//volatile uint16_t CircularBuffer2[CIRC_BUFF_SIZE];
-volatile uint16_t CircularBuffer3[CIRC_BUFF_SIZE];
-//volatile uint16_t CircularBuffer4[CIRC_BUFF_SIZE];
-volatile uint16_t CircularBuffer5[CIRC_BUFF_SIZE];
-//volatile uint16_t CircularBuffer6[CIRC_BUFF_SIZE];
+uint16_t CircularBuffer1[CIRC_BUFF_SIZE];
+uint16_t CircularBuffer3[CIRC_BUFF_SIZE];
+uint16_t CircularBuffer5[CIRC_BUFF_SIZE];
 
-// External Reference to FFT Handler declared in FFT Source
+// Declare String Structs
+STRING_DATA string1;
+STRING_DATA string3;
+STRING_DATA string5;
+
+// Initialize String Structs
+INIT_STRINGDATA(string1, 1, &CircularBuffer1[0]);
+INIT_STRINGDATA(string3, 3, &CircularBuffer3[0]);
+INIT_STRINGDATA(string5, 5, &CircularBuffer5[0]);
+
+// CPU2 External Reference to FFT Handler declared in FFT Source
 extern RFFT_F32_STRUCT_Handle handler_rfft2;
 
-// Interrupts
+// CPU2 Interrupts
 #pragma CODE_SECTION(DMACH1_ISR, ".TI.ramfunc");
 interrupt void DMACH1_ISR(void); // Because DMA ISRs are in the same group, the lowest
 #pragma CODE_SECTION(DMACH3_ISR, ".TI.ramfunc");
@@ -85,63 +61,60 @@ int main(void) {
     while(1) {
         // Sync CPUs across flag 0
         IpcSync(0);
+        uint16_t x = 0;
 
-        if (done1) { // String 1
+        if (string1.done) { // String 1
             // Fill FFT Input Buffer with new values
             // (Can't just change pointer because mem alignment/circular buffer)
             for (int i = 0; i < RFFT_SIZE; i++) {
-                handler_rfft2->InBuf[i] = (float32) ((int16_t) (CircularBuffer1[(x1 + i) & CIRC_MASK] - (INT16_MAX)));
+                x = string1.cBuff[(string1.xDMA + i) & CIRC_MASK];
+                handler_rfft2->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
             }
 
-            // Pass in phases by reference
-//            freq_est1 = vocodeAnalysis(&phaseOld_1, &phaseNew_1, handler_rfft2);
-            fo_est_cpu2[1] = vocodeAnalysis(&phaseOld_1, &phaseNew_1, handler_rfft2);
-            fo_n_cpu2[1] = roundf(logf(fn[1] / fo_est_cpu2[1]) / logf(ETSE_CONSTANT));
-            done1 = 0;
+            // Pass in string struct and FFT handler by reference
+            fo_est_cpu2[1] = vocodeAnalysis(&string1, handler_rfft2);
+            fo_n_cpu2[1] = roundf(logf(fo_est_cpu2[1] / fn[1]) / ETSE_CONSTANTL);
+            string1.done = 0;
         }
-        if (done3) { // String 3
+        if (string3.done) { // String 3
             // Fill FFT Input Buffer with new values
             // (Can't just change pointer because mem alignment/circular buffer)
             for (int i = 0; i < RFFT_SIZE; i++) {
-                handler_rfft2->InBuf[i] = (float32) ((int16_t) (CircularBuffer3[(x3 + i) & CIRC_MASK] - (INT16_MAX)));
+                x = string3.cBuff[(string3.xDMA + i) & CIRC_MASK];
+                handler_rfft2->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
             }
 
-            // Pass in phases by reference
-//            freq_est3 = vocodeAnalysis(&phaseOld_3, &phaseNew_3, handler_rfft2);
-            fo_est_cpu2[3] = vocodeAnalysis(&phaseOld_3, &phaseNew_3, handler_rfft2);
-            fo_n_cpu2[3] = roundf(logf(fn[3] / fo_est_cpu2[3]) / logf(ETSE_CONSTANT));
-            done3 = 0;
+            // Pass in string struct and FFT handler by reference
+            fo_est_cpu2[3] = vocodeAnalysis(&string3, handler_rfft2);
+            fo_n_cpu2[3] = roundf(logf(fo_est_cpu2[3] / fn[3]) / ETSE_CONSTANTL);
+            string3.done = 0;
         }
-        if (done5) { // String 5
+        if (string5.done) { // String 5
             // Fill FFT Input Buffer with new values
             // (Can't just change pointer because mem alignment/circular buffer)
             for (int i = 0; i < RFFT_SIZE; i++) {
-                handler_rfft2->InBuf[i] = (float32) ((int16_t) (CircularBuffer5[(x5 + i) & CIRC_MASK] - (INT16_MAX)));
+                x = string5.cBuff[(string5.xDMA + i) & CIRC_MASK];
+                handler_rfft2->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
             }
 
-            // Pass in phases by reference
-//            freq_est5 = vocodeAnalysis(&phaseOld_5, &phaseNew_5, handler_rfft2);
-            fo_est_cpu2[5] = vocodeAnalysis(&phaseOld_5, &phaseNew_5, handler_rfft2);
-            fo_n_cpu2[5] = roundf(logf(fn[5] / fo_est_cpu2[5]) / logf(ETSE_CONSTANT));
-            done5 = 0;
+            // Pass in string struct and FFT handler by reference
+            fo_est_cpu2[5] = vocodeAnalysis(&string5, handler_rfft2);
+            fo_n_cpu2[5] = roundf(logf(fo_est_cpu2[5] / fn[5]) / ETSE_CONSTANTL);
+            string5.done = 0;
         }
-
-
 
     }
 
-    ESTOP0;
-    return FAIL;
 }
 
 interrupt void DMACH1_ISR(void) {
 
     // Move DMA Buffer Pointer
-    x1 = (x1 + DMA_BUFFER_SIZE) & CIRC_MASK;
-    DMACH1AddrConfig(&CircularBuffer1[x1], &AdcdResultRegs.ADCRESULT1);
+    string1.xDMA = (string1.xDMA + DMA_BUFFER_SIZE) & CIRC_MASK;
+    DMACH1AddrConfig(&CircularBuffer1[string1.xDMA], &AdcdResultRegs.ADCRESULT1);
 
     // Acknowledge Interrupt
-    done1 = 1;                              // Set Done2 Flag
+    string1.done = 1;                       // Set String 1 Done Flag
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP7; // Clear Interrupt Flag
 
 }
@@ -149,11 +122,11 @@ interrupt void DMACH1_ISR(void) {
 interrupt void DMACH3_ISR(void) {
 
     // Move DMA Buffer Pointer
-    x3 = (x3 + DMA_BUFFER_SIZE) & CIRC_MASK;
-    DMACH3AddrConfig(&CircularBuffer3[x3], &AdcdResultRegs.ADCRESULT0);
+    string3.xDMA = (string3.xDMA + DMA_BUFFER_SIZE) & CIRC_MASK;
+    DMACH3AddrConfig(&CircularBuffer3[string3.xDMA], &AdcdResultRegs.ADCRESULT0);
 
     // Acknowledge Interrupt
-    done3 = 1;                              // Set Done4 Flag
+    string3.done = 1;                       // Set String 3 Done Flag
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP7; // Clear Interrupt Flag
 
 }
@@ -161,11 +134,11 @@ interrupt void DMACH3_ISR(void) {
 interrupt void DMACH5_ISR(void) {
 
     // Move DMA Buffer Pointer
-    x5 = (x5 + DMA_BUFFER_SIZE) & CIRC_MASK;
-    DMACH5AddrConfig(&CircularBuffer5[x5], &AdcbResultRegs.ADCRESULT0);
+    string5.xDMA = (string5.xDMA + DMA_BUFFER_SIZE) & CIRC_MASK;
+    DMACH5AddrConfig(&CircularBuffer5[string5.xDMA], &AdcbResultRegs.ADCRESULT0);
 
     // Acknowledge Interrupt
-    done5 = 1;                              // Set Done6 Flag
+    string5.done = 1;                       // Set String 5 Done Flag
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP7; // Clear Interrupt Flag
 
 }
@@ -223,12 +196,12 @@ void initMain(void) {
     EDIS;
 
     // Initialize Peripherals and FFT Handler
+    initEPWM();
     initADC();
     initDMA();
     initDMAx(&CircularBuffer1[0], &AdcdResultRegs.ADCRESULT1, DMA_ADCDINT2, 1);
     initDMAx(&CircularBuffer3[0], &AdcdResultRegs.ADCRESULT0, DMA_ADCDINT1, 3);
     initDMAx(&CircularBuffer5[0], &AdcbResultRegs.ADCRESULT0, DMA_ADCBINT1, 5);
-    initEPWM();
     initFFT(handler_rfft2);
 
 //    GPIO34_count1 = 0;

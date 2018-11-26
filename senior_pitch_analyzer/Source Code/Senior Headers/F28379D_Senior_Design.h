@@ -18,8 +18,8 @@
 #include "Senior_SCI.h"
 #include "Senior_CLA.h"
 
-#define M_PI            (3.1415926)                  // pi 32-bit floating
-#define M_2_PI          (6.2831853)                  // 2pi 32-bit floating
+#define M_PI            (3.1415926f)                 // pi 32-bit floating
+#define M_2_PI          (6.2831853f)                 // 2pi 32-bit floating
 #define SAMP_FREQ       (20000)                      // Sampling Frequency
 #define SAMP_PER        (1 / SAMP_FREQ)              // Sampling Period
 #define NYQT_FREQ       (SAMP_FREQ / 2)              // Nyquist Frequency
@@ -27,6 +27,7 @@
 
 // Constant for Inverse Equal Tempered Scale Calculations (Root 12 of 2)
 #define ETSE_CONSTANT       1.0594631f
+#define ETSE_CONSTANTL      logf(ETSE_CONSTANT)
 
 #define CPU2TOCPU1_MSGRAM       0x0003F800
 
