@@ -20,6 +20,9 @@ from kivy.core.text import LabelBase
 
 LabelBase.register(name = "HeavyData", fn_regular= "heavy_data.ttf")
 
+KIVY_DPI=267 
+KIVY_METRICS_DENSITY=2
+
 # configure the serial connections (the parameters differs on the device you are connecting to)
 ser = serial.Serial(
     port='COM5',
