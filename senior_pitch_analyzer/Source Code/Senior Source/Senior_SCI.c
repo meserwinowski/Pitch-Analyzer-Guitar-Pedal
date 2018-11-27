@@ -164,7 +164,7 @@ void determineCommand(void) {
     }
     // Change Color
     else if (cmd == CHANGE_COLOR) {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             colors[i][0] = data1; // Bright
             colors[i][1] = data2; // Red
             colors[i][2] = data3; // Green

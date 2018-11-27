@@ -59,7 +59,7 @@ INIT_STRINGDATA(string5, 5, &CircularBuffer5[0]);
 float32 fo_est_cpu2[7] = {FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN};
 
 #pragma DATA_SECTION(fo_n_cpu2, "FE_CPU2_MSG");
-float32 fo_n_cpu2[7] = {FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN};
+float32 fo_n_cpu2[7] = {-1, -1, -1, -1, -1, -1, -1};
 
 // Initialize and Define Windowing Filter
 #pragma DATA_SECTION(RFFTwindow, "RFFTwindow");

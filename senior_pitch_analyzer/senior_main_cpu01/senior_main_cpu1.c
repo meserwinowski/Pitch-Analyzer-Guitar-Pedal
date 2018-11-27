@@ -71,7 +71,7 @@ int main(void) {
 
     while(1) {
         // Sync CPUs using IPC API and IPC Flag 0
-//        IpcSync(0);
+        IpcSync(0);
         uint16_t x = 0;
 
         if (mode == MIRROR_MODE) {
