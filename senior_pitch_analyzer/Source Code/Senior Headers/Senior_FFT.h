@@ -18,7 +18,10 @@
 #define CIRC_BUFF_SIZE          2 * RFFT_SIZE
 #define CIRC_MASK               CIRC_BUFF_SIZE - 1
 #define OVERLAP                 4                  // Phase Vocoder FFT Overlap
-#define MAG_THRESHOLD           750000.0f
+#define PV_LOOP_COUNT           (25)      // Number of times the Phase Analysis routine will loop
+#define DELTA_T                 (0.0256f) // Time between FFTs - (RFFT_SIZE / OVERLAP) * NYQUIST_PERIOD
+#define DELTA_T_2_PI            (M_2_PI * DELTA_T)
+#define MAG_THRESHOLD           1100000.0f
 #define FREQ_NAN                1.0f
 
 typedef struct stringData {
@@ -28,7 +31,13 @@ typedef struct stringData {
     float32 phaseNew;      // New Phase Calculation
     uint16_t xDMA;         // DMA to Circular Buffer Index
     bool_t done;           // DMA Done Flag
-    float32 fo_est;
+    float32 resFFT;
+    float32  mBuff[8];
+    uint16_t mBCount;
+    float32 mABuff[8];
+    uint16_t mACount;
+    float32 fn_est;
+    float32 n_est;
 } STRING_DATA;
 
 #define INIT_STRINGDATA(X, num, cb) STRING_DATA X = {.str = num, .cBuff = cb, .phaseOld = 0, .phaseNew = 0, .xDMA = 0, .done = 0};
@@ -40,7 +49,7 @@ void initFFT(RFFT_F32_STRUCT_Handle handler_rfft);
 //float32 vocodeAnalysis(volatile float32* phase1,
 //                       volatile float32* phase2,
 //                       RFFT_F32_STRUCT_Handle handler_rfft);
-float32 vocodeAnalysis(STRING_DATA* string, RFFT_F32_STRUCT_Handle handler_rfft);
+void vocodeAnalysis(STRING_DATA* string, RFFT_F32_STRUCT_Handle handler_rfft);
 
 /* ------------------------------------------------------------------------------ */
 

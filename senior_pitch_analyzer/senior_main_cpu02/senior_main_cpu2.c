@@ -9,29 +9,20 @@
 #include "F28x_Project.h"
 #include "F28379D_Senior_Design.h"
 
+// Mode Select
+extern uint16_t mode;
+
+// Fixed Frequency Array
 extern float32 fn[7];
 
 // Frequency Estimation Buffers
 extern float32 fo_est_cpu2[7];
 extern float32 fo_n_cpu2[7];
 
-// CPU2 Circular Buffers
-#pragma DATA_SECTION(CircularBuffer1, "CircBuff1");
-#pragma DATA_SECTION(CircularBuffer3, "CircBuff3");
-#pragma DATA_SECTION(CircularBuffer5, "CircBuff5");
-uint16_t CircularBuffer1[CIRC_BUFF_SIZE];
-uint16_t CircularBuffer3[CIRC_BUFF_SIZE];
-uint16_t CircularBuffer5[CIRC_BUFF_SIZE];
-
 // Declare String Structs
-STRING_DATA string1;
-STRING_DATA string3;
-STRING_DATA string5;
-
-// Initialize String Structs
-INIT_STRINGDATA(string1, 1, &CircularBuffer1[0]);
-INIT_STRINGDATA(string3, 3, &CircularBuffer3[0]);
-INIT_STRINGDATA(string5, 5, &CircularBuffer5[0]);
+extern STRING_DATA string1;
+extern STRING_DATA string3;
+extern STRING_DATA string5;
 
 // CPU2 External Reference to FFT Handler declared in FFT Source
 extern RFFT_F32_STRUCT_Handle handler_rfft2;
@@ -63,45 +54,49 @@ int main(void) {
         IpcSync(0);
         uint16_t x = 0;
 
-        if (string1.done) { // String 1
-            // Fill FFT Input Buffer with new values
-            // (Can't just change pointer because mem alignment/circular buffer)
-            for (int i = 0; i < RFFT_SIZE; i++) {
-                x = string1.cBuff[(string1.xDMA + i) & CIRC_MASK];
-                handler_rfft2->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
+        if (mode == MIRROR_MODE) {
+            if (string1.done) { // String 1
+                // Fill FFT Input Buffer with new values
+                for (int i = 0; i < RFFT_SIZE; i++) {
+                    x = string1.cBuff[(string1.xDMA + i) & CIRC_MASK];
+                    handler_rfft2->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
+                }
+
+                // Pass in string struct and FFT handler by reference
+                vocodeAnalysis(&string1, handler_rfft2);
+                string1.done = 0;
+            }
+            if (string3.done) { // String 3
+                // Fill FFT Input Buffer with new values
+                for (int i = 0; i < RFFT_SIZE; i++) {
+                    x = string3.cBuff[(string3.xDMA + i) & CIRC_MASK];
+                    handler_rfft2->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
+                }
+
+                // Pass in string struct and FFT handler by reference
+                vocodeAnalysis(&string3, handler_rfft2);
+                string3.done = 0;
+            }
+            if (string5.done) { // String 5
+                // Fill FFT Input Buffer with new values
+                for (int i = 0; i < RFFT_SIZE; i++) {
+                    x = string5.cBuff[(string5.xDMA + i) & CIRC_MASK];
+                    handler_rfft2->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
+                }
+
+                // Pass in string struct and FFT handler by reference
+                vocodeAnalysis(&string5, handler_rfft2);
+                string5.done = 0;
             }
 
-            // Pass in string struct and FFT handler by reference
-            fo_est_cpu2[1] = vocodeAnalysis(&string1, handler_rfft2);
-            fo_n_cpu2[1] = roundf(logf(fo_est_cpu2[1] / fn[1]) / ETSE_CONSTANTL);
-            string1.done = 0;
-        }
-        if (string3.done) { // String 3
-            // Fill FFT Input Buffer with new values
-            // (Can't just change pointer because mem alignment/circular buffer)
-            for (int i = 0; i < RFFT_SIZE; i++) {
-                x = string3.cBuff[(string3.xDMA + i) & CIRC_MASK];
-                handler_rfft2->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
-            }
+            fo_n_cpu2[1] = string1.n_est;
+            fo_n_cpu2[3] = string3.n_est;
+            fo_n_cpu2[5] = string5.n_est;
 
-            // Pass in string struct and FFT handler by reference
-            fo_est_cpu2[3] = vocodeAnalysis(&string3, handler_rfft2);
-            fo_n_cpu2[3] = roundf(logf(fo_est_cpu2[3] / fn[3]) / ETSE_CONSTANTL);
-            string3.done = 0;
         }
-        if (string5.done) { // String 5
-            // Fill FFT Input Buffer with new values
-            // (Can't just change pointer because mem alignment/circular buffer)
-            for (int i = 0; i < RFFT_SIZE; i++) {
-                x = string5.cBuff[(string5.xDMA + i) & CIRC_MASK];
-                handler_rfft2->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
-            }
-
-            // Pass in string struct and FFT handler by reference
-            fo_est_cpu2[5] = vocodeAnalysis(&string5, handler_rfft2);
-            fo_n_cpu2[5] = roundf(logf(fo_est_cpu2[5] / fn[5]) / ETSE_CONSTANTL);
-            string5.done = 0;
-        }
+//        else if(mode == LEARNING_MODE) {
+//
+//        }
 
     }
 
@@ -111,7 +106,7 @@ interrupt void DMACH1_ISR(void) {
 
     // Move DMA Buffer Pointer
     string1.xDMA = (string1.xDMA + DMA_BUFFER_SIZE) & CIRC_MASK;
-    DMACH1AddrConfig(&CircularBuffer1[string1.xDMA], &AdcdResultRegs.ADCRESULT1);
+    DMACH1AddrConfig(&string1.cBuff[string1.xDMA], &AdcdResultRegs.ADCRESULT1);
 
     // Acknowledge Interrupt
     string1.done = 1;                       // Set String 1 Done Flag
@@ -123,7 +118,7 @@ interrupt void DMACH3_ISR(void) {
 
     // Move DMA Buffer Pointer
     string3.xDMA = (string3.xDMA + DMA_BUFFER_SIZE) & CIRC_MASK;
-    DMACH3AddrConfig(&CircularBuffer3[string3.xDMA], &AdcdResultRegs.ADCRESULT0);
+    DMACH3AddrConfig(&string3.cBuff[string3.xDMA], &AdcdResultRegs.ADCRESULT0);
 
     // Acknowledge Interrupt
     string3.done = 1;                       // Set String 3 Done Flag
@@ -135,7 +130,7 @@ interrupt void DMACH5_ISR(void) {
 
     // Move DMA Buffer Pointer
     string5.xDMA = (string5.xDMA + DMA_BUFFER_SIZE) & CIRC_MASK;
-    DMACH5AddrConfig(&CircularBuffer5[string5.xDMA], &AdcbResultRegs.ADCRESULT0);
+    DMACH5AddrConfig(&string5.cBuff[string5.xDMA], &AdcbResultRegs.ADCRESULT0);
 
     // Acknowledge Interrupt
     string5.done = 1;                       // Set String 5 Done Flag
@@ -199,19 +194,10 @@ void initMain(void) {
     initEPWM();
     initADC();
     initDMA();
-    initDMAx(&CircularBuffer1[0], &AdcdResultRegs.ADCRESULT1, DMA_ADCDINT2, 1);
-    initDMAx(&CircularBuffer3[0], &AdcdResultRegs.ADCRESULT0, DMA_ADCDINT1, 3);
-    initDMAx(&CircularBuffer5[0], &AdcbResultRegs.ADCRESULT0, DMA_ADCBINT1, 5);
+    initDMAx(&string1.cBuff[0], &AdcdResultRegs.ADCRESULT1, DMA_ADCDINT2, 1);
+    initDMAx(&string3.cBuff[0], &AdcdResultRegs.ADCRESULT0, DMA_ADCDINT1, 3);
+    initDMAx(&string5.cBuff[0], &AdcbResultRegs.ADCRESULT0, DMA_ADCBINT1, 5);
     initFFT(handler_rfft2);
-
-//    GPIO34_count1 = 0;
-//    while(1) {
-//        GPIO34_count1 += 1;
-////        if (GPIO34_count1 > 1000000) {                  // Toggle slowly to see the LED blink
-////            GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;  // Toggle the pin
-////            GPIO34_count1 = 0;                       // Reset counter
-////        }
-//    }
 
     // Enable global Interrupts and higher priority real-time debug events
     EINT;  // Enable Global interrupt INTM

@@ -5,13 +5,23 @@
  *      Author: meser
  */
 
-
 #include "F28379D_Senior_Design.h"
 #include "F2837xD_device.h"
 #include "F2837xD_Examples.h"
 
+extern uint16_t mode;
+extern int16_t* scale_pointer;
+extern int16_t penta_ionian_LUT;
+extern int16_t penta_dorian_LUT;
+extern int16_t penta_phrygian_LUT;
+extern int16_t penta_mixolydian_LUT;
+extern int16_t penta_aeolian_LUT;
+extern uint16_t root_index;
+extern uint16_t colors[6][4];
+
 #pragma DATA_SECTION(diatonic, "Cla1Data1");
 uint_least8_t diatonic[7] = {2, 2, 1, 2, 2, 2, 1};
+
 #pragma DATA_SECTION(pentatonic, "Cla1Data1");
 uint_least8_t pentatonic[5] = {2, 2, 3, 2, 3};
 
@@ -29,22 +39,9 @@ void initSCI(void) {
     GPIO_SetupPinMux(86, GPIO_MUX_CPU1, 5); // Main Board SCIB TX
     GPIO_SetupPinOptions(86, GPIO_OUTPUT, GPIO_ASYNC);
 
-    char *msg;
-
     initSCIBFIFO();        // Initialize the SCI FIFO
     initSCIB();            // Initialize SCI for Echoback
 
-    msg = "\r\n\n\nHello World!\0";
-    SCIB_MSG(msg);
-
-    msg = "\r\nYou will enter a character, and the DSP will echo it back! \n\0";
-    SCIB_MSG(msg);
-
-    msg = "\r\nEnter a character: \0";
-    SCIB_MSG(msg);
-
-
-//    for(;;) {}
 }
 
 // SCIB DLB, 8-bit word, baud rate 0x000F, default, 1 STOP bit, no parity
@@ -116,7 +113,6 @@ void determineCommand(void) {
     uint_fast8_t data4;
     uint32_t dataPacket;
     float32 tuning;
-    char *msg;
 
     cmd = ScibRegs.SCIRXBUF.all;
     data1 = ScibRegs.SCIRXBUF.all; // MSByte | Bright | Mode
@@ -130,33 +126,51 @@ void determineCommand(void) {
     dataPacket = dataPacket << 8 | data4;
     tuning = (float32) dataPacket;
 
-    msg = "  You sent: \0";
-    SCIB_MSG(msg);
-    SCIB_TX(data3);
+    /*** Determine Command ***/
+    if (cmd == CHANGE_MODE) {
+        // Real-time Mirror Mode
+        if (data1 == MIRROR_MODE) {
+            mode = MIRROR_MODE;
+        }
+        // Learning Mode
+        else if (data1 == LEARNING_MODE) {
+            mode = LEARNING_MODE;
 
-    msg = "\r\nEnter a character: \0";
-    SCIB_MSG(msg);
+            // Determine Scale
+            if (data2 == 0x01) { // Pentatonic Ionian
+                scale_pointer = &penta_ionian_LUT;
+            }
+            else if (data2 == 0x02) { // Pentatonic Dorian
+                scale_pointer = &penta_dorian_LUT;
+            }
+            else if (data2 == 0x03) { // Pentatonic Phrygian
+                scale_pointer = &penta_phrygian_LUT;
+            }
+            else if (data2 == 0x04) { // Pentatonic Mixolydian
+                scale_pointer = &penta_mixolydian_LUT;
+            }
+            else if (data2 == 0x05) { // Pentatonic Aeolian
+                scale_pointer = &penta_aeolian_LUT;
+            }
 
-//    /*** Determine Command ***/
-//    if (cmd == CHANGE_MODE) {
-//        // Real-time Mirror Mode
-//        if (data1 == MIRROR_MODE) {
-//
-//        }
-//        // Learning Mode
-//        else if (data1 == LEARNING_MODE) {
-//
-//        }
-//        // Invalid Data
-//        else {
-//            SCIB_TX(INVALID);
-//            return;
-//        }
-//    }
-//    // Change Color
-//    else if (cmd == CHANGE_COLOR) {
-//
-//    }
+            // Determine Root
+            root_index = data3;
+        }
+        // Invalid Data
+        else {
+            SCIB_TX(NACK);
+            return;
+        }
+    }
+    // Change Color
+    else if (cmd == CHANGE_COLOR) {
+        for (int i = 0; i < 5; i++) {
+            colors[i][0] = data1; // Bright
+            colors[i][1] = data2; // Red
+            colors[i][2] = data3; // Green
+            colors[i][3] = data4; // Blue
+        }
+    }
 //    // Change Tuning (String 1)
 //    else if (cmd == CHANGE_TUNING_S1) {
 //
@@ -181,15 +195,15 @@ void determineCommand(void) {
 //    else if (cmd == CHANGE_TUNING_S6) {
 //
 //    }
-//
-//    // Invalid Command
-//    else {
-//        SCIB_TX(INVALID);
-//        return;
-//    }
-//
-//    // Send Acknowledge to GUI
-//    SCIB_TX(ACK);
+
+    // Invalid Command
+    else {
+        SCIB_TX(NACK);
+        return;
+    }
+
+    // Send Acknowledge to GUI
+    SCIB_TX(ACK);
 }
 
 // SCIB_TX - Transmit a character from the SCIB

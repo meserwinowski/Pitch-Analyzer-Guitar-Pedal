@@ -11,15 +11,27 @@
 
 /*** Control Law Accelerator - CPU1 ***/
 
-//typedef struct LEDdata {
-//    unsigned int sbright:   8;
-//    unsigned int blue:      8;
-//    unsigned int green:     8;
-//    unsigned int red:       8;
-//} LED_DATA;
+#pragma DATA_SECTION(colors, "Cla1Data1");
+uint16_t colors[6][4] = {{0x01, 0x1F, 0x1F, 0x1F},
+                         {0x01, 0x1F, 0x1F, 0x1F},
+                         {0x01, 0x1F, 0x1F, 0x1F},
+                         {0x01, 0x1F, 0x1F, 0x1F},
+                         {0x01, 0x1F, 0x1F, 0x1F},
+                         {0x01, 0x1F, 0x1F, 0x1F}
+};
 
 #pragma DATA_SECTION(frameLUT, "Cla1Data1");
 LED_DATA frameLUT[6][25];
+
+int16_t penta_ionian_LUT[6][2] = {{0, 2}, {0, 2}, {-1, 1}, {-1, 2}, {-1, 2}, {0, 2}};
+int16_t penta_dorian_LUT[6][2] = {{0, 2}, {0, 3}, {-1, 2}, {0, 2}, {0, 2}, {0, 2}};
+int16_t penta_phrygian_LUT[6][2] = {{0, 3}, {1, 3}, {0, 2}, {0, 2}, {0, 3}, {0, 3}};
+int16_t penta_mixolydian_LUT[6][2] = {{0, 2}, {0, 2}, {-1, 2}, {-1, 2}, {0, 2}, {0, 2}};
+int16_t penta_aeolian_LUT[6][2] = {{0, 3}, {0, 3}, {0, 2}, {0, 2}, {0, 2}, {0, 3}};
+
+uint16_t root_index;
+int16_t* scale_pointer;
+
 
 #pragma DATA_SECTION(fo_n_cpu, "CpuToCla1MsgRAM");
 float32 fo_n_cpu[7] = {-1, -1, -1, -1, -1, -1, -1};

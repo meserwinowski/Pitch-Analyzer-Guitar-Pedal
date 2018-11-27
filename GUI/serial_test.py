@@ -8,7 +8,8 @@ Created on Sun Nov 18 23:42:06 2018
 import time
 import serial
 
-# configure the serial connections (the parameters differs on the device you are connecting to)
+# Configure the serial connections (the parameters differs on the device you
+# are connecting to)
 ser = serial.Serial(
     port='COM5',
     baudrate=9600,
@@ -19,10 +20,10 @@ ser = serial.Serial(
 
 ser.isOpen()
 
-print ('Enter your commands below.\r\nInsert "exit" to leave the application.')
+print('Enter your commands below.\r\nInsert "exit" to leave the application.')
 
-input_s=1
-while 1 :
+input_s = 1
+while(1):
     # get keyboard input
     input_s = input(">> ")
         # Python 3 users

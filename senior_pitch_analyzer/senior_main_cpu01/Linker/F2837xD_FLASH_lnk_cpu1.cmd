@@ -24,8 +24,8 @@ PAGE 0: /*** Program Memory ***/
    /*** Local Shared Memory ***/
    RAMLS0          	: origin = 0x008000, length = 0x000800
    RAMLS1          	: origin = 0x008800, length = 0x000800
-   RAMLS2      		: origin = 0x009000, length = 0x000C00
-   RAMLS3      		: origin = 0x009C00, length = 0x000400
+   RAMLS2      		: origin = 0x009000, length = 0x000E00
+   RAMLS3      		: origin = 0x009E00, length = 0x000200
    RAMLS4      		: origin = 0x00A000, length = 0x000800
    RAMLS5      		: origin = 0x00A800, length = 0x000800
    //RAMLS45			: origin = 0x00A000, length = 0x001000

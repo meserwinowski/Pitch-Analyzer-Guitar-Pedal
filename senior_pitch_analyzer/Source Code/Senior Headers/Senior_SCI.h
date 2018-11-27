@@ -53,7 +53,7 @@
 #define B_n                 0x0C
 
 #define ACK                 0x41 // 'A'
-#define INVALID             0x00
+#define NACK                0x00
 
 // Function Prototypes
 void initSCI(void);
