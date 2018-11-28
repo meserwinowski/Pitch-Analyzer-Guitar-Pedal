@@ -12,12 +12,12 @@
 /*** Control Law Accelerator - CPU1 ***/
 
 #pragma DATA_SECTION(colors, "Cla1Data1");
-uint16_t colors[6][4] = {{0x01, 0x1F, 0x1F, 0x1F},
-                         {0x01, 0x1F, 0x1F, 0x1F},
-                         {0x01, 0x1F, 0x1F, 0x1F},
-                         {0x01, 0x1F, 0x1F, 0x1F},
-                         {0x01, 0x1F, 0x1F, 0x1F},
-                         {0x01, 0x1F, 0x1F, 0x1F}
+uint16_t colors[6][4] = {{0x01, 0x10, 0x00, 0x1F}, // String 1
+                         {0x01, 0x00, 0x1F, 0x00}, // String 2
+                         {0x01, 0x27, 0x12, 0x00}, // String 3
+                         {0x01, 0x00, 0x00, 0x1F}, // String 4
+                         {0x01, 0x1F, 0x1F, 0x00}, // String 5
+                         {0x01, 0x1F, 0x00, 0x00}  // String 6
 };
 
 #pragma DATA_SECTION(frameLUT, "Cla1Data1");
@@ -125,7 +125,7 @@ void initLUT(void) {
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 25; j++) {
 //            frameLUT[i][j] = DEFAULT_LED_WHITE;
-            frameLUT[i][j].sbright = 0x00E1;
+            frameLUT[i][j].sbright = 0x00E5;
             frameLUT[i][j].blue = 0x001F;
             frameLUT[i][j].green = 0x001F;
             frameLUT[i][j].red = 0x001F;

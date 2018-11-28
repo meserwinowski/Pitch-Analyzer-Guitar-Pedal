@@ -112,7 +112,7 @@ void determineCommand(void) {
     uint_fast8_t data3;
     uint_fast8_t data4;
     uint32_t dataPacket;
-    float32 tuning;
+//    float32 tuning;
 
     cmd = ScibRegs.SCIRXBUF.all;
     data1 = ScibRegs.SCIRXBUF.all; // MSByte | Bright | Mode
@@ -124,7 +124,7 @@ void determineCommand(void) {
     dataPacket = data1 << 8 | data2;
     dataPacket = dataPacket << 8 | data3;
     dataPacket = dataPacket << 8 | data4;
-    tuning = (float32) dataPacket;
+//    tuning = (float32) dataPacket;
 
     /*** Determine Command ***/
     if (cmd == CHANGE_MODE) {
@@ -134,6 +134,7 @@ void determineCommand(void) {
         }
         // Learning Mode
         else if (data1 == LEARNING_MODE) {
+
             mode = LEARNING_MODE;
 
             // Determine Scale

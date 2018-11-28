@@ -112,6 +112,7 @@ int main(void) {
                 string6.done = 0;
             }
 
+            // Fill CLA Message RAM with fret estimate results
             fo_n_cpu[1] = fo_n_cpu2[1];
             fo_n_cpu[2] = string2.n_est;
             fo_n_cpu[3] = fo_n_cpu2[3];

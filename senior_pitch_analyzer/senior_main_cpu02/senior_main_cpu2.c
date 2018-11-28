@@ -89,14 +89,12 @@ int main(void) {
                 string5.done = 0;
             }
 
+            // Send string estimates over message RAM to CPU1
             fo_n_cpu2[1] = string1.n_est;
             fo_n_cpu2[3] = string3.n_est;
             fo_n_cpu2[5] = string5.n_est;
 
         }
-//        else if(mode == LEARNING_MODE) {
-//
-//        }
 
     }
 
