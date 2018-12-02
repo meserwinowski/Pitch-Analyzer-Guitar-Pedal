@@ -14,12 +14,14 @@
 /*--- Commands ---*/
 #define CHANGE_MODE         0x01
 #define CHANGE_COLOR        0x02
-#define CHANGE_TUNING_S1    0x11
-#define CHANGE_TUNING_S2    0x12
-#define CHANGE_TUNING_S3    0x13
-#define CHANGE_TUNING_S4    0x14
-#define CHANGE_TUNING_S5    0x15
-#define CHANGE_TUNING_S6    0x16
+#define CHANGE_TUNING       0x03
+
+#define STRING1             0x01
+#define STRING2             0x02
+#define STRING3             0x03
+#define STRING4             0x04
+#define STRING5             0x05
+#define STRING6             0x06
 
 #define MIRROR_MODE         0x01
 #define LEARNING_MODE       0x02
@@ -39,23 +41,24 @@
 #define LOCRIAN             0x0C
 
 /* Root Notes */
-#define C_n                 0x01
-#define CsDb_n              0x02
-#define D_n                 0x03
-#define DsEb_n              0x04
-#define E_n                 0x05
-#define F_n                 0x06
-#define FsGb_n              0x07
-#define G_n                 0x08
-#define GsAb_n              0x09
-#define A_n                 0x0A
-#define AsBb_n              0x0B
-#define B_n                 0x0C
+#define F_n                 0x01
+#define FsGb_n              0x02
+#define G_n                 0x03
+#define GsAb_n              0x04
+#define A_n                 0x05
+#define AsBb_n              0x06
+#define B_n                 0x07
+#define C_n                 0x08
+#define CsDb_n              0x09
+#define D_n                 0x0A
+#define DsEb_n              0x0B
+#define E_n                 0x0C
 
+/* Trasmit Acknowledge */
 #define ACK                 0x41 // 'A'
 #define NACK                0x00
 
-// Function Prototypes
+/* Function Prototypes */
 void initSCI(void);
 void initSCIB(void);
 void initSCIBFIFO(void);

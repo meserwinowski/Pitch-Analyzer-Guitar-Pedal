@@ -124,12 +124,17 @@ int main(void) {
             /* Update LUT */
             for (int i = 0; i < 6; i++) {
                 // Update LUT with detected note
-                int16_t string_index = scale_pointer[(2 * i) + 0];
+                int16_t string_index = scale_pointer[(3 * i) + 0];
                 frameLUT[i][root_index + string_index].red = colors[i][1];
                 frameLUT[i][root_index + string_index].green = colors[i][2];
                 frameLUT[i][root_index + string_index].blue = colors[i][3];
 
-                string_index = scale_pointer[(2 * i) + 1];
+                string_index = scale_pointer[(3 * i) + 1];
+                frameLUT[i][root_index + string_index].red = colors[i][1];
+                frameLUT[i][root_index + string_index].green = colors[i][2];
+                frameLUT[i][root_index + string_index].blue = colors[i][3];
+
+                string_index = scale_pointer[(3 * i) + 2];
                 frameLUT[i][root_index + string_index].red = colors[i][1];
                 frameLUT[i][root_index + string_index].green = colors[i][2];
                 frameLUT[i][root_index + string_index].blue = colors[i][3];

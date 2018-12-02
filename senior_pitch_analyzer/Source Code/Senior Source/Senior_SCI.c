@@ -11,11 +11,19 @@
 
 extern uint16_t mode;
 extern int16_t* scale_pointer;
+extern int16_t* scaleLUT;
 extern int16_t penta_ionian_LUT;
 extern int16_t penta_dorian_LUT;
 extern int16_t penta_phrygian_LUT;
 extern int16_t penta_mixolydian_LUT;
 extern int16_t penta_aeolian_LUT;
+extern int16_t dia_ionian_LUT;
+extern int16_t dia_dorian_LUT;
+extern int16_t dia_phrygian_LUT;
+extern int16_t dia_lydian_LUT;
+extern int16_t dia_mixolydian_LUT;
+extern int16_t dia_aeolian_LUT;
+extern int16_t dia_locrian_LUT;
 extern uint16_t root_index;
 extern uint16_t colors[6][4];
 
@@ -114,11 +122,12 @@ void determineCommand(void) {
     uint32_t dataPacket;
 //    float32 tuning;
 
-    cmd = ScibRegs.SCIRXBUF.all;
-    data1 = ScibRegs.SCIRXBUF.all; // MSByte | Bright | Mode
-    data2 = ScibRegs.SCIRXBUF.all; //        | Red    | Scale
-    data3 = ScibRegs.SCIRXBUF.all; //        | Green  | Root
-    data4 = ScibRegs.SCIRXBUF.all; // LSByte | Blue   | XXXX
+    cmd = ScibRegs.SCIRXBUF.all;   //        | CMode | CColor | CTuning
+    data1 = ScibRegs.SCIRXBUF.all; // MSByte | Mode  | String | String
+    data2 = ScibRegs.SCIRXBUF.all; //        | Scale | Bright | BA4
+    data3 = ScibRegs.SCIRXBUF.all; //        | Root  | Red    | BA3
+    data4 = ScibRegs.SCIRXBUF.all; //        | XXXX  | Green  | BA2
+//    data5 = ScibRegs.SCIRXBUF.all; // LSByte | XXXX  | Blue   | BA1
 
     // Merge data transmission (May be unused)
     dataPacket = data1 << 8 | data2;
@@ -137,6 +146,7 @@ void determineCommand(void) {
 
             mode = LEARNING_MODE;
 
+//            scale_pointer = scaleLUT[data2];
             // Determine Scale
             if (data2 == 0x01) { // Pentatonic Ionian
                 scale_pointer = &penta_ionian_LUT;
@@ -152,6 +162,27 @@ void determineCommand(void) {
             }
             else if (data2 == 0x05) { // Pentatonic Aeolian
                 scale_pointer = &penta_aeolian_LUT;
+            }
+            else if (data2 == 0x06) {
+                scale_pointer = &dia_ionian_LUT;
+            }
+            else if (data2 == 0x07) {
+                scale_pointer = &dia_dorian_LUT;
+            }
+            else if (data2 == 0x08) {
+                scale_pointer = &dia_phrygian_LUT;
+            }
+            else if (data2 == 0x09) {
+                scale_pointer = &dia_lydian_LUT;
+            }
+            else if (data2 == 0x0A) {
+                scale_pointer = &dia_mixolydian_LUT;
+            }
+            else if (data2 == 0x0B) {
+                scale_pointer = &dia_aeolian_LUT;
+            }
+            else if(data2 == 0x0C) {
+                scale_pointer = &dia_locrian_LUT;
             }
 
             // Determine Root

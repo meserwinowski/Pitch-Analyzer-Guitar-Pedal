@@ -46,13 +46,13 @@ uint16_t CircularBuffer3[CIRC_BUFF_SIZE];
 uint16_t CircularBuffer5[CIRC_BUFF_SIZE];
 
 // Declare and initialize CPU1 Strings
-INIT_STRINGDATA(string2, 2, &CircularBuffer2[0], 1100000.0f);
-INIT_STRINGDATA(string4, 4, &CircularBuffer4[0], 1100000.0f);
-INIT_STRINGDATA(string6, 6, &CircularBuffer6[0], 1100000.0f);
+INIT_STRINGDATA(string2, 2, &CircularBuffer2[0], 1000000.0f);
+INIT_STRINGDATA(string4, 4, &CircularBuffer4[0], 1000000.0f);
+INIT_STRINGDATA(string6, 6, &CircularBuffer6[0], 1000000.0f);
 
 // Declare and Initialize CPU2 Strings
-INIT_STRINGDATA(string1, 1, &CircularBuffer1[0], 1100000.0f);
-INIT_STRINGDATA(string3, 3, &CircularBuffer3[0], 1100000.0f);
+INIT_STRINGDATA(string1, 1, &CircularBuffer1[0], 1000000.0f);
+INIT_STRINGDATA(string3, 3, &CircularBuffer3[0], 1000000.0f);
 INIT_STRINGDATA(string5, 5, &CircularBuffer5[0], 1000000.0f);
 
 #pragma DATA_SECTION(fo_est_cpu2, "FE_CPU2_MSG");

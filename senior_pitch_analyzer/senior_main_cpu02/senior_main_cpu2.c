@@ -50,7 +50,7 @@ int main(void) {
     initMain();
 
     while(1) {
-        // Sync CPUs across flag 0
+        // Sync CPUs across IPC Flag 0
         IpcSync(0);
         uint16_t x = 0;
 

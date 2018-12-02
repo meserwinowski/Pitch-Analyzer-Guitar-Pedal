@@ -2,7 +2,7 @@
 <link_info>
    <banner>TMS320C2000 Linker PC v18.1.1.LTS</banner>
    <copyright>Copyright (c) 1996-2017 Texas Instruments Incorporated</copyright>
-   <link_time>0x5bfdfe36</link_time>
+   <link_time>0x5c032ac2</link_time>
    <link_errors>0x0</link_errors>
    <output_file>senior_main_cpu02.out</output_file>
    <entry_point>
