@@ -28,6 +28,7 @@
 typedef struct stringData {
     uint16_t str;
     uint16_t* cBuff;       // Pointer to Circular Buffer
+//    int16_t* cBuff;       // Pointer to Circular Buffer
     float32 phaseOld;      // Previous Phase Calculation
     float32 phaseNew;      // New Phase Calculation
     uint16_t xDMA;         // DMA to Circular Buffer Index

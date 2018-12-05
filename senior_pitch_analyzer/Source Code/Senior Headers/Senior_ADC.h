@@ -16,6 +16,7 @@
 // Function Prototypes
 void configureADCs(void);
 void initializeADCs(void);
+void initializePPBs(void);
 void initADC(void);
 
 /* ------------------------------------------------------------------------------ */

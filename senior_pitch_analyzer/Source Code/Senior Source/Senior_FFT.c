@@ -36,6 +36,9 @@ float32 fn[7] = { 0,
 uint16_t CircularBuffer2[CIRC_BUFF_SIZE];
 uint16_t CircularBuffer4[CIRC_BUFF_SIZE];
 uint16_t CircularBuffer6[CIRC_BUFF_SIZE];
+//int16_t CircularBuffer2[CIRC_BUFF_SIZE];
+//int16_t CircularBuffer4[CIRC_BUFF_SIZE];
+//int16_t CircularBuffer6[CIRC_BUFF_SIZE];
 
 // CPU2 Circular Buffers
 #pragma DATA_SECTION(CircularBuffer1, "CircBuff1");

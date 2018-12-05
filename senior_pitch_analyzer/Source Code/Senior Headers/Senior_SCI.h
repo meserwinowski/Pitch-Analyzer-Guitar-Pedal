@@ -25,6 +25,7 @@
 
 #define MIRROR_MODE         0x01
 #define LEARNING_MODE       0x02
+#define TUNING_MODE         0x03
 
 /* Scales */
 #define PENTA_IONIAN        0x01

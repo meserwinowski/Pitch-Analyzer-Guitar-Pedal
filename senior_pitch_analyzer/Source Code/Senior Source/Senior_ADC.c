@@ -5,7 +5,6 @@
  *      Author: meser
  */
 
-
 #include "F28379D_Senior_Design.h"
 #include "F2837xD_device.h"
 #include "F2837xD_Examples.h"
@@ -81,6 +80,9 @@ void initializeADCs(void) {
     EALLOW;
 
 #ifdef CPU1
+    // Initialize Post Processing Blocks
+    initializePPBs();
+
     // ADCSOCx Trigger Select
     AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 0x5; // ePWM1 SOCA
     AdcaRegs.ADCSOC1CTL.bit.TRIGSEL = 0x6; // ePWM1 SOCB
@@ -154,6 +156,19 @@ void initializeADCs(void) {
 #endif
 
     EDIS;
+}
+
+// Initialize ADC Post Processing Blocks (Offset Correction)
+void initializePPBs(void) {
+    // ADC Post Processing Block Config
+    AdcaRegs.ADCPPB1CONFIG.bit.CONFIG = 0x0;    // Set ADCPPB1 to an ADC A SOC 0
+    AdcaRegs.ADCPPB2CONFIG.bit.CONFIG = 0x1;    // Set ADCPPB2 to an ADC A SOC 1
+    AdccRegs.ADCPPB1CONFIG.bit.CONFIG = 0x0;    // Set ADCPPB1 to an ADC C SOC 0
+
+    // ADC Post Processing Block Offset Correction
+    AdcaRegs.ADCPPB1OFFREF = INT16_MAX;         // Subtract out INT16_MAX
+    AdcaRegs.ADCPPB2OFFREF = INT16_MAX;
+    AdccRegs.ADCPPB1OFFREF = INT16_MAX;
 }
 
 // Initialize/Setup ADCs and Configure ADC Settings

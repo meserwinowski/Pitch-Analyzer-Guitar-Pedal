@@ -26,6 +26,7 @@ extern int16_t dia_aeolian_LUT;
 extern int16_t dia_locrian_LUT;
 extern uint16_t root_index;
 extern uint16_t colors[6][4];
+extern float32 fn[7];
 
 #pragma DATA_SECTION(diatonic, "Cla1Data1");
 uint_least8_t diatonic[7] = {2, 2, 1, 2, 2, 2, 1};
@@ -103,7 +104,7 @@ void initSCIBFIFO(void) {
     ScibRegs.SCIFFRX.bit.RXFFST = 0x0;      // RX FIFO is Empty
     ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;    // Clear RX FIFO Interrupt Flag
     ScibRegs.SCIFFRX.bit.RXFFIENA = 1;      // Enable RX FIFO Interrupt
-    ScibRegs.SCIFFRX.bit.RXFFIL = 0x5;      // Receive FIFO Interrupt Level Bits
+    ScibRegs.SCIFFRX.bit.RXFFIL = 0x6;      // Receive FIFO Interrupt Level Bits
 
     // SCI FIFO Control Register
     ScibRegs.SCIFFCT.all = 0x0;
@@ -119,21 +120,22 @@ void determineCommand(void) {
     uint_fast8_t data2;
     uint_fast8_t data3;
     uint_fast8_t data4;
+    uint_fast8_t data5;
     uint32_t dataPacket;
-//    float32 tuning;
+    float32 tuning;
 
     cmd = ScibRegs.SCIRXBUF.all;   //        | CMode | CColor | CTuning
     data1 = ScibRegs.SCIRXBUF.all; // MSByte | Mode  | String | String
     data2 = ScibRegs.SCIRXBUF.all; //        | Scale | Bright | BA4
     data3 = ScibRegs.SCIRXBUF.all; //        | Root  | Red    | BA3
     data4 = ScibRegs.SCIRXBUF.all; //        | XXXX  | Green  | BA2
-//    data5 = ScibRegs.SCIRXBUF.all; // LSByte | XXXX  | Blue   | BA1
+    data5 = ScibRegs.SCIRXBUF.all; // LSByte | XXXX  | Blue   | BA1
 
     // Merge data transmission (May be unused)
-    dataPacket = data1 << 8 | data2;
-    dataPacket = dataPacket << 8 | data3;
+    dataPacket = data2 << 8 | data3;
     dataPacket = dataPacket << 8 | data4;
-//    tuning = (float32) dataPacket;
+    dataPacket = dataPacket << 8 | data5;
+    tuning = (float32) dataPacket;
 
     /*** Determine Command ***/
     if (cmd == CHANGE_MODE) {
@@ -143,10 +145,7 @@ void determineCommand(void) {
         }
         // Learning Mode
         else if (data1 == LEARNING_MODE) {
-
             mode = LEARNING_MODE;
-
-//            scale_pointer = scaleLUT[data2];
             // Determine Scale
             if (data2 == 0x01) { // Pentatonic Ionian
                 scale_pointer = &penta_ionian_LUT;
@@ -188,46 +187,26 @@ void determineCommand(void) {
             // Determine Root
             root_index = data3;
         }
+        else if (cmd == TUNING_MODE) {
+            mode = TUNING_MODE;
+        }
         // Invalid Data
         else {
             SCIB_TX(NACK);
             return;
         }
     }
-    // Change Color
+    // Change Color of String
     else if (cmd == CHANGE_COLOR) {
-        for (int i = 0; i < 6; i++) {
-            colors[i][0] = data1; // Bright
-            colors[i][1] = data2; // Red
-            colors[i][2] = data3; // Green
-            colors[i][3] = data4; // Blue
-        }
+        colors[data1][0] = data2; // Bright
+        colors[data1][1] = data3; // Red
+        colors[data1][2] = data4; // Green
+        colors[data1][3] = data5; // Blue
     }
-//    // Change Tuning (String 1)
-//    else if (cmd == CHANGE_TUNING_S1) {
-//
-//    }
-//    // Change Tuning (String 2)
-//    else if (cmd == CHANGE_TUNING_S2) {
-//
-//    }
-//    // Change Tuning (String 3)
-//    else if (cmd == CHANGE_TUNING_S3) {
-//
-//    }
-//    // Change Tuning (String 4)
-//    else if (cmd == CHANGE_TUNING_S4) {
-//
-//    }
-//    // Change Tuning (String 5)
-//    else if (cmd == CHANGE_TUNING_S5) {
-//
-//    }
-//    // Change Tuning (String 6)
-//    else if (cmd == CHANGE_TUNING_S6) {
-//
-//    }
-
+    // Change Tuning of String
+    else if (cmd == CHANGE_TUNING) {
+        fn[data1] = tuning;
+    }
     // Invalid Command
     else {
         SCIB_TX(NACK);
