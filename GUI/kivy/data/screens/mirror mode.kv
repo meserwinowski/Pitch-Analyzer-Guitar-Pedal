@@ -1,5 +1,35 @@
 ShowcaseScreen:
     name: 'Mirror Mode'
+    
+    Label:
+        text: 'Select a String to Adjust'
+        
+    Label:
+        text: ''
+        font_size: '80dp'
+    Label:
+        text: ''
+        font_size: '80dp'
+    Label:
+        text: ''
+        font_size: '80dp'
+    
+    Spinner:
+        text: '-'
+        id: spin_string
+        values: ('Big E', 'A', 'D', 'G', 'B', 'Little E')
+        size_hint_y: None
+        height: '38dp'
+        
+    Label:
+        text: ''
+        font_size: '80dp'
+    Label:
+        text: ''
+        font_size: '80dp'
+    Label:
+        text: ''
+        font_size: '80dp'
        
     Label:
         text: 'LED Color Preference:'
@@ -26,7 +56,7 @@ ShowcaseScreen:
             min: 0
             max: 200
             step: 5
-            on_value: root.write_color_change(), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
+            on_value: root.write_color_change(), root.write_string_color(spin_string.text), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
 
         Label:
             text: '{}'.format(s1.value)
@@ -44,7 +74,7 @@ ShowcaseScreen:
             min: 0
             max: 200
             step: 5
-            on_value: root.write_color_change(), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
+            on_value: root.write_color_change(), root.write_string_color(spin_string.text), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
 
         Label:
             text: '{}'.format(s2.value)
@@ -61,7 +91,7 @@ ShowcaseScreen:
             min: 0
             max: 200
             step: 5
-            on_value: root.write_color_change(), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
+            on_value: root.write_color_change(), root.write_string_color(spin_string.text), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
 
         Label:
             text: '{}'.format(s3.value)
@@ -102,7 +132,7 @@ ShowcaseScreen:
         Slider:
             id: s4
             step: 5
-            on_value: root.write_color_change(), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
+            on_value: root.write_color_change(), root.write_string_color(spin_string.text), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
 
         Label:
             text: '{}'.format(s4.value)

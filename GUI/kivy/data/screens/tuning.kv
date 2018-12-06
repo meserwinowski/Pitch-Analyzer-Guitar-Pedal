@@ -20,6 +20,7 @@ ShowcaseScreen:
             values: ('E standard (E A D G B E)', 'Eb standard (Eb Ab Db Gb Bb Eb)', 'Drop D (D A D G B E)')
             size_hint_y: None
             height: '48dp'
+            on_text: root.change_tuning(self.text)
         
         Label:
             text: ''

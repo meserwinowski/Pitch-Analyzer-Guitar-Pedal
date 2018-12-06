@@ -6,8 +6,6 @@ Built upon kivy framework
 =========================
 '''
 
-import struct
-import array
 import sys
 import glob
 import time as time_t
@@ -22,10 +20,7 @@ from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 from kivy.core.text import LabelBase
 
- 
-def float_to_bytearray(f):
-    return bytes(array.array('f', [f]))
-    
+
 
 def serial_ports():
     """ Lists serial port names
@@ -85,10 +80,10 @@ class ShowcaseScreen(Screen):
 
 
     def write_bright_rgb(self, bright_val, r_val, g_val, b_val):
-        print(serial.to_bytes([int(bright_val),
-                                   int(r_val),
-                                   int(g_val),
-                                   int(b_val)]));
+        print(bright_val);
+        print(r_val);
+        print(g_val);
+        print(b_val);
         ser.write(serial.to_bytes([int(bright_val),
                                    int(r_val),
                                    int(g_val),
@@ -97,30 +92,15 @@ class ShowcaseScreen(Screen):
         while ser.inWaiting() > 0:
             out = (ser.read(1))
             print(out)
-            
-    def write_string_color(self, stringName):
-        if (stringName == 'Big E'):
-            string = 0x05
-        elif (stringName == 'A'):
-            string = 0x04
-        elif (stringName == 'D'):
-            string = 0x03
-        elif (stringName == 'G'):
-            string = 0x02
-        elif (stringName == 'B'):
-            string = 0x01
-        elif (stringName == 'Little E'):
-            string = 0x00
-        print(serial.to_bytes([string]));
-        ser.write(serial.to_bytes([string]))
-        #time_t.sleep(0.1)
+
+    def write_speed(self, *args):
+        ser.write(serial.to_bytes([int(args[1])]))
+        time_t.sleep(0.1)
         while ser.inWaiting() > 0:
             out = (ser.read(1))
             print(out)
 
-
     def write_color_change(self):
-        print(serial.to_bytes([0x02]));
         ser.write(serial.to_bytes([0x02]))
         time_t.sleep(0.1)
         while ser.inWaiting() > 0:
@@ -128,7 +108,6 @@ class ShowcaseScreen(Screen):
             print(out)
 
     def write_dummy(self):
-        print(serial.to_bytes([0x00]));
         ser.write(serial.to_bytes([0x00]))
         time_t.sleep(0.1)
         while ser.inWaiting() > 0:
@@ -163,7 +142,7 @@ class ShowcaseScreen(Screen):
             scale = 0x0B
         elif (text == 'Diatonic- Locrian'):
             scale = 0x0C
-        print(serial.to_bytes([scale]));
+
         ser.write(serial.to_bytes([scale]))
         time_t.sleep(0.1)
         while ser.inWaiting() > 0:
@@ -198,62 +177,12 @@ class ShowcaseScreen(Screen):
             root = 0x0B
         elif (text == 'E'):
             root = 0x0C
-        print(serial.to_bytes([root]));
+
         ser.write(serial.to_bytes([root]))
         time_t.sleep(0.1)
         while ser.inWaiting() > 0:
             out = (ser.read(1))
             print(out)
-            
-    def change_tuning(self, text):
-                
-        strings = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
-        e_standard_freq = [329.63, 246.94, 196.00, 146.83, 110.00, 82.41]
-        e_flat_freq = [311.1, 233.1, 185, 138.6, 103.8, 77.78 ]
-        drop_d_freq = [329.63, 246.94, 196.00, 146.83, 110.00, 73.42]
-        
-        for i in range(0,6):
-            ser.write(serial.to_bytes([0x03]))
-            print(serial.to_bytes([0x03]))
-            while ser.inWaiting() > 0:
-                out = (ser.read(1))
-                print(out)
-            
-            ser.write(serial.to_bytes([strings[i]]))
-            print(serial.to_bytes([strings[i]]))
-            while ser.inWaiting() > 0:
-                out = (ser.read(1))
-                print(out)
-            
-            if(text == 'E standard (E A D G B E)'):
-                ser.write(serial.to_bytes(float_to_bytearray(e_standard_freq[i])))
-                print(serial.to_bytes(float_to_bytearray(e_standard_freq[i])))
-        
-                while ser.inWaiting() > 0:
-                    out = (ser.read(1))
-                    print(out)
-                    
-            if(text == 'Eb standard (Eb Ab Db Gb Bb Eb)'):
-                ser.write(serial.to_bytes(float_to_bytearray(e_flat_freq[i])))
-                print(serial.to_bytes(float_to_bytearray(e_flat_freq[i])))
-                while ser.inWaiting() > 0:
-                    out = (ser.read(1))
-                    print(out)
-                    
-            if(text == 'Drop D (D A D G B E)'):
-                ser.write(serial.to_bytes(float_to_bytearray(drop_d_freq[i])))
-                print(serial.to_bytes(float_to_bytearray(drop_d_freq[i])))
-                while ser.inWaiting() > 0:
-                    out = (ser.read(1))
-                    print(out)
-                    
-            out = (ser.read(1))
-            print(out)
-            while(out != b'A'):
-                ser.write([0x00])
-                out = (ser.read(1))
-                print(out)
-        
 
 
 class ShowcaseApp(App):
@@ -343,8 +272,7 @@ class ShowcaseApp(App):
     def mode_switch(self):
         # Write the change mode command
         if(self.index != 0):
-            print(serial.to_bytes([0x01, self.index, 0x00, 0x00, 0x00, 0x00]));
-            ser.write(serial.to_bytes([0x01, self.index, 0x00, 0x00, 0x00, 0x00]))
+            ser.write(serial.to_bytes([0x01, self.index, 0x00, 0x00, 0x00]))
             time_t.sleep(0.1)
             while ser.inWaiting() > 0:
                 out = (ser.read(1))
@@ -353,7 +281,6 @@ class ShowcaseApp(App):
     def mode_switch_w_scale_root(self):
         # Write the change mode command
         if(self.index != 0):
-            print(serial.to_bytes([0x01, self.index]));
             ser.write(serial.to_bytes([0x01, self.index]))
             time_t.sleep(0.1)
             while ser.inWaiting() > 0:
