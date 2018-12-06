@@ -349,7 +349,7 @@ void initEPWM5(void) {
     EPwm5Regs.TBCTR = 0x0000;
 
     // Set Time Base Period Register
-    EPwm5Regs.TBPRD = ADC_SAMPLE_PERIOD;
+    EPwm5Regs.TBPRD = 1499;
 
     // Set Time Base Phase High Register
     EPwm5Regs.TBPHS.bit.TBPHS = 0x0000;

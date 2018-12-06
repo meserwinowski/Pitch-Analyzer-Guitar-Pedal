@@ -12,22 +12,45 @@
 /*** Control Law Accelerator - CPU1 ***/
 
 #pragma DATA_SECTION(colors, "Cla1Data1");
-uint16_t colors[6][4] = {{0x01, 0x1F, 0x1F, 0x1F},
-                         {0x01, 0x1F, 0x1F, 0x1F},
-                         {0x01, 0x1F, 0x1F, 0x1F},
-                         {0x01, 0x1F, 0x1F, 0x1F},
-                         {0x01, 0x1F, 0x1F, 0x1F},
-                         {0x01, 0x1F, 0x1F, 0x1F}
+uint16_t colors[6][4] = {{0x01, 0x10, 0x00, 0x1F}, // String 1
+                         {0x01, 0x00, 0x1F, 0x00}, // String 2
+                         {0x01, 0x30, 0x12, 0x00}, // String 3
+                         {0x01, 0x00, 0x00, 0x1F}, // String 4
+                         {0x01, 0x1F, 0x1F, 0x00}, // String 5
+                         {0x01, 0x1F, 0x00, 0x00}  // String 6
 };
 
 #pragma DATA_SECTION(frameLUT, "Cla1Data1");
 LED_DATA frameLUT[6][25];
 
-int16_t penta_ionian_LUT[6][2] = {{0, 2}, {0, 2}, {-1, 1}, {-1, 2}, {-1, 2}, {0, 2}};
-int16_t penta_dorian_LUT[6][2] = {{0, 2}, {0, 3}, {-1, 2}, {0, 2}, {0, 2}, {0, 2}};
-int16_t penta_phrygian_LUT[6][2] = {{0, 3}, {1, 3}, {0, 2}, {0, 2}, {0, 3}, {0, 3}};
-int16_t penta_mixolydian_LUT[6][2] = {{0, 2}, {0, 2}, {-1, 2}, {-1, 2}, {0, 2}, {0, 2}};
-int16_t penta_aeolian_LUT[6][2] = {{0, 3}, {0, 3}, {0, 2}, {0, 2}, {0, 2}, {0, 3}};
+// Pentatonic Scale Lookup Tables - S1...S6
+int16_t penta_ionian_LUT[6][3] = {{0, 2, 0}, {0, 2, 0}, {-1, 1, 0}, {-1, 2, 0}, {-1, 2, 0}, {0, 2, 0}};
+int16_t penta_dorian_LUT[6][3] = {{0, 2, 0}, {0, 3, 0}, {-1, 2, 0}, {0, 2, 0}, {0, 2, 0}, {0, 2, 0}};
+int16_t penta_phrygian_LUT[6][3] = {{0, 3, 0}, {1, 3, 0}, {0, 2, 0}, {0, 2, 0}, {0, 3, 0}, {0, 3, 0}};
+int16_t penta_mixolydian_LUT[6][3] = {{0, 2, 0}, {0, 2, 0}, {-1, 2, 0}, {-1, 2, 0}, {0, 2, 0}, {0, 2, 0}};
+int16_t penta_aeolian_LUT[6][3] = {{0, 3, 0}, {0, 3, 0}, {0, 2, 0}, {0, 2, 0}, {0, 2, 0}, {0, 3, 0}};
+
+// Diatonic Scale Lookup Tables - S1...S6
+int16_t dia_ionian_LUT[6][3] = {{-1, 0, 2}, {0, 2, 0}, {-1, 1, 2}, {-1, 1, 2}, {-1, 0, 2}, {0, 2, 0}};
+int16_t dia_dorian_LUT[6][3] = {{0, 2, 3}, {0, 2, 3}, {-1, 0, 2}, {-1, 0, 2}, {0, 2, 3}, {0, 2, 3}};
+int16_t dia_phrygian_LUT[6][3] = {{0, 1, 3}, {0, 1, 3}, {0, 2, 0}, {0, 2, 3}, {0, 2, 3}, {0, 1, 3}};
+int16_t dia_lydian_LUT[6][3] = {{0, 2, 0}, {-1, 0, 2}, {-1, 1, 3}, {-1, 1, 2}, {-1, 1, 2}, {0, 2, 0}};
+int16_t dia_mixolydian_LUT[6][3] = {{0, 2, 3}, {0, 2, 0}, {-1, 1, 2}, {-1, 0, 2}, {-1, 0, 2}, {0, 2, 0}};
+int16_t dia_aeolian_LUT[6][3] = {{0, 2, 3}, {0, 1, 3}, {0, 2, 0}, {0, 2, 4}, {0, 2, 3}, {0, 2, 3}};
+int16_t dia_locrian_LUT[6][3] = {{0, 1, 3}, {0, 2, 0}, {0, 2, 3}, {0, 2, 3}, {0, 1, 3}, {0, 1, 3}};
+
+//int16_t* scaleLUT[12] = { &penta_ionian_LUT[0][0],
+//                          &penta_dorian_LUT[0][0],
+//                          &penta_phrygian_LUT[0][0],
+//                          &penta_mixolydian_LUT[0][0],
+//                          &penta_aeolian_LUT[0][0],
+//                          &dia_ionian_LUT[0][0],
+//                          &dia_dorian_LUT[0][0],
+//                          &dia_phrygian_LUT[0][0],
+//                          &dia_lydian_LUT[0][0],
+//                          &dia_mixolydian_LUT[0][0],
+//                          &dia_aeolian_LUT[0][0],
+//                          &dia_locrian_LUT[0][0]};
 
 uint16_t root_index;
 int16_t* scale_pointer;
@@ -124,8 +147,7 @@ void initCLA(void) {
 void initLUT(void) {
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 25; j++) {
-//            frameLUT[i][j] = DEFAULT_LED_WHITE;
-            frameLUT[i][j].sbright = 0x00E1;
+            frameLUT[i][j].sbright = 0x00E5;
             frameLUT[i][j].blue = 0x001F;
             frameLUT[i][j].green = 0x001F;
             frameLUT[i][j].red = 0x001F;

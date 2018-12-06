@@ -42,6 +42,10 @@ typedef struct LEDdata {
 //uint_least8_t ionian[7] =   {2, 2, 1, 2, 2, 2, 1}; // Diatonic Ionian   - WWHWWWH
 //uint_least8_t dorian[7] =   {2, 1, 2, 2, 2, 1, 2}; // Diatonic Dorian   - WHWWWHW
 //uint_least8_t phrygian[7] = {1, 2, 2, 2, 1, 2, 2}; // Diatonic Phrygian - HWWWHWW
+//uint_least8_t lydian[7] =   {2, 2, 2, 1, 2, 2, 1}; // Diatonic Lydian   - WWWHWWH
+//uint_least8_t mixolydian[7] = {}; // Diatonic Mixolydian
+//uint_least8_t aeolian[7] = {}; // Diatonic Aeolian
+//uint_least8_t locrian[7] = {};
 
 //uint_least8_t pentatonic[5] = {2, 2, 3, 2, 3};
 

@@ -81,6 +81,7 @@ int main(void) {
                 for (int i = 0; i < RFFT_SIZE; i++) {
                     x = string2.cBuff[(string2.xDMA + i) & CIRC_MASK];
                     handler_rfft1->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
+//                    handler_rfft1->InBuf[i] = (float32) x;
                 }
 
                 // Pass in string struct and FFT handler by reference
@@ -93,6 +94,7 @@ int main(void) {
                 for (int i = 0; i < RFFT_SIZE; i++) {
                     x = string4.cBuff[(string4.xDMA + i) & CIRC_MASK];
                     handler_rfft1->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
+//                    handler_rfft1->InBuf[i] = (float32) x;
                 }
 
                 // Pass in string struct and FFT handler by reference
@@ -105,6 +107,7 @@ int main(void) {
                 for (int i = 0; i < RFFT_SIZE; i++) {
                     x = string6.cBuff[(string6.xDMA + i) & CIRC_MASK];
                     handler_rfft1->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
+//                    handler_rfft1->InBuf[i] = (float32) x;
                 }
 
                 // Pass in string struct and FFT handler by reference
@@ -112,6 +115,7 @@ int main(void) {
                 string6.done = 0;
             }
 
+            // Fill CLA Message RAM with fret estimate results
             fo_n_cpu[1] = fo_n_cpu2[1];
             fo_n_cpu[2] = string2.n_est;
             fo_n_cpu[3] = fo_n_cpu2[3];
@@ -123,18 +127,32 @@ int main(void) {
             /* Update LUT */
             for (int i = 0; i < 6; i++) {
                 // Update LUT with detected note
-                int16_t string_index = scale_pointer[(2 * i) + 0];
+                int16_t string_index = scale_pointer[(3 * i) + 0];
                 frameLUT[i][root_index + string_index].red = colors[i][1];
                 frameLUT[i][root_index + string_index].green = colors[i][2];
                 frameLUT[i][root_index + string_index].blue = colors[i][3];
 
-                string_index = scale_pointer[(2 * i) + 1];
+                string_index = scale_pointer[(3 * i) + 1];
+                frameLUT[i][root_index + string_index].red = colors[i][1];
+                frameLUT[i][root_index + string_index].green = colors[i][2];
+                frameLUT[i][root_index + string_index].blue = colors[i][3];
+
+                string_index = scale_pointer[(3 * i) + 2];
                 frameLUT[i][root_index + string_index].red = colors[i][1];
                 frameLUT[i][root_index + string_index].green = colors[i][2];
                 frameLUT[i][root_index + string_index].blue = colors[i][3];
 
             }
-
+        }
+        else if(mode == TUNING_MODE) {
+            // Run standard pitch detection routine
+            // Add 12 to the estimated frets
+            // Light up 12th Fret with white for base accuracy
+            for (int i = 0; i < 6; i++) {
+                frameLUT[i][12].red = 0x001F;
+                frameLUT[i][12].green = 0x001F;
+                frameLUT[i][12].blue = 0x001F;
+            }
         }
 
     }
@@ -146,9 +164,10 @@ interrupt void DMACH2_ISR(void) {
     // Move DMA Buffer Pointer
     string2.xDMA = (string2.xDMA + DMA_BUFFER_SIZE) & CIRC_MASK;
     DMACH2AddrConfig(&string2.cBuff[string2.xDMA], &AdcaResultRegs.ADCRESULT0);
+//    DMACH2AddrConfig(&string2.cBuff[string2.xDMA], &AdcaResultRegs.ADCPPB1RESULT);
 
     // Acknowledge Interrupt
-    string2.done = 1;                      // Set String 2 Done Flag
+    string2.done = 1;                       // Set String 2 Done Flag
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP7; // Clear Interrupt Flag
 
 }
@@ -158,9 +177,10 @@ interrupt void DMACH4_ISR(void) {
     // Move DMA Buffer Pointer
     string4.xDMA = (string4.xDMA + DMA_BUFFER_SIZE) & CIRC_MASK;
     DMACH4AddrConfig(&string4.cBuff[string4.xDMA], &AdcaResultRegs.ADCRESULT1);
+//    DMACH4AddrConfig(&string4.cBuff[string4.xDMA], &AdcaResultRegs.ADCPPB2RESULT);
 
     // Acknowledge Interrupt
-    string4.done = 1;                      // Set String 4 Done Flag
+    string4.done = 1;                       // Set String 4 Done Flag
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP7; // Clear Interrupt Flag
 
 }
@@ -170,9 +190,10 @@ interrupt void DMACH6_ISR(void) {
     // Move DMA Buffer Pointer
     string6.xDMA = (string6.xDMA + DMA_BUFFER_SIZE) & CIRC_MASK;
     DMACH6AddrConfig(&string6.cBuff[string6.xDMA], &AdccResultRegs.ADCRESULT0);
+//    DMACH6AddrConfig(&string6.cBuff[string6.xDMA], &AdccResultRegs.ADCPPB1RESULT);
 
     // Acknowledge Interrupt
-    string6.done = 1;                      // Set String 6 Done Flag
+    string6.done = 1;                       // Set String 6 Done Flag
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP7; // Clear Interrupt Flag
 
 }
@@ -307,8 +328,11 @@ void initMain(void) {
     initADC();                  // Initialize Analog-to-Digital Convertors
     initDMA();                  // Initialize Direct Memory Access Channels
     initDMAx(&string2.cBuff[0], &AdcaResultRegs.ADCRESULT0, DMA_ADCAINT1, 2);
+//    initDMAx(&string2.cBuff[0], &AdcaResultRegs.ADCPPB1RESULT, DMA_ADCAINT1, 2);
     initDMAx(&string4.cBuff[0], &AdcaResultRegs.ADCRESULT1, DMA_ADCAINT2, 4);
+//    initDMAx(&string4.cBuff[0], &AdcaResultRegs.ADCPPB2RESULT, DMA_ADCAINT2, 4);
     initDMAx(&string6.cBuff[0], &AdccResultRegs.ADCRESULT0, DMA_ADCCINT1, 6);
+//    initDMAx(&string6.cBuff[0], &AdccResultRegs.ADCPPB1RESULT, DMA_ADCCINT1, 6);
     initFFT(handler_rfft1);     // Initialize Fast Fourier Transform Handler
 
     // Enable global Interrupts and higher priority real-time debug events

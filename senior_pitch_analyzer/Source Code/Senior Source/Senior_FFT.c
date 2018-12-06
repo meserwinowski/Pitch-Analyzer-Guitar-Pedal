@@ -12,7 +12,7 @@ uint16_t mode = MIRROR_MODE;
 // Variables
 float32 n = 0.0f;                // Phase Vocoder Estimation Iteration
 float32 magMax = 0.0f;           // FFT Magnitude Maximum Value
-uint16_t magIndex = 0;         // FFT Magnitude Maximum Index
+uint16_t magIndex = 0;           // FFT Magnitude Maximum Index
 float32 phaseDifference = 0.0f;  // Difference between the two given phase values
 float32 test_est = 0.0f;         // Temporary variable to hold phase estimation
 float32 absDiff = 0.0f;          // Absolute difference between FFT estimate and Phase estimate
@@ -36,6 +36,9 @@ float32 fn[7] = { 0,
 uint16_t CircularBuffer2[CIRC_BUFF_SIZE];
 uint16_t CircularBuffer4[CIRC_BUFF_SIZE];
 uint16_t CircularBuffer6[CIRC_BUFF_SIZE];
+//int16_t CircularBuffer2[CIRC_BUFF_SIZE];
+//int16_t CircularBuffer4[CIRC_BUFF_SIZE];
+//int16_t CircularBuffer6[CIRC_BUFF_SIZE];
 
 // CPU2 Circular Buffers
 #pragma DATA_SECTION(CircularBuffer1, "CircBuff1");
@@ -46,14 +49,14 @@ uint16_t CircularBuffer3[CIRC_BUFF_SIZE];
 uint16_t CircularBuffer5[CIRC_BUFF_SIZE];
 
 // Declare and initialize CPU1 Strings
-INIT_STRINGDATA(string2, 2, &CircularBuffer2[0]);
-INIT_STRINGDATA(string4, 4, &CircularBuffer4[0]);
-INIT_STRINGDATA(string6, 6, &CircularBuffer6[0]);
+INIT_STRINGDATA(string2, 2, &CircularBuffer2[0], 1000000.0f);
+INIT_STRINGDATA(string4, 4, &CircularBuffer4[0], 1000000.0f);
+INIT_STRINGDATA(string6, 6, &CircularBuffer6[0], 1000000.0f);
 
 // Declare and Initialize CPU2 Strings
-INIT_STRINGDATA(string1, 1, &CircularBuffer1[0]);
-INIT_STRINGDATA(string3, 3, &CircularBuffer3[0]);
-INIT_STRINGDATA(string5, 5, &CircularBuffer5[0]);
+INIT_STRINGDATA(string1, 1, &CircularBuffer1[0], 1000000.0f);
+INIT_STRINGDATA(string3, 3, &CircularBuffer3[0], 1000000.0f);
+INIT_STRINGDATA(string5, 5, &CircularBuffer5[0], 1000000.0f);
 
 #pragma DATA_SECTION(fo_est_cpu2, "FE_CPU2_MSG");
 float32 fo_est_cpu2[7] = {FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN};
@@ -166,30 +169,20 @@ void vocodeAnalysis(STRING_DATA* string, RFFT_F32_STRUCT_Handle handler_rfft) {
     string->mBCount = 0;
     for (int i = 1; i < (RFFT_SIZE / 2); i++) {
         magMax = handler_rfft->MagBuf[i];
-        if ((handler_rfft->MagBuf[i - 1] < magMax) && (magMax > handler_rfft->MagBuf[i + 1] ) && (magMax >= MAG_THRESHOLD)) {
+        if ((handler_rfft->MagBuf[i - 1] < magMax) && (magMax > handler_rfft->MagBuf[i + 1] ) && (magMax >= string->magThresh)) {
             magMax = handler_rfft->MagBuf[i];
             magIndex = i;
+
+            // Calculate frequency normally for comparison later
             string->mBuff[string->mBCount & 0x7] = ((float32) (magIndex) / RFFT_SIZE) * NYQT_FREQ;
             string->mBCount++;
         }
     }
 
-    // Calculate frequency normally for comparison later
-//    resFFT = ((float32) (magIndex) / RFFT_SIZE) * NYQT_FREQ;
-
+    // Exponential Moving Average
     string->resFFT = ((0.1 * string->resFFT) + (0.9 * string->mBuff[0]));
 
-//    string->mABuff[string->mACount & 0x7] = resFFT;
-//    string->mACount++;
-//    float32 resFFTsum = 0;
-//    for (int i = 0; i < 8; i++) {
-//        resFFTsum += string->mABuff[i];
-//    }
-//    resFFT = resFFTsum / 8;
-
-
-    // If calculated frequency is below A1 (55 Hz) return invalid
-    // Or if the max magnitude is below the threshold
+    // If calculated frequency is below A1 (55 Hz) return NaN
     if ((string->resFFT < 55)) {
         string->fn_est = FREQ_NAN;
     }
