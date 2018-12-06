@@ -115,14 +115,13 @@ void initSCIBFIFO(void) {
 
 // Determine Command from GUI
 void determineCommand(void) {
-    uint_fast8_t cmd;
-    uint_fast8_t data1;
-    uint_fast8_t data2;
-    uint_fast8_t data3;
-    uint_fast8_t data4;
-    uint_fast8_t data5;
-    uint32_t dataPacket;
-    float32 tuning;
+    volatile uint_fast8_t cmd;
+    volatile uint_fast8_t data1;
+    volatile uint_fast8_t data2;
+    volatile uint_fast8_t data3;
+    volatile uint_fast8_t data4;
+    volatile uint_fast8_t data5;
+    volatile uint16_t dataPacket[2];
 
     cmd = ScibRegs.SCIRXBUF.all;   //        | CMode | CColor | CTuning
     data1 = ScibRegs.SCIRXBUF.all; // MSByte | Mode  | String | String
@@ -130,12 +129,6 @@ void determineCommand(void) {
     data3 = ScibRegs.SCIRXBUF.all; //        | Root  | Red    | BA3
     data4 = ScibRegs.SCIRXBUF.all; //        | XXXX  | Green  | BA2
     data5 = ScibRegs.SCIRXBUF.all; // LSByte | XXXX  | Blue   | BA1
-
-    // Merge data transmission (May be unused)
-    dataPacket = data2 << 8 | data3;
-    dataPacket = dataPacket << 8 | data4;
-    dataPacket = dataPacket << 8 | data5;
-    tuning = (float32) dataPacket;
 
     /*** Determine Command ***/
     if (cmd == CHANGE_MODE) {
@@ -187,7 +180,7 @@ void determineCommand(void) {
             // Determine Root
             root_index = data3;
         }
-        else if (cmd == TUNING_MODE) {
+        else if (data1 == TUNING_MODE) {
             mode = TUNING_MODE;
         }
         // Invalid Data
@@ -198,14 +191,20 @@ void determineCommand(void) {
     }
     // Change Color of String
     else if (cmd == CHANGE_COLOR) {
-        colors[data1][0] = data2; // Bright
+//        colors[data1][0] = data2; // Bright
         colors[data1][1] = data3; // Red
         colors[data1][2] = data4; // Green
         colors[data1][3] = data5; // Blue
     }
     // Change Tuning of String
     else if (cmd == CHANGE_TUNING) {
-        fn[data1] = tuning;
+        // Merge data transmission (May be unused)
+//        dataPacket = (data5 << 8) | data4;
+//        dataPacket = (dataPacket << 8) | data3;
+//        dataPacket = (dataPacket << 8) | data2;
+        dataPacket[0] = (data3 << 8) | data2;
+        dataPacket[1] = (data5 << 8) | data4;
+        fn[data1] = *(float *)&dataPacket;
     }
     // Invalid Command
     else {

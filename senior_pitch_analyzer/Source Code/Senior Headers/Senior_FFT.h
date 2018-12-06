@@ -19,16 +19,22 @@
 #define CIRC_BUFF_SIZE          2 * RFFT_SIZE
 #define CIRC_MASK               CIRC_BUFF_SIZE - 1
 #define OVERLAP                 4                  // Phase Vocoder FFT Overlap
-#define PV_LOOP_COUNT           (30)      // Number of times the Phase Analysis routine will loop
-#define DELTA_T                 (0.0256f) // Time between FFTs - (RFFT_SIZE / OVERLAP) * NYQUIST_PERIOD
+#define PV_LOOP_COUNT           (30)               // Number of times the Phase Analysis routine will loop
+#define DELTA_T                 (0.0256f)          // Time between FFTs - (RFFT_SIZE / OVERLAP) * NYQUIST_PERIOD
 #define DELTA_T_2_PI            (M_2_PI * DELTA_T)
+#define MAGNITUDE_THRESHOLD     (700000.0f)
+#define MT6                     (375000.0f)
+#define MT5                     (375000.0f)
+#define MT4                     (375000.0f)
+#define MT3                     (650000.0f)
+#define MT2                     (600000.0f)
+#define MT1                     (600000.0f)
 #define FREQ_NAN                1.0f
 
 // String Structure
 typedef struct stringData {
-    uint16_t str;
+    uint16_t str;          // Holds String Number
     uint16_t* cBuff;       // Pointer to Circular Buffer
-//    int16_t* cBuff;       // Pointer to Circular Buffer
     float32 phaseOld;      // Previous Phase Calculation
     float32 phaseNew;      // New Phase Calculation
     uint16_t xDMA;         // DMA to Circular Buffer Index

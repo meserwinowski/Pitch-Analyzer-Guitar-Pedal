@@ -65,6 +65,9 @@ int main(void) {
                 // Pass in string struct and FFT handler by reference
                 vocodeAnalysis(&string1, handler_rfft2);
                 string1.done = 0;
+
+                // Send fret estimate to CPU1
+                fo_n_cpu2[1] = string1.n_est;
             }
             if (string3.done) { // String 3
                 // Fill FFT Input Buffer with new values
@@ -76,6 +79,9 @@ int main(void) {
                 // Pass in string struct and FFT handler by reference
                 vocodeAnalysis(&string3, handler_rfft2);
                 string3.done = 0;
+
+                // Send fret estimate to CPU1
+                fo_n_cpu2[3] = string3.n_est;
             }
             if (string5.done) { // String 5
                 // Fill FFT Input Buffer with new values
@@ -87,12 +93,10 @@ int main(void) {
                 // Pass in string struct and FFT handler by reference
                 vocodeAnalysis(&string5, handler_rfft2);
                 string5.done = 0;
-            }
 
-            // Send string estimates over message RAM to CPU1
-            fo_n_cpu2[1] = string1.n_est;
-            fo_n_cpu2[3] = string3.n_est;
-            fo_n_cpu2[5] = string5.n_est;
+                // Send fret estimate to CPU1
+                fo_n_cpu2[5] = string5.n_est;
+            }
 
         }
 

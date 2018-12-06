@@ -15,6 +15,8 @@ extern uint16_t colors[6][4];
 extern LED_DATA frameLUT[6][25];
 extern uint16_t root_index;
 extern int16_t* scale_pointer;
+extern float32 abscmp1;
+extern float32 abscmp2;
 
 // Fixed Frequency Array + Fret Index Estimations
 extern float32 fn[7];
@@ -81,48 +83,48 @@ int main(void) {
                 for (int i = 0; i < RFFT_SIZE; i++) {
                     x = string2.cBuff[(string2.xDMA + i) & CIRC_MASK];
                     handler_rfft1->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
-//                    handler_rfft1->InBuf[i] = (float32) x;
                 }
-
                 // Pass in string struct and FFT handler by reference
                 vocodeAnalysis(&string2, handler_rfft1);
                 string2.done = 0;
+
+                // Send fret estimate to the CLA
+                fo_n_cpu[2] = string2.n_est;
             }
             if (string4.done) { // String 4
                 // Fill FFT Input Buffer with new values
-                // (Can't just change pointer because mem alignment/circular buffer)
                 for (int i = 0; i < RFFT_SIZE; i++) {
                     x = string4.cBuff[(string4.xDMA + i) & CIRC_MASK];
                     handler_rfft1->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
-//                    handler_rfft1->InBuf[i] = (float32) x;
                 }
-
                 // Pass in string struct and FFT handler by reference
                 vocodeAnalysis(&string4, handler_rfft1);
                 string4.done = 0;
+
+                // Send fret estimate to the CLA
+                fo_n_cpu[4] = string4.n_est;
             }
             if (string6.done) { // String 6
                 // Fill FFT Input Buffer with new values
-                // (Can't just change pointer because mem alignment/circular buffer)
                 for (int i = 0; i < RFFT_SIZE; i++) {
                     x = string6.cBuff[(string6.xDMA + i) & CIRC_MASK];
                     handler_rfft1->InBuf[i] = (float32) ((int16_t) (x - (INT16_MAX)));
-//                    handler_rfft1->InBuf[i] = (float32) x;
                 }
 
                 // Pass in string struct and FFT handler by reference
                 vocodeAnalysis(&string6, handler_rfft1);
                 string6.done = 0;
+
+                // Send fret estimate to the CLA
+                fo_n_cpu[6] = string6.n_est;
             }
 
-            // Fill CLA Message RAM with fret estimate results
+            // Send CPU Fret Estimates to CLA
             fo_n_cpu[1] = fo_n_cpu2[1];
-            fo_n_cpu[2] = string2.n_est;
             fo_n_cpu[3] = fo_n_cpu2[3];
-            fo_n_cpu[4] = string4.n_est;
             fo_n_cpu[5] = fo_n_cpu2[5];
-            fo_n_cpu[6] = string6.n_est;
         }
+
         else if(mode == LEARNING_MODE) {
             /* Update LUT */
             for (int i = 0; i < 6; i++) {
@@ -144,6 +146,7 @@ int main(void) {
 
             }
         }
+
         else if(mode == TUNING_MODE) {
             // Run standard pitch detection routine
             // Add 12 to the estimated frets
