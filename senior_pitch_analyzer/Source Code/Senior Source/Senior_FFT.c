@@ -36,9 +36,6 @@ float32 fn[7] = { 0,
 uint16_t CircularBuffer2[CIRC_BUFF_SIZE];
 uint16_t CircularBuffer4[CIRC_BUFF_SIZE];
 uint16_t CircularBuffer6[CIRC_BUFF_SIZE];
-//int16_t CircularBuffer2[CIRC_BUFF_SIZE];
-//int16_t CircularBuffer4[CIRC_BUFF_SIZE];
-//int16_t CircularBuffer6[CIRC_BUFF_SIZE];
 
 // CPU2 Circular Buffers
 #pragma DATA_SECTION(CircularBuffer1, "CircBuff1");
@@ -49,14 +46,14 @@ uint16_t CircularBuffer3[CIRC_BUFF_SIZE];
 uint16_t CircularBuffer5[CIRC_BUFF_SIZE];
 
 // Declare and initialize CPU1 Strings
-INIT_STRINGDATA(string2, 2, &CircularBuffer2[0], 1000000.0f);
-INIT_STRINGDATA(string4, 4, &CircularBuffer4[0], 1000000.0f);
-INIT_STRINGDATA(string6, 6, &CircularBuffer6[0], 1000000.0f);
+INIT_STRINGDATA(string2, 2, &CircularBuffer2[0], MT2);
+INIT_STRINGDATA(string4, 4, &CircularBuffer4[0], MT4);
+INIT_STRINGDATA(string6, 6, &CircularBuffer6[0], MT6);
 
 // Declare and Initialize CPU2 Strings
-INIT_STRINGDATA(string1, 1, &CircularBuffer1[0], 1000000.0f);
-INIT_STRINGDATA(string3, 3, &CircularBuffer3[0], 1000000.0f);
-INIT_STRINGDATA(string5, 5, &CircularBuffer5[0], 1000000.0f);
+INIT_STRINGDATA(string1, 1, &CircularBuffer1[0], MT1);
+INIT_STRINGDATA(string3, 3, &CircularBuffer3[0], MT3);
+INIT_STRINGDATA(string5, 5, &CircularBuffer5[0], MT5);
 
 #pragma DATA_SECTION(fo_est_cpu2, "FE_CPU2_MSG");
 float32 fo_est_cpu2[7] = {FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN, FREQ_NAN};
@@ -169,22 +166,30 @@ void vocodeAnalysis(STRING_DATA* string, RFFT_F32_STRUCT_Handle handler_rfft) {
     string->mBCount = 0;
     for (int i = 1; i < (RFFT_SIZE / 2); i++) {
         magMax = handler_rfft->MagBuf[i];
-        if ((handler_rfft->MagBuf[i - 1] < magMax) && (magMax > handler_rfft->MagBuf[i + 1] ) && (magMax >= string->magThresh)) {
+        if ((handler_rfft->MagBuf[i - 1] < magMax) && \
+            (magMax > handler_rfft->MagBuf[i + 1]) && (magMax >= string->magThresh)) {
+
             magMax = handler_rfft->MagBuf[i];
             magIndex = i;
 
             // Calculate frequency normally for comparison later
-            string->mBuff[string->mBCount & 0x7] = ((float32) (magIndex) / RFFT_SIZE) * NYQT_FREQ;
+            string->mBuff[string->mBCount] = ((float32) (magIndex) / RFFT_SIZE) * NYQT_FREQ;
             string->mBCount++;
+            if (string->mBCount > 7) {
+                break;
+            }
         }
     }
 
     // Exponential Moving Average
-    string->resFFT = ((0.1 * string->resFFT) + (0.9 * string->mBuff[0]));
+//    string->resFFT = ((0.1 * string->resFFT) + (0.9 * string->mBuff[0]));
+    string->resFFT = string->mBuff[0];
 
-    // If calculated frequency is below A1 (55 Hz) return NaN
-    if ((string->resFFT < 55)) {
+    // If calculated frequency is below strings fixed frequency return NaN
+    if ((string->resFFT < fn[string->str])) {
         string->fn_est = FREQ_NAN;
+        string->n_est = -1;
+        return;
     }
 
     // Save phase value at the same index as maximum magnitude
@@ -217,12 +222,12 @@ void vocodeAnalysis(STRING_DATA* string, RFFT_F32_STRUCT_Handle handler_rfft) {
         n++;                    // Increment loop
     }
 
-    // Save phase for next iteration and return F0 estimation
+    // Save phase for next iteration and return F0 estimation and fret estimation
     string->phaseOld = string->phaseNew;
     string->fn_est = ((phaseDifference + nSmall) / (DELTA_T_2_PI));
+
+    // Inverse Equal Temperament Scale Equation
     string->n_est = roundf(logf(string->fn_est / fn[string->str]) / ETSE_CONSTANTL);
-//    return 0.0;
-//    return ((phaseDifference + nSmall) / (DELTA_T_2_PI));
 }
 
 /* ------------------------------------------------------------------------------ */

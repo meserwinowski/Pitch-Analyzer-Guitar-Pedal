@@ -81,7 +81,7 @@ void initializeADCs(void) {
 
 #ifdef CPU1
     // Initialize Post Processing Blocks
-    initializePPBs();
+//    initializePPBs();
 
     // ADCSOCx Trigger Select
     AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 0x5; // ePWM1 SOCA

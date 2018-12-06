@@ -29,10 +29,16 @@ interrupt void Cla1Task1 (void) {
 
     /* Update LUT */
     for (string = 1; string < 7; string++) {
+        note_index = temp;
         note_index = (int16_t) fo_n_cpu[string];
 
         // Update LUT with detected note
         if ((note_index) >= 1 && (note_index <= 24)) {
+            for (i = note_index + 1; i < 25; i++) {
+                frameLUT[string - 1][i].red = 0x00;
+                frameLUT[string - 1][i].green = 0x00;
+                frameLUT[string - 1][i].blue = 0x00;
+            }
             frameLUT[string - 1][note_index].red = colors[string - 1][1];
             frameLUT[string - 1][note_index].green = colors[string - 1][2];
             frameLUT[string - 1][note_index].blue = colors[string - 1][3];
