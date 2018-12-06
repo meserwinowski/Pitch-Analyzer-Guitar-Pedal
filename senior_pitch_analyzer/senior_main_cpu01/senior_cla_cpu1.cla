@@ -51,11 +51,11 @@ interrupt void Cla1Task1 (void) {
 
         // Else if note_index is zero, then it's an open string
         else if (note_index == 0) {
-//            for (fret = 1; fret < 25; fret++) {
-//                frameLUT[string - 1][fret].red = colors[string - 1][1];
-//                frameLUT[string - 1][fret].green = colors[string - 1][3];
-//                frameLUT[string - 1][fret].blue = colors[string - 1][2];
-//            }
+            for (fret = 1; fret < 5; fret++) {
+                frameLUT[string - 1][fret].red = colors[string - 1][1];
+                frameLUT[string - 1][fret].green = colors[string - 1][2];
+                frameLUT[string - 1][fret].blue = colors[string - 1][3];
+            }
         }
         // Else no or bad value - don't update LUT
     }
@@ -115,7 +115,7 @@ interrupt void Cla1Task1 (void) {
     }
 
     /* Decay LUT Data */
-    if ((GPIO34_count & 0x101) == 1) {
+    if ((GPIO34_count & 0x121) == 1) {
         for (fret = 1; fret < 25; fret++) {
             for (string = 0; string < 6; string++) {
                 // Decay Red

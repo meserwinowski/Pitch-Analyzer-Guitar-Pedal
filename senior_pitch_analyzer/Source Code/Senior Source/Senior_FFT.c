@@ -22,12 +22,12 @@ float32 n2pi = 0.0f;             // 2 Pi Accumulator variable
 
 // Fixed String Frequencies
 float32 fn[7] = { 0,
-                  329.63,     // E4 - String 1
-                  246.94,     // B3 - String 2
+                  329.630,    // E4 - String 1
+                  246.940,    // B3 - String 2
                   195.998,    // G3 - String 3
-                  146.838,   // D3 - String 4
-                  110.0,    // A2 - String 5
-                  82.41};   // E2 - String 6
+                  146.838,    // D3 - String 4
+                  110.000,    // A2 - String 5
+                  82.410};    // E2 - String 6
 
 // CPU1 Circular Buffers
 #pragma DATA_SECTION(CircularBuffer2, "CircBuff2");
@@ -182,8 +182,11 @@ void vocodeAnalysis(STRING_DATA* string, RFFT_F32_STRUCT_Handle handler_rfft) {
     }
 
     // Exponential Moving Average
-//    string->resFFT = ((0.1 * string->resFFT) + (0.9 * string->mBuff[0]));
-    string->resFFT = string->mBuff[0];
+    string->resFFT = ((0.1 * string->resFFT) + (0.9 * string->mBuff[0]));
+//    string->resFFT = string->mBuff[0];
+    if (string->mBuff[0] > string->resFFT * 1.5) {
+        return;
+    }
 
     // If calculated frequency is below strings fixed frequency return NaN
     if ((string->resFFT < fn[string->str])) {

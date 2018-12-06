@@ -23,10 +23,10 @@
 #define DELTA_T                 (0.0256f)          // Time between FFTs - (RFFT_SIZE / OVERLAP) * NYQUIST_PERIOD
 #define DELTA_T_2_PI            (M_2_PI * DELTA_T)
 #define MAGNITUDE_THRESHOLD     (700000.0f)
-#define MT6                     (350000.0f)
-#define MT5                     (350000.0f)
-#define MT4                     (350000.0f)
-#define MT3                     (600000.0f)
+#define MT6                     (375000.0f)
+#define MT5                     (375000.0f)
+#define MT4                     (375000.0f)
+#define MT3                     (650000.0f)
 #define MT2                     (600000.0f)
 #define MT1                     (600000.0f)
 #define FREQ_NAN                1.0f
