@@ -1,0 +1,32 @@
+ShowcaseScreen:
+    name: 'Tuning'
+
+    fullscreen: True
+            
+    BoxLayout:
+		orientation: 'vertical'
+		
+		Label:
+    		text: 'Pick a Tuning'
+    		font_size: '20dp'
+		
+
+        Label:
+            text: 'Tuning Options'
+      
+        Spinner:
+            text: '-'
+            id: spin_tune
+            values: ('E standard (E A D G B E)', 'Eb standard (Eb Ab Db Gb Bb Eb)', 'Drop D (D A D G B E)')
+            size_hint_y: None
+            height: '48dp'
+        
+        Label:
+            text: ''
+            font_size: '80dp' 
+    
+        Label:
+            text: ''
+            font_size: '80dp'
+
+

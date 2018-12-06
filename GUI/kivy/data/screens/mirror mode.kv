@@ -24,8 +24,8 @@ ShowcaseScreen:
         Slider:
             id: s1
             min: 0
-            max: 255
-            step: 1
+            max: 200
+            step: 5
             on_value: root.write_color_change(), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
 
         Label:
@@ -42,8 +42,8 @@ ShowcaseScreen:
         Slider:
             id: s2
             min: 0
-            max: 255
-            step: 1
+            max: 200
+            step: 5
             on_value: root.write_color_change(), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
 
         Label:
@@ -59,8 +59,8 @@ ShowcaseScreen:
         Slider:
             id: s3
             min: 0
-            max: 255
-            step: 1
+            max: 200
+            step: 5
             on_value: root.write_color_change(), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
 
         Label:
@@ -101,7 +101,7 @@ ShowcaseScreen:
 
         Slider:
             id: s4
-            step: 1
+            step: 5
             on_value: root.write_color_change(), root.write_bright_rgb(s4.value, s1.value, s2.value, s3.value)
 
         Label:
@@ -123,62 +123,4 @@ ShowcaseScreen:
         text: ''
         font_size: '80dp'    
     
-    Label:
-        text: 'Scale Overlay:'
-    
-    Label:
-        text: ''
-        font_size: '80dp'
-    Label:
-        text: ''
-        font_size: '80dp'
-    Label:
-        text: ''
-        font_size: '80dp'  
 
-    Spinner:
-        text: 'None'
-        id: spin_scale_m
-        disabled: True
-        values: ('None', 'Pentatonic- Ionian', 'Pentatonic- Dorian', 'Pentatonic- Phrygian', 'Pentatonic- Mixolydian', 'Pentatonic- Aeolian', 'Diatonic- Ionian', 'Diatonic- Dorian', 'Diatonic- Phrygian', 'Diatonic- Lydian', 'Diatonic- Mixolydian', 'Diatonic- Aeolian', 'Diatonic- Locrian')
-        size_hint_y: None
-        height: '48dp'
-        on_text: app.mode_switch_w_scale_root(), root.write_scale(self.text), root.write_root(spin_root_m.text), root.write_dummy()
-        
-    Label:
-        text: ''
-        font_size: '80dp'
-    Label:
-        text: ''
-        font_size: '80dp'
-    Label:
-        text: ''
-        font_size: '80dp'
-    Label:
-        text: ''
-        font_size: '80dp'
-    Label:
-        text: ''
-        font_size: '80dp'    
-    
-    Label:
-        text: 'Root Note Overlay:'
-    
-    Label:
-        text: ''
-        font_size: '80dp'
-    Label:
-        text: ''
-        font_size: '80dp'
-    Label:
-        text: ''
-        font_size: '80dp'  
-
-    Spinner:
-        text: 'None'
-        disabled: True
-        id: spin_root_m
-        values: ('None', 'C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'A#/Bb', 'B')
-        size_hint_y: None
-        height: '48dp'
-        on_text: app.mode_switch_w_scale_root(), root.write_scale(spin_scale_m.text), root.write_root(self.text), root.write_dummy()
