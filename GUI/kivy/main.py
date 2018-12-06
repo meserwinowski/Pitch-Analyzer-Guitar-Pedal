@@ -78,8 +78,6 @@ class ShowcaseScreen(Screen):
             return self.ids.content.add_widget(*args)
         return super(ShowcaseScreen, self).add_widget(*args)
 
-    def btn_play(self):
-        print("You clicked play on lessons")
 
     def write_bright_rgb(self, bright_val, r_val, g_val, b_val):
         ser.write(serial.to_bytes([int(bright_val),
@@ -198,7 +196,7 @@ class ShowcaseApp(App):
         self.title = 'Pitch Analyzer Guitar Pedal'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
-        self.available_screens = ['Main Menu', 'Mirror Mode', 'Lessons']
+        self.available_screens = ['Main Menu', 'Mirror Mode', 'Lessons', 'Tuning']
         self.screen_names = self.available_screens
         curdir = dirname(__file__)
         self.available_screens = [join(curdir, 'data', 'screens',
